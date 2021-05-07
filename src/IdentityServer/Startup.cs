@@ -16,6 +16,9 @@ using System.Reflection;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreServices.Extensions;
 using Serilog;
+using IdentityServer4.AccessTokenValidation;
+using IdentityServer4.Services;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer
 {
@@ -34,6 +37,7 @@ namespace IdentityServer
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            //services.AddControllers();
             services.AddControllersWithViews();
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -75,8 +79,24 @@ namespace IdentityServer
             builder.AddDeveloperSigningCredential();
             services.ConfigCustomizeService();
 
-            services.ConfigIdnentityAuthorization();
 
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+              .AddIdentityServerAuthentication(options =>
+              {
+                  options.Authority = "https://localhost:5001/";
+                  options.ApiName = "ApiScope";
+                  options.ApiSecret = SmartParking.Share.Constants.IdentityConstants.ClientIdSecret.Api;
+                  options.SupportedTokens = SupportedTokens.Jwt;
+              });
+
+            services.ConfigIdnentityAuthorization();
+            services.AddSingleton<ICorsPolicyService>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+                return new DefaultCorsPolicyService(logger)
+                {
+                    AllowAll = true
+                };
+            });
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
@@ -107,6 +127,11 @@ namespace IdentityServer
             app.UseRouting();
             app.UseIdentityServer();
             app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseCors(x => x
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

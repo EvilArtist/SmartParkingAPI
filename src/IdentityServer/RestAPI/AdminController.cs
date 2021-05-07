@@ -28,7 +28,7 @@ namespace IdentityServer.RestAPI
         }
 
         [HttpGet("employee")]
-        [Authorize(Roles = Roles.SuperAdmin)]
+        [Authorize(RoleClaims.EmployeeManager)]
         public async Task<QueryResultModel<EmployeeViewModel>> GetUsers(string clientId)
         {
             return await userService.GetManagedUserAsync(clientId);
@@ -37,7 +37,7 @@ namespace IdentityServer.RestAPI
         [HttpPost("employee/search")]
         public async Task<QueryResultModel<EmployeeViewModel>> SearchUsers(EmployeeQueryModel queryModel)
         {
-            return await userService.GetManagedUserAsync(queryModel);
+            return await userService.SearchManagedUserAsync(queryModel);
         }
 
         [HttpPost("employee/admin")]

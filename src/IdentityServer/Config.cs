@@ -67,6 +67,27 @@ namespace IdentityServer
                         IdentityConstants.Scope.Scope1
                     }
                 },
+                new Client
+                {
+                    ClientName = "Angular-Client",
+                    ClientId = IdentityConstants.ClientId.Spa,
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RedirectUris = new List<string>{ "http://localhost:4200/signin-callback", 
+                        "http://localhost:4200/assets/silent-callback.html" },
+                    RequirePkce = true,
+                    AllowAccessTokensViaBrowser = true,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityConstants.Scope.Api
+                    },
+                    AllowedCorsOrigins = { "http://localhost:4200" },
+                    RequireClientSecret = false,
+                    PostLogoutRedirectUris = new List<string> { "http://localhost:4200/signout-callback" },
+                    RequireConsent = false,
+                    AccessTokenLifetime = 600
+                }
             };
     }
 }

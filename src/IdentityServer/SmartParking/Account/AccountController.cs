@@ -18,7 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SmartParkingCoreModels.Identity;
 
-namespace  IdentityServerHost.SmartParking.UI
+namespace IdentityServerHost.SmartParking.UI
 {
     [SecurityHeaders]
     [AllowAnonymous]

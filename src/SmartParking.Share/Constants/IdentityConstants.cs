@@ -14,6 +14,7 @@ namespace SmartParking.Share.Constants
         public class ClientId
         {
             public const string Api = "smartparking.api";
+            public const string Spa = "smartparking.spa";
             public const string Interactive = "interactive";
         }
 

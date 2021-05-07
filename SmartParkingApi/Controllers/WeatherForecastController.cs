@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SmartParking.Share.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,7 @@ namespace SmartParkingApi.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {

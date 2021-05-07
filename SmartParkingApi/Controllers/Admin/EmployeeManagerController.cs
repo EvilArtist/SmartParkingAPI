@@ -25,23 +25,58 @@ namespace SmartParkingApi.Controllers.Admin
         }
 
         [HttpGet("employee")]
-        [Authorize(Roles = Roles.SuperAdmin)]
-        public async Task<QueryResultModel<EmployeeViewModel>> GetUsers(string clientId)
+        [Authorize(RoleClaims.EmployeeView)]
+        public async Task<QueryResultModel<EmployeeViewModel>> GetEmployees(string clientId)
         {
             return await userService.GetManagedUserAsync(clientId);
         }
 
-        [HttpPost("employee/search")]
-        public async Task<QueryResultModel<EmployeeViewModel>> SearchUsers(EmployeeQueryModel queryModel)
+        [HttpGet("employee/{userId}")]
+        [Authorize(RoleClaims.EmployeeView)]
+        public async Task<EmployeeDetail> GetEmployee(Guid userId)
         {
-            return await userService.GetManagedUserAsync(queryModel);
+            return await userService.GetEmployeeById(userId);
         }
 
-        [HttpPost("employee/admin")]
+        [HttpPost("search")]
+        public async Task<QueryResultModel<EmployeeViewModel>> SearchUsers(EmployeeQueryModel queryModel)
+        {
+            return await userService.SearchManagedUserAsync(queryModel);
+        }
+
+        [HttpPost("admin")]
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<IdentityResult> CreateAdmin(AdminCreateModel model)
         {
             return await userService.CreateAdminAsync(model);
+        }
+
+        [HttpPost("employee")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IdentityResult> CreateUsers(EmployeeCreateModel model)
+        {
+            return await userService.CreateEmployeeAsync(model);
+        }
+
+        [HttpPost("employee/update/{userId}")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IdentityResult> UpdateUsers(Guid userId, EmployeeUpdateModel model)
+        {
+            return await userService.UpdateEmployeeAsync(userId, model);
+        }
+
+        [HttpGet("roles")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IEnumerable<RoleViewModel>> GetRoles(string clientId)
+        {
+            return await userService.GetRolesAsync(clientId);
+        }
+
+        [HttpGet("policies")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IEnumerable<PoliciesViewModel>> GetPolicies(string clientId)
+        {
+            return await userService.GetPoliciesAsync(clientId);
         }
     }
 }
