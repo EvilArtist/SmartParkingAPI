@@ -16,6 +16,8 @@ using SmartParking.Share.Constants;
 using SmartParkingAbstract.Services.General;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace SmartParkingCoreServices.Admin
 {
@@ -70,22 +72,23 @@ namespace SmartParkingCoreServices.Admin
             }
             return result;
         }
-
+        #region Employee
         public async Task<IdentityResult> CreateEmployeeAsync(EmployeeCreateModel model)
         {
             if (string.IsNullOrEmpty(model.Email) && string.IsNullOrEmpty(model.Phone))
             {
                 throw new InvalidOperationException("Require_Email_OR_Phone");
             }
-            //string userName = string.IsNullOrEmpty(model.Email) ?
-            //    model.Phone :
-            //    model.Email.Remove(model.Email.IndexOf("@"));
-
+            Regex regex = new(" (\\w)");
+            string userName = model.LastName.ToLower() +
+                String.Join("", regex.Matches(" " + model.FirstName).Select(x => x.Value.Trim().ToLower()));
+            int count = await dataContext.Users.CountAsync(x => x.UserName.StartsWith(userName));
+            userName += (count + 1);
             string password = randomGeneratorService.RandomPasswordString(12);
             Log.Debug($"Password Generated: '{password}'");
             ApplicationUser user = new()
             {
-                UserName = model.UserName,
+                UserName = userName,
                 Email = model.Email,
                 Address = model.Address,
                 ClientId = model.ClientId,
@@ -102,7 +105,7 @@ namespace SmartParkingCoreServices.Admin
 
                 result = await userManager.AddToRoleAsync(user, role.Name);
             }
-            return result; ;
+            return result;
         }
 
         public async Task<IdentityResult> UpdateEmployeeAsync(Guid userId, EmployeeUpdateModel model)
@@ -192,21 +195,9 @@ namespace SmartParkingCoreServices.Admin
             return new QueryResultModel<EmployeeViewModel>(users);
         }
 
-        public async Task<IEnumerable<RoleViewModel>> GetRolesAsync(string clientId)
-        {
-            var query = dataContext.Roles
-                .Where(x => x.ClientId == clientId || string.IsNullOrEmpty(x.ClientId))
-                .Where(x => !x.IsCustomerRole && x.Name != Roles.SuperAdmin)
-                .Select(x => new RoleViewModel
-                {
-                    Id = x.Id,
-                    DisplayName = x.Name
-                });
-            return await query.ToListAsync();
-        }
-
         public async Task<EmployeeDetail> GetEmployeeById(Guid userId)
         {
+            
             var query = dataContext.Users
                 .Where(x => x.Id == userId)
                 .Select( x => new EmployeeDetail
@@ -226,48 +217,47 @@ namespace SmartParkingCoreServices.Admin
             return await query;
         }
 
+        public async Task<IdentityResult> RemoveEmployeeAsync(Guid model)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(x => x.Id == model);
+            dataContext.Users.Remove(user);
+            var savedRow = await dataContext.SaveChangesAsync();
+            if (savedRow > 0)
+            {
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed(new IdentityError {Code = "Cannot Delete", Description = "Cannot Delete User" });
+        }
+        #endregion
+
+        #region Policy
         public async Task<IEnumerable<PoliciesViewModel>> GetPoliciesAsync(string clientId)
         {
-            var filterdRoles = dataContext.Roles.Where(x => x.ClientId == clientId || string.IsNullOrEmpty(x.ClientId));
-            var roleClaims = await dataContext.RoleClaims.Join(filterdRoles, 
-                claim => claim.RoleId, 
-                role => role.Id, 
-                (claim, role) => new
-            {
-                RoleName= role.Name,
-                RoleId = role.Id,
-                Claim = claim.ClaimType
-            }).ToListAsync();
-            var policies = roleClaims.GroupBy(x => x.RoleId, x=>x)
-                .Select(rolePolicies => new PoliciesViewModel
-                {
-                    RoleId = rolePolicies.Key,
-                    RoleName = rolePolicies.First().RoleName,
-                    Policies = rolePolicies.Select(x => x.Claim)
-                }).ToList();
-            policies.Insert(0, new PoliciesViewModel()
-            {
-                RoleId = Guid.Empty,
-                RoleName = "",
-                Policies = RoleClaims.GetClaims()
-            }) ;
-            return policies;
-        }
-
-
-        public async Task<IEnumerable<PoliciesViewModel>> CreateRole(string RoleName)
-        {
-            var filterdRoles = dataContext.Roles.Where(x => x.ClientId == clientId || string.IsNullOrEmpty(x.ClientId));
-            var roleClaims = await dataContext.RoleClaims.Join(filterdRoles,
-                claim => claim.RoleId,
+            var filterdRoles = dataContext.Roles
+                .Where(x => x.ClientId == clientId || string.IsNullOrEmpty(x.ClientId))
+                .Where(x=>x.Name != Roles.SuperAdmin);
+           
+            var roleClaims = await filterdRoles.GroupJoin(
+                dataContext.RoleClaims,
                 role => role.Id,
-                (claim, role) => new
-                {
-                    RoleName = role.Name,
-                    RoleId = role.Id,
-                    Claim = claim.ClaimType
-                }).ToListAsync();
-            var policies = roleClaims.GroupBy(x => x.RoleId, x => x)
+                claim => claim.RoleId,
+                (role, claims) => 
+                    new
+                    { 
+                        Role = role, 
+                        Claim= claims
+                    })
+                .SelectMany(
+                  roleClaim => roleClaim.Claim.DefaultIfEmpty(),
+                  (roleClaims, claim) =>
+                     new
+                     {
+                         RoleName = roleClaims.Role.Name,
+                         RoleId = roleClaims.Role.Id,
+                         Claim = claim.ClaimType
+                     }
+               ).ToListAsync();
+            var policies = roleClaims.GroupBy(x => x.RoleId, x=>x)
                 .Select(rolePolicies => new PoliciesViewModel
                 {
                     RoleId = rolePolicies.Key,
@@ -282,5 +272,51 @@ namespace SmartParkingCoreServices.Admin
             });
             return policies;
         }
+
+        public async Task<IdentityResult> AssignRolePolicyAsync(RolePolicyAssignmentViewModel rolePolicyAssignment)
+        {
+            var role = await roleManager.FindByNameAsync(rolePolicyAssignment.Role);
+            return await roleManager.AddClaimAsync(role, new Claim(rolePolicyAssignment.Policy, rolePolicyAssignment.Policy));
+        }
+
+        public async Task<IdentityResult> UnassignRolePolicyAsync(RolePolicyAssignmentViewModel rolePolicyAssignment)
+        {
+            var role = await roleManager.FindByNameAsync(rolePolicyAssignment.Role);
+            var claims = await roleManager.GetClaimsAsync(role);
+            var removeClaims = claims.FirstOrDefault(x => x.Type == rolePolicyAssignment.Policy);
+            return await roleManager.RemoveClaimAsync(role, removeClaims);
+        }
+        #endregion
+        #region Role
+
+        public async Task<IEnumerable<RoleViewModel>> GetRolesAsync(string clientId)
+        {
+            var query = dataContext.Roles
+                .Where(x => x.ClientId == clientId || string.IsNullOrEmpty(x.ClientId))
+                .Where(x => !x.IsCustomerRole && x.Name != Roles.SuperAdmin)
+                .Select(x => new RoleViewModel
+                {
+                    Id = x.Id,
+                    DisplayName = x.Name
+                });
+            return await query.ToListAsync();
+        }
+
+        public async Task<IdentityResult> CreateRoleAsync(string roleName)
+        {
+            var applicationRole = new ApplicationRole()
+            {
+                Name = roleName
+            };
+            return await roleManager.CreateAsync(applicationRole);
+        }
+
+        public async Task<IdentityResult> RemoveRoleAsync(string roleName)
+        {
+            var role = await roleManager.FindByNameAsync(roleName);
+            
+            return await roleManager.DeleteAsync(role);
+        }
+        #endregion
     }
 }

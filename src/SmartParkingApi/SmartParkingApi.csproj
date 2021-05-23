@@ -13,10 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartParking.Share\SmartParking.Share.csproj" />
     <ProjectReference Include="..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
-    <ProjectReference Include="..\src\SmartParking.Share\SmartParking.Share.csproj" />
-    <ProjectReference Include="..\src\SmartParkingCoreModels\SmartParkingCoreModels.csproj" />
-    <ProjectReference Include="..\src\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
+    <ProjectReference Include="..\SmartParkingCoreModels\SmartParkingCoreModels.csproj" />
+    <ProjectReference Include="..\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
   </ItemGroup>
 
 </Project>

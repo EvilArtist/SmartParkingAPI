@@ -8,16 +8,16 @@ namespace SmartParking.Share.Constants
 {
     public class Roles
     {
-        public const string Admin = "Admin";
         public const string SuperAdmin = "SuperAdmin";
-        public const string Security = "Security";
-        public const string Accounter = "Accounter";
-        public const string SecurityLeader = "SecurityLeader";
-        public const string Manager = "Manager";
+        public const string Admin = "Quản trị viên";
+        public const string Security = "Bảo vệ";
+        public const string Accounter = "Kế toán";
+        public const string SecurityLeader = "Trưởng nhóm bảo vệ";
+        public const string Manager = "Giám đốc";
         public static readonly string[] DefaultRoles =
         {
-            Admin,
             SuperAdmin,
+            Admin,
             Security,
             SecurityLeader,
             Accounter,

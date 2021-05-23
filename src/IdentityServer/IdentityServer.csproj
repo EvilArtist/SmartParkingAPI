@@ -28,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
     <ProjectReference Include="..\SmartParking.Share\SmartParking.Share.csproj" />
+    <ProjectReference Include="..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
     <ProjectReference Include="..\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
   </ItemGroup>
 </Project>

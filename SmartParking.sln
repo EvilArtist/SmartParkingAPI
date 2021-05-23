@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartParkingCoreServices", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartParkingCoreModels", "src\SmartParkingCoreModels\SmartParkingCoreModels.csproj", "{4CD3759D-AA4F-42A4-97B6-F4CC1182A261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartParkingApi", "SmartParkingApi\SmartParkingApi.csproj", "{A28DC2F2-E8DD-4C77-B363-0F9788F05726}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartParkingApi", "src\SmartParkingApi\SmartParkingApi.csproj", "{A28DC2F2-E8DD-4C77-B363-0F9788F05726}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartParkingAbstract", "SmartParkingAbstract\SmartParkingAbstract.csproj", "{68C8CFD5-C8AD-40D7-AA2C-8BE6B1DDA07C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartParkingAbstract", "src\SmartParkingAbstract\SmartParkingAbstract.csproj", "{68C8CFD5-C8AD-40D7-AA2C-8BE6B1DDA07C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

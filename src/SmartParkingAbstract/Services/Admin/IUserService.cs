@@ -16,8 +16,13 @@ namespace SmartParkingAbstract.Services.Admin
         Task<QueryResultModel<EmployeeViewModel>> SearchManagedUserAsync(EmployeeQueryModel queryModels);
         Task<IdentityResult> CreateAdminAsync(AdminCreateModel model);
         Task<IdentityResult> CreateEmployeeAsync(EmployeeCreateModel model);
+        Task<IdentityResult> RemoveEmployeeAsync(Guid model);
         Task<IdentityResult> UpdateEmployeeAsync(Guid userId, EmployeeUpdateModel model);
         Task<IEnumerable<RoleViewModel>> GetRolesAsync(string clientId);
         Task<IEnumerable<PoliciesViewModel>> GetPoliciesAsync(string clientId);
-     }
+        Task<IdentityResult> AssignRolePolicyAsync(RolePolicyAssignmentViewModel rolePolicyAssignment);
+        Task<IdentityResult> UnassignRolePolicyAsync(RolePolicyAssignmentViewModel rolePolicyAssignment);
+        Task<IdentityResult> CreateRoleAsync(string roleName);
+        Task<IdentityResult> RemoveRoleAsync(string roleName);
+    }
 }

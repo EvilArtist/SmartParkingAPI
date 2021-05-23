@@ -65,6 +65,27 @@ namespace SmartParkingApi.Controllers.Admin
             return await userService.UpdateEmployeeAsync(userId, model);
         }
 
+        [HttpGet("policies")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IEnumerable<PoliciesViewModel>> GetPolicies(string clientId)
+        {
+            return await userService.GetPoliciesAsync(clientId);
+        }
+
+        [HttpPost("policies/assign")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IdentityResult> AssignRolePolicyAsync(RolePolicyAssignmentViewModel assignment)
+        {
+            return await userService.AssignRolePolicyAsync(assignment);
+        }
+
+        [HttpPost("policies/unassign")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IdentityResult> UnassignRolePolicyAsync(RolePolicyAssignmentViewModel assignment)
+        {
+            return await userService.UnassignRolePolicyAsync(assignment);
+        }
+
         [HttpGet("roles")]
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<IEnumerable<RoleViewModel>> GetRoles(string clientId)
@@ -72,11 +93,25 @@ namespace SmartParkingApi.Controllers.Admin
             return await userService.GetRolesAsync(clientId);
         }
 
-        [HttpGet("policies")]
-        [Authorize(RoleClaims.EmployeeManager)]
-        public async Task<IEnumerable<PoliciesViewModel>> GetPolicies(string clientId)
+        [HttpPost("roles")]
+        [Authorize(RoleClaims.RoleManager)]
+        public async Task<IdentityResult> CreateRoleAsync(TanentRoleViewModel model)
         {
-            return await userService.GetPoliciesAsync(clientId);
+            return await userService.CreateRoleAsync(model.RoleName);
+        }
+
+        [HttpPost("roles/remove")]
+        [Authorize(RoleClaims.RoleManager)]
+        public async Task<IdentityResult> RemoveRoleAsync(TanentRoleViewModel model)
+        {
+            return await userService.RemoveRoleAsync(model.RoleName);
+        }
+
+        [HttpPost("delete")]
+        [Authorize(RoleClaims.EmployeeManager)]
+        public async Task<IdentityResult> DeleteUserAsync(EmployeeDeleteModel model)
+        {
+            return await userService.RemoveEmployeeAsync(model.UserId);
         }
     }
 }
