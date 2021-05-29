@@ -46,14 +46,14 @@ namespace SmartParkingApi.Controllers.Admin
 
         [HttpPost("admin")]
         [Authorize(RoleClaims.EmployeeManager)]
-        public async Task<IdentityResult> CreateAdmin(AdminCreateModel model)
+        public async Task<ServiceResponse<EmployeeDetail>> CreateAdmin(AdminCreateModel model)
         {
             return await userService.CreateAdminAsync(model);
         }
 
         [HttpPost("employee")]
         [Authorize(RoleClaims.EmployeeManager)]
-        public async Task<IdentityResult> CreateUsers(EmployeeCreateModel model)
+        public async Task<ServiceResponse<EmployeeDetail>> CreateUsers(EmployeeCreateModel model)
         {
             return await userService.CreateEmployeeAsync(model);
         }

@@ -6,16 +6,16 @@ namespace SmartParkingAbstract.ViewModels.Users
 {
     public class EmployeeCreateModel : MutiTanentModel
     {
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public virtual string Email { get; set; }
+        public virtual string Phone { get; set; }
         [Required]
-        public string FirstName { get; set; }
+        public virtual string FirstName { get; set; }
         [Required]
-        public string LastName { get; set; }
-        public string Address { get; set; }
+        public virtual string LastName { get; set; }
+        public virtual string Address { get; set; }
         [Required]
-        public string IDCardNumber { get; set; }
+        public virtual string IDCardNumber { get; set; }
         [Required]
-        public Guid RoleId { get; set; }
+        public virtual Guid RoleId { get; set; }
     }
 }

@@ -41,39 +41,26 @@ namespace SmartParkingCoreServices.Admin
         }
 
         [Authorize(Roles = Roles.SuperAdmin)]
-        public async Task<IdentityResult> CreateAdminAsync(AdminCreateModel model)
+        public async Task<ServiceResponse<EmployeeDetail>> CreateAdminAsync(AdminCreateModel model)
         {
-            if (string.IsNullOrEmpty(model.Email) && string.IsNullOrEmpty(model.Phone))
+            var role = await roleManager.FindByNameAsync(Roles.Admin);
+            EmployeeCreateModel employeeModel= new()
             {
-                throw new InvalidOperationException("Require_Email_OR_Phone");
-            }
-            string userName = string.IsNullOrEmpty(model.Email) ?
-                model.Phone :
-                model.Email.Remove(model.Email.IndexOf("@"));
-
-            string password = randomGeneratorService.RandomPasswordString(12);
-            Log.Debug($"Password Generated: '{password}'");
-            ApplicationUser user = new()
-            {
-                UserName = userName,
                 Email = model.Email,
                 Address = model.Address,
                 ClientId = model.ClientId,
                 FirstName = model.FirstName,
                 IDCardNumber = model.IDCardNumber,
                 LastName = model.LastName,
-                PhoneNumber = model.Phone,
-                Status = UserStatus.Active
+                Phone = model.Phone,
+                RoleId = role.Id
             };
-            var result = await userManager.CreateAsync(user, password);
-            if (result.Succeeded)
-            {
-                result = await userManager.AddToRoleAsync(user, Roles.Admin);
-            }
-            return result;
+
+            return await CreateEmployeeAsync(employeeModel);
         }
+
         #region Employee
-        public async Task<IdentityResult> CreateEmployeeAsync(EmployeeCreateModel model)
+        public async Task<ServiceResponse<EmployeeDetail>> CreateEmployeeAsync(EmployeeCreateModel model)
         {
             if (string.IsNullOrEmpty(model.Email) && string.IsNullOrEmpty(model.Phone))
             {
@@ -99,13 +86,29 @@ namespace SmartParkingCoreServices.Admin
                 Status = UserStatus.Active,
             };
             var result = await userManager.CreateAsync(user, password);
+            var newUser = await userManager.FindByNameAsync(userName);
             if (result.Succeeded)
             {
                 var role = await dataContext.Roles.FindAsync(model.RoleId);
 
                 result = await userManager.AddToRoleAsync(user, role.Name);
+                return ServiceResponse<EmployeeDetail>.Success(new EmployeeDetail
+                {
+                    Address = newUser.Address,
+                    Email = newUser.Email,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    IDCardNumber = newUser.IDCardNumber,
+                    Phone = newUser.FirstName,
+                    Id = newUser.Id,
+                    Status = newUser.Status.ToString(),
+                    RoleId = role.Id
+                });
             }
-            return result;
+            return ServiceResponse<EmployeeDetail>.Fail(result.Errors.Select(error => new ServiceError() { 
+                ErrorCode = error.Code,
+                ErrorMessage = error.Description
+            }));
         }
 
         public async Task<IdentityResult> UpdateEmployeeAsync(Guid userId, EmployeeUpdateModel model)

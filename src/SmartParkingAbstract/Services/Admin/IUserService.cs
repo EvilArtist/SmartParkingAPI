@@ -14,8 +14,8 @@ namespace SmartParkingAbstract.Services.Admin
         Task<QueryResultModel<EmployeeViewModel>> GetManagedUserAsync(string clientId);
         Task<EmployeeDetail> GetEmployeeById(Guid userId);
         Task<QueryResultModel<EmployeeViewModel>> SearchManagedUserAsync(EmployeeQueryModel queryModels);
-        Task<IdentityResult> CreateAdminAsync(AdminCreateModel model);
-        Task<IdentityResult> CreateEmployeeAsync(EmployeeCreateModel model);
+        Task<ServiceResponse<EmployeeDetail>> CreateAdminAsync(AdminCreateModel model);
+        Task<ServiceResponse<EmployeeDetail>> CreateEmployeeAsync(EmployeeCreateModel model);
         Task<IdentityResult> RemoveEmployeeAsync(Guid model);
         Task<IdentityResult> UpdateEmployeeAsync(Guid userId, EmployeeUpdateModel model);
         Task<IEnumerable<RoleViewModel>> GetRolesAsync(string clientId);
