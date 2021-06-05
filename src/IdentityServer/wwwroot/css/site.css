@@ -1,3 +1,13 @@
+html, body {
+    color: #212121;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+:root {
+    --primary: #007041;
+}
+
 .body-container {
   margin-top: 60px;
   padding-bottom: 40px; }
@@ -22,3 +32,78 @@
       height: 100px; }
   .grants-page .card label {
     font-weight: bold; }
+
+.clients-content {
+    width: 100%;
+    overflow: auto;
+    padding: 0;
+}
+
+.clients-content table td:first-child,
+.clients-content table th:first-child {
+    position: sticky;
+    left: 0;
+}
+
+.clients-content table th {
+    background: #007041;
+    color: #ECF0F1;
+    white-space: nowrap;
+}
+.clients-content table td {
+    background: #FFFFFF;
+    color: #212121;
+    white-space: nowrap;
+}
+td.scopes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.scope {
+    background: #fff;
+    border: #D2D2D2 solid 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-align: center;
+    margin: 5px 5px;
+}
+
+    .scope.api {
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .scope.openid {
+        color: var(--blue);
+        border: 1px solid var(--blue);
+    }
+
+    .scope.profile {
+        color: var(--purple);
+        border: 1px solid var(--purple);
+    }
+
+.chip {
+    border-radius: 14px;
+    border: 1px solid var(--primary);
+    padding: 2px 14px;
+    cursor: pointer;
+}
+    .chip.selected {
+        background: var(--primary);
+        color: #ECF0F1;
+    }
+.chip + .chip {
+    margin-left: 8px;
+}
+
+.chip-select select {
+    display: none;
+}
+.chip-select .chips {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-y: hidden;
+    overflow-x: auto;
+}

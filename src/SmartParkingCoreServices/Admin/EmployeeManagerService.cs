@@ -41,22 +41,11 @@ namespace SmartParkingCoreServices.Admin
         }
 
         [Authorize(Roles = Roles.SuperAdmin)]
-        public async Task<ServiceResponse<EmployeeDetail>> CreateAdminAsync(AdminCreateModel model)
+        public async Task<ServiceResponse<EmployeeDetail>> CreateAdminAsync(EmployeeCreateModel model)
         {
             var role = await roleManager.FindByNameAsync(Roles.Admin);
-            EmployeeCreateModel employeeModel= new()
-            {
-                Email = model.Email,
-                Address = model.Address,
-                ClientId = model.ClientId,
-                FirstName = model.FirstName,
-                IDCardNumber = model.IDCardNumber,
-                LastName = model.LastName,
-                Phone = model.Phone,
-                RoleId = role.Id
-            };
-
-            return await CreateEmployeeAsync(employeeModel);
+            model.RoleId = role.Id;
+            return await CreateEmployeeAsync(model);
         }
 
         #region Employee

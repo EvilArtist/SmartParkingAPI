@@ -74,7 +74,6 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = new List<string>{ "http://localhost:4200/signin-callback", 
                         "http://localhost:4200/assets/silent-callback.html" },
-                    RequirePkce = true,
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes =
                     {
@@ -83,6 +82,7 @@ namespace IdentityServer
                         IdentityConstants.Scope.Api
                     },
                     AllowedCorsOrigins = { "http://localhost:4200" },
+                    RequirePkce = true,
                     RequireClientSecret = false,
                     PostLogoutRedirectUris = new List<string> { "http://localhost:4200/signout-callback" },
                     RequireConsent = false,

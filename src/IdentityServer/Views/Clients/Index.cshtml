@@ -1,5 +1,54 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<ClientsViewModel>
+@using IdentityServer.Helpers
+
+
+<div class="button-group">
+    <a href="Clients/Create" type="button" class="btn btn-primary">New Client</a>
+</div>
+<div class="card shadow-sm">
+    <div class="card-body ">
+        <div class="clients-content">
+            <table class="table">
+                <tr>
+                    <th scope="col">Client Id</th>
+                    <th scope="col">Client Name</th>
+                    <th scope="col">Redirect Uris</th>
+                    <th scope="col">Allowed Grant Types</th>
+                    <th scope="col">Allowed Scopes</th>
+                    <th scope="col">Require Pkce</th>
+                    <th scope="col">Require Client Secret</th>
+                    <th scope="col">Access Token Lifetime</th>
+                </tr>
+
+                @foreach (var client in Model)
+                {
+                    <tr>
+                        <td>@client.ClientId</td>
+                        <td>@client.ClientName</td>
+                        <td>
+                            @foreach (var uri in client.RedirectUris)
+                            {
+                                <div class="uri">@uri</div>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var grantType in client.AllowedGrantTypes)
+                            {
+                                <div class="@grantType grants-type">@SiteHelpers.GetGrantTypeName(grantType)</div>
+                            }
+                        </td>
+                        <td class="scopes">
+                            @foreach (var scope in client.AllowedScopes)
+                            {
+                                <div class="@scope scope">@SiteHelpers.GetGrantTypeName(scope)</div>
+                            }
+                        </td>
+                        <td>@(client.RequirePkce ? "Yes" : "No")</td>
+                        <td>@(client.RequireClientSecret ? "Yes" : "No")</td>
+                        <td>@client.AccessTokenLifetime</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

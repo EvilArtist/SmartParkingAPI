@@ -42,9 +42,19 @@ namespace IdentityServer.RestAPI
 
         [HttpPost("employee/admin")]
         [Authorize(RoleClaims.EmployeeManager)]
-        public async Task<IdentityResult> CreateAdmin(AdminCreateModel model)
-        {
-            return await userService.CreateAdminAsync(model);
+        public async Task<ServiceResponse<EmployeeDetail>> CreateAdmin(AdminCreateModel model) 
+        { 
+            EmployeeCreateModel employeeModel = new()
+            {
+                Email = model.Email,
+                Address = model.Address,
+                FirstName = model.FirstName,
+                IDCardNumber = model.IDCardNumber,
+                LastName = model.LastName,
+                Phone = model.Phone,
+            };
+            model.GetClientIdFromContext(HttpContext);
+            return await userService.CreateAdminAsync(employeeModel);
         }
     }
 }

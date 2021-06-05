@@ -1,0 +1,80 @@
+﻿@model ClientsViewModel
+@using IdentityServer.Helpers
+
+@{
+    ViewBag.Title = "Add new client";
+}
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<form class="form-horizontal">
+    <div>Client</div>
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label" })
+        <div class="">
+            @Html.EditorFor(model => model.ClientId, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ClientName, htmlAttributes: new { @class = "control-label" })
+        <div>
+            @Html.EditorFor(model => model.ClientName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.AllowedGrantTypes, htmlAttributes: new { @class = "control-label" })
+        <div>
+            <select class="form-control" id="AllowedGrantTypes" name="AllowedGrantTypes">
+                @foreach (var grantType in SiteHelpers.GrantTypesChip)
+                {
+                    <option value="@grantType.Code">@grantType.DisplayName</option>
+                }
+            </select>
+            @Html.ValidationMessageFor(model => model.AllowedGrantTypes, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.AllowedScopes, htmlAttributes: new { @class = "control-label" })
+        <div class="chip-select">
+            <select class="form-control" id="AllowedScopes" name="AllowedScopes" multiple>
+                @foreach (var scope in SiteHelpers.ScopesChip)
+                {
+                    if (scope.Selected)
+                    {
+                        <option value="@scope.Code" selected>@scope.DisplayName</option>
+                    }
+                    else
+                    {
+                        <option value="@scope.Code">@scope.DisplayName</option>
+                    }
+                }
+            </select>
+            <div class="chips">
+                @foreach (var scope in SiteHelpers.ScopesChip)
+                {
+                    <div class="chip" value="@scope.Code">@scope.DisplayName</div>
+                }
+            </div>
+
+            @Html.ValidationMessageFor(model => model.AllowedScopes, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="button-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+}

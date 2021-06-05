@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreModels.Common
 {
-    public abstract class AuditModel
+    public abstract class AuditModel : MultiTanentModel
     {
         public  DateTime? CreateTime { get; set; }
         public  DateTime? UpdateTime { get; set; }
@@ -20,5 +20,6 @@ namespace SmartParkingCoreModels.Common
         [ForeignKey("CreatedBy")]
         public  Guid? CreatedById { get; set; }
         public ApplicationUser CreatedBy { get; set; }
+
     }
 }
