@@ -15,6 +15,10 @@ using IdentityServer4;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using SmartParkingAbstract.Services.Parking;
+using SmartParkingCoreServices.Parking;
+using AutoMapper;
+using SmartParkingCoreServices.AutoMap;
 
 namespace SmartParkingCoreServices.Extensions
 {
@@ -29,10 +33,23 @@ namespace SmartParkingCoreServices.Extensions
                 options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
         }
 
+        public static void ConfigParkingDbContext(this IServiceCollection services, IConfiguration configuration, string migrationsAssembly)
+        {
+            var connectionString = configuration.GetConnectionString("SmartParking");
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
+        }
+
         public static void ConfigCustomizeService(this IServiceCollection services)
         {
+            services.ConfigAutoMapper();
+            
+
             services.AddScoped<IUserService, EmployeeManagerService>();
             services.AddScoped<IRandomGeneratorService, RandomGeneratorService>();
+            services.AddScoped<ISlotTypeService, SlotTypeService>();
         }
 
         public static void ConfigIdnentityAuthorization(this IServiceCollection services)
@@ -93,6 +110,17 @@ namespace SmartParkingCoreServices.Extensions
                     options.AddPolicy(claim, policy => policy.RequireClaim(claim));
                 });
             });
+        }
+
+        public static void ConfigAutoMapper(this IServiceCollection services)
+        {
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutomapProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<ServiceResponse<EmployeeDetail>> CreateAdmin(AdminCreateModel model)
         {
-            EmployeeCreateModel employeeCreateModel = new EmployeeCreateModel()
+            EmployeeCreateModel employeeCreateModel = new ()
             {
                 Address = model.Address,
                 Email = model.Email,

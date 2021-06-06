@@ -9,7 +9,7 @@ namespace SmartParkingCoreServices.General
 {
     public class RandomGeneratorService : IRandomGeneratorService
     {
-        private Random random = new();
+        private readonly Random random = new();
         private readonly string aphabetLowerCase = "abcdefghijklmnopqrstuvwxyz";
         private readonly string aphabetUpperCase = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
         private readonly string symbols = "&!*$#^|+";

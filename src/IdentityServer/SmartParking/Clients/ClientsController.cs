@@ -70,7 +70,7 @@ namespace IdentityServerHost.SmartParking.UI
             {
                 if (ModelState.IsValid)
                 {
-                    var client =  BuildModel(clientsViewModel);
+                    var client = BuildModel(clientsViewModel);
                     await dbContext.Clients.AddAsync(client.ToEntity());
                     await dbContext.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -83,7 +83,7 @@ namespace IdentityServerHost.SmartParking.UI
             return View();
         }
 
-        private IdentityServer4.Models.Client BuildModel(ClientsViewModel clientsViewModel)
+        private static IdentityServer4.Models.Client BuildModel(ClientsViewModel clientsViewModel)
         {
             return new IdentityServer4.Models.Client()
             {

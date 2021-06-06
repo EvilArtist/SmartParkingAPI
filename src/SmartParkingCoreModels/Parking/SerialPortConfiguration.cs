@@ -10,7 +10,6 @@ namespace SmartParkingCoreModels.Parking
 {
     public class SerialPortConfiguration : AuditModel
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string DeviceName { get; set; }
         public string Baudrate { get; set; }

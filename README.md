@@ -21,6 +21,9 @@ SmartParkingImplementation
 Add-Migration InitialIdentityServerPersistedGrantDbMigration -Context PersistedGrantDbContext -Out Data/Migrations/IdentityServer/PersistedGrantDb
 Add-Migration InitialIdentityServerConfigurationDbMigration -Context ConfigurationDbContext -Out Data/Migrations/IdentityServer/ConfigurationDb
 Add-Migration InitialIdentityServerConfigurationDbMigration -Context ApplicationIdentityContext -Out Data/Migrations/IdentityServer/ApplicationDb
+
+Add-Migration InitializeDbMigration -Context ApplicationDbContext -Out Data/Migrations/SmartParking
+Update-Database -Context ApplicationDbContext
 ```
 
 ## Migrate Data

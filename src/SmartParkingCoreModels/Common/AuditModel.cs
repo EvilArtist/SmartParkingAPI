@@ -12,14 +12,7 @@ namespace SmartParkingCoreModels.Common
     {
         public  DateTime? CreateTime { get; set; }
         public  DateTime? UpdateTime { get; set; }
-
-        [ForeignKey("UpdatedBy")]
         public  Guid? UpdatedById { get; set; }
-        public ApplicationUser UpdatedBy { get; set; }
-
-        [ForeignKey("CreatedBy")]
         public  Guid? CreatedById { get; set; }
-        public ApplicationUser CreatedBy { get; set; }
-
     }
 }

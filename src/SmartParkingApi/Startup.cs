@@ -37,6 +37,7 @@ namespace SmartParkingApi
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.ConfigIdentityDbContext(Configuration, migrationsAssembly);
+            services.ConfigParkingDbContext(Configuration, migrationsAssembly);
             services.ConfigCustomizeService();
             services.ConfigMainAuthorization();
 

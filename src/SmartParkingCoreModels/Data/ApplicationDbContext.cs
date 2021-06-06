@@ -11,7 +11,9 @@ namespace SmartParkingCoreModels.Data
     public class ApplicationDbContext: DbContext
     {
         public DbSet<SerialPortConfiguration> SerialPortConfigurations { get; set; }
-        public ApplicationDbContext(DbContextOptions<ApplicationIdentityContext> options)
+        public DbSet<SlotType> SlotTypes { get; set; }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)
         {
         }
