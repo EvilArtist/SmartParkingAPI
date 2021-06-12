@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingCoreModels.Data;
 
 namespace SmartParkingApi.Data.Migrations.SmartParking
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210612082449_UpdateCameraConfigTable")]
+    partial class UpdateCameraConfigTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +51,7 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<Guid>("ProtocolId")
+                    b.Property<Guid?>("ProtocolId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ServerName")
@@ -181,9 +183,7 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                 {
                     b.HasOne("SmartParkingCoreModels.Parking.CameraProtocolType", "Protocol")
                         .WithMany()
-                        .HasForeignKey("ProtocolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProtocolId");
 
                     b.Navigation("Protocol");
                 });

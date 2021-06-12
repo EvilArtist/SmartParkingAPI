@@ -16,6 +16,9 @@ namespace SmartParkingAbstract.ViewModels.Parking.CameraConfiguration
         public string URLTemplate { get; set; }
         public int CameraId { get; set; }
         public int StreamId { get; set; }
+        public string Status { get; set; }
+        public string Oem { get; set; }
+        public Guid ProtocolId { get; set; }
         public CameraProtocolTypeViewModel Protocol { get; set; }
     }
 

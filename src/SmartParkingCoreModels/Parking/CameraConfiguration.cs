@@ -1,5 +1,6 @@
 ﻿using SmartParking.Share.Constants;
 using SmartParkingCoreModels.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,5 +24,9 @@ namespace SmartParkingCoreModels.Parking
         public int CameraId { get; set; }
         public int StreamId { get; set; }
         public CameraProtocolType Protocol { get; set; }
+        public DeviceStatus Status { get; set; }
+        [MaxLength(EntityConstants.NameMaxLength)]
+        public string Oem { get; set; }
+        public Guid ProtocolId { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace SmartParkingApi.Controllers.Parkings
                 DeviceStatus? deviceStatus = null;
                 if (!string.IsNullOrEmpty(status))
                 {
-                    bool canParse = Enum.TryParse<DeviceStatus>(status, out DeviceStatus tempDeviceStatus);
+                    bool canParse = Enum.TryParse(status, out DeviceStatus tempDeviceStatus);
                     if (canParse)
                     {
                         deviceStatus = tempDeviceStatus;
