@@ -25,6 +25,18 @@ namespace SmartParkingAbstract.ViewModels.General
             };
         }
 
+        public static ServiceResponse<T> Fail(params Exception[] errors)
+        {
+            return new ServiceResponse<T>(false)
+            {
+                Errors = errors.Select(x=> new ServiceError
+                {
+                    ErrorCode = "500",
+                    ErrorMessage = x.Message
+                })
+            };
+        }
+
         public static ServiceResponse<T> Fail(IEnumerable<ServiceError> errors)
         {
             return new ServiceResponse<T>(false)

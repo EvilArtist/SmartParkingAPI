@@ -45,11 +45,11 @@ namespace SmartParkingCoreServices.Extensions
         public static void ConfigCustomizeService(this IServiceCollection services)
         {
             services.ConfigAutoMapper();
-            
 
             services.AddScoped<IUserService, EmployeeManagerService>();
             services.AddScoped<IRandomGeneratorService, RandomGeneratorService>();
             services.AddScoped<ISlotTypeService, SlotTypeService>();
+            services.AddScoped<ISerialPortService, SerialPortService>();
         }
 
         public static void ConfigIdnentityAuthorization(this IServiceCollection services)

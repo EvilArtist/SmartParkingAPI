@@ -10,6 +10,6 @@ namespace SmartParking.Share.Constants
     {
         Working,
         Ready,
-        Brokwn
+        Broken
     }
 }
