@@ -12,10 +12,4 @@ namespace SmartParkingAbstract.ViewModels.Parking.SlotType
         public string SlotName { get; set; }
         public string Description { get; set; }
     }
-
-    public class SlotTypeCreateViewModel
-    {
-        public string SlotName { get; set; }
-        public string Description { get; set; }
-    }
 }

@@ -9,6 +9,10 @@ namespace SmartParkingCoreModels.Parking
 {
     public class SlotTypeConfiguration : AuditModel
     {
-
+        public Guid ParkingId { get; set; }
+        public ParkingConfig Parking { get; set; }
+        public SlotType SlotType { get; set; }
+        public Guid SlotTypeId { get; set; }
+        public int SlotCount { get; set; }
     }
 }

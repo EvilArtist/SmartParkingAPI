@@ -1,5 +1,5 @@
 ﻿using SmartParking.Share.Constants;
-using SmartParkingAbstract.ViewModels.Parking.SerialPortConfiguration;
+using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
 using System.Linq;

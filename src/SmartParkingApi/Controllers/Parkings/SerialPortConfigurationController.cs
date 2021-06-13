@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SmartParkingAbstract.Services.Parking;
 using SmartParkingAbstract.ViewModels.General;
-using SmartParkingAbstract.ViewModels.Parking.SerialPortConfiguration;
+using SmartParkingAbstract.ViewModels.Parking;
 using static SmartParking.Share.Constants.IdentityConstants;
 using SmartParking.Share.Constants;
 

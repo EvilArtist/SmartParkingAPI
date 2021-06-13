@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SmartParking.Share\SmartParking.Share.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Operation\" />
+  </ItemGroup>
+
 </Project>

@@ -15,5 +15,7 @@ namespace SmartParkingCoreModels.Parking
         public string Baudrate { get; set; }
         public string Oem { get; set; }
         public DeviceStatus Status { get; set; }
+        public Guid? ParkingId { get; set; }
+        public ParkingConfig Parking { get; set; }
     }
 }

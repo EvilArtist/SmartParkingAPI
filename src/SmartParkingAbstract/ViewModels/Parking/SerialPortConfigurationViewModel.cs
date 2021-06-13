@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartParkingAbstract.ViewModels.Parking.SerialPortConfiguration
+namespace SmartParkingAbstract.ViewModels.Parking
 {
     public class SerialPortConfigViewModel : MutiTanentModel
     {
@@ -15,5 +15,7 @@ namespace SmartParkingAbstract.ViewModels.Parking.SerialPortConfiguration
         public string Baudrate { get; set; }
         public string Oem { get; set; }
         public string Status { get; set; }
+        public Guid ParkingId { get; set; }
+        public ParkingViewModel Parking { get; set; }
     }
 }
