@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.Services.Parking;
-using SmartParkingAbstract.ViewModels.Parking.CameraConfiguration;
+using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
 using System;

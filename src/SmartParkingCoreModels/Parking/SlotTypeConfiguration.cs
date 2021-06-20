@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreModels.Parking
 {
-    public class SlotTypeConfiguration : AuditModel
+    public class SlotTypeConfiguration
     {
+        public virtual string ClientId { get; set; }
+        public DateTime? CreateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
+        public Guid? UpdatedById { get; set; }
+        public Guid? CreatedById { get; set; }
         public Guid ParkingId { get; set; }
         public ParkingConfig Parking { get; set; }
         public SlotType SlotType { get; set; }

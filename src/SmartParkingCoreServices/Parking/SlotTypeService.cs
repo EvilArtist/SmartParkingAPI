@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartParkingAbstract.Services.Parking;
 using SmartParkingAbstract.ViewModels.General;
-using SmartParkingAbstract.ViewModels.Parking.SlotType;
+using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
 using System;

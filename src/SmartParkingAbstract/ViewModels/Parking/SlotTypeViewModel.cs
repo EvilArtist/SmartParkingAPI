@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartParkingAbstract.ViewModels.Parking.SlotType
+namespace SmartParkingAbstract.ViewModels.Parking
 {
     public class SlotTypeViewModel: MutiTanentModel
     {

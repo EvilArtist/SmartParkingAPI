@@ -9,5 +9,6 @@ namespace SmartParkingCoreModels.Parking
 {
     public class ParkingConfig : AuditModel
     {
+        public virtual ICollection<SlotTypeConfiguration> SlotTypeConfigurations { get;set;}
     }
 }

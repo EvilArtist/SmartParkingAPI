@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.ViewModels.Parking;
-using SmartParkingAbstract.ViewModels.Parking.SlotType;
 using SmartParkingCoreModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -32,6 +31,8 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<CameraProtocolType, CameraProtocolTypeViewModel>().ReverseMap();
 
             CreateMap<SlotTypeConfiguration, SlotTypeConfigViewModel>().ReverseMap();
+
+            CreateMap<UpdateSlotTypeConfigViewModel, SlotTypeConfiguration>().ReverseMap();
         }
     }
 }

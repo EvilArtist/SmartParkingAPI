@@ -1,5 +1,5 @@
 ﻿using SmartParkingAbstract.ViewModels.General;
-using SmartParkingAbstract.ViewModels.Parking.SlotType;
+using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
 using System.Linq;

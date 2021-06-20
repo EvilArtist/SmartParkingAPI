@@ -17,5 +17,7 @@ namespace SmartParkingCoreModels.Parking
         public string SlotName { get; set; }
         [MaxLength(255)]
         public string Description { get; set; }
+
+        public virtual ICollection<SlotTypeConfiguration> SlotTypeConfigurations { get; set; }
     }
 }

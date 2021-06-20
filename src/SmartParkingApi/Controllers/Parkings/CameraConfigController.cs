@@ -2,7 +2,7 @@
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.Services.Parking;
 using SmartParkingAbstract.ViewModels.General;
-using SmartParkingAbstract.ViewModels.Parking.CameraConfiguration;
+using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
