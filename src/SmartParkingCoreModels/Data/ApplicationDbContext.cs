@@ -15,6 +15,8 @@ namespace SmartParkingCoreModels.Data
         public DbSet<CameraProtocolType> CameraProtocolType { get; set; }
         public DbSet<SlotType> SlotTypes { get; set; }
         public DbSet<SlotTypeConfiguration> SlotTypeConfigurations { get; set; }
+        public DbSet<ParkingConfig> Parkings{ get; set; }
+        public DbSet<ParkingLane> ParkingLanes{ get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)

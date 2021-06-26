@@ -28,7 +28,7 @@ namespace SmartParkingCoreModels.Parking
         [MaxLength(EntityConstants.NameMaxLength)]
         public string Oem { get; set; }
         public Guid ProtocolId { get; set; }
-        public Guid? ParkingId { get; set; }
-        public ParkingConfig Parking { get; set; }
+        public Guid? ParkingLaneId { get; set; }
+        public ParkingLane ParkingLane { get; set; }
     }
 }
