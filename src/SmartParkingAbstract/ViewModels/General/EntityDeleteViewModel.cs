@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.General
 {
-    public class EntityDeleteViewModel: MutiTanentModel
+    public class EntityDeleteViewModel: MultiTanentModel
     {
         public string DeleteReason { get; set; }
     }

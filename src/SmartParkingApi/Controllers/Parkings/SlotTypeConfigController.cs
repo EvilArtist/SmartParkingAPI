@@ -13,11 +13,11 @@ namespace SmartParkingApi.Controllers.Parkings
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SlotTypeConfigController : ControllerBase
+    public class SlotConfigController : ControllerBase
     {
         private readonly ISlotTypeConfigurationService service;
 
-        public SlotTypeConfigController(ISlotTypeConfigurationService service)
+        public SlotConfigController(ISlotTypeConfigurationService service)
         {
             this.service = service;
         }
@@ -39,17 +39,17 @@ namespace SmartParkingApi.Controllers.Parkings
         }
 
         [HttpPost]
-        public async Task<ServiceResponse<IEnumerable<SlotTypeConfigViewModel>>> CreateSlottypeConfig(UpdateSlotTypeConfigsViewModel model)
+        public async Task<ServiceResponse<SlotTypeConfigViewModel>> CreateUpdateSlottypeConfig(SlotTypeConfigViewModel model)
         {
             try
             {
                 model.GetClientIdFromContext(HttpContext);
-                var result = await service.CreateOrUpdateSlotTypeConfigs(model);
-                return ServiceResponse<IEnumerable<SlotTypeConfigViewModel>>.Success(result);
+                var result = await service.CreateOrUpdateSlotTypeConfig(model);
+                return ServiceResponse<SlotTypeConfigViewModel>.Success(result);
             }
             catch (Exception e)
             {
-                return ServiceResponse<IEnumerable<SlotTypeConfigViewModel>>.Fail(e);
+                return ServiceResponse<SlotTypeConfigViewModel>.Fail(e);
             }
         }
     }

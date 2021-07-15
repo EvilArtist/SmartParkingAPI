@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.Parking
 {
-    public class CameraConfigurationViewModel: MutiTanentModel
+    public class CameraConfigurationViewModel: MultiTanentModel
     {
         public string CameraName { get; set; }
         public string ServerName { get; set; }
@@ -20,7 +20,6 @@ namespace SmartParkingAbstract.ViewModels.Parking
         public string Oem { get; set; }
         public Guid ProtocolId { get; set; }
         public CameraProtocolTypeViewModel Protocol { get; set; }
-        public Guid ParkingId { get; set; }
-        public ParkingViewModel Parking { get; set; }
+        public Guid? ParkingLaneId { get; set; }
     }
 }

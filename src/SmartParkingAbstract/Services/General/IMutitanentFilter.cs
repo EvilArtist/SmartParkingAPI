@@ -11,6 +11,6 @@ namespace SmartParkingAbstract.Services.General
     public interface IMutitanentFilter
     {
         bool CheckRequest(ControllerBase controller, string clientId);
-        bool CheckRequest(ControllerBase controller, MutiTanentModel model);
+        bool CheckRequest(ControllerBase controller, MultiTanentModel model);
     }
 }

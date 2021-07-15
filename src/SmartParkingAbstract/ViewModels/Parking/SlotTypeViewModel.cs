@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.Parking
 {
-    public class SlotTypeViewModel: MutiTanentModel
+    public class SlotTypeViewModel: MultiTanentModel
     {
         public string SlotName { get; set; }
         public string Description { get; set; }

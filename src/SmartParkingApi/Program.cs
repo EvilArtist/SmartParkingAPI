@@ -46,7 +46,7 @@ namespace SmartParkingApi
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
                     var connectionString = config.GetConnectionString("SmartParking");
-                    SeedData.EnsureSeedData(connectionString);
+                    SeedData.EnsureSeedData(connectionString, typeof(Program).Assembly.FullName);
                     Log.Information("Done seeding database.");
                     return 0;
                 }

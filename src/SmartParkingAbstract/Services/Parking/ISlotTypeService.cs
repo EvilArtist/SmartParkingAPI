@@ -15,6 +15,7 @@ namespace SmartParkingAbstract.Services.Parking
         Task<SlotTypeViewModel> GetSlotTypeByIdAsync(Guid id, string clientId);
         Task<bool> DeleteSlotTypeAsync(EntityDeleteViewModel deleteViewModel);
         Task<SlotTypeViewModel> UpdateSlotTypeAsync(SlotTypeViewModel model);
+        Task<IEnumerable<SlotTypeViewModel>> GetSlotTypesAvailableAsync(string clientId, Guid ParkingId);
 
     }
 }

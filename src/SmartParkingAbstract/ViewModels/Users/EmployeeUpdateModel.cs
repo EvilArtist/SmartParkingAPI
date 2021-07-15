@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SmartParkingAbstract.ViewModels.Users
 {
-    public class EmployeeUpdateModel: MutiTanentModel
+    public class EmployeeUpdateModel: MultiTanentModel
     {
         public string Email { get; set; }
         public string Phone { get; set; }

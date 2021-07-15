@@ -55,9 +55,32 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<IEnumerable<SlotTypeConfigViewModel>> GetSlotTypeConfigs(string clientId, Guid parkingId)
         {
-            var query = dbContext.SlotTypeConfigurations.Where(x => x.ClientId == clientId && x.ParkingId == parkingId);
+            var query = dbContext.SlotTypeConfigurations
+                .Include(x=>x.SlotType)
+                .Where(x => x.ClientId == clientId && x.ParkingId == parkingId);
             var result = await query.ToListAsync();
             return mapper.Map<List<SlotTypeConfiguration>, List<SlotTypeConfigViewModel>>(result);
+        }
+
+        public async Task<SlotTypeConfigViewModel> CreateOrUpdateSlotTypeConfig(SlotTypeConfigViewModel model)
+        {
+            var slotType = await dbContext.SlotTypeConfigurations
+                .Where(x => x.ClientId == model.ClientId && 
+                    x.ParkingId == model.ParkingId &&
+                    x.SlotTypeId == model.SlotTypeId)
+                .FirstOrDefaultAsync();
+            if (slotType != null)
+            {
+                slotType.SlotCount = model.SlotCount;
+                dbContext.Update(slotType);
+            } 
+            else
+            {
+                slotType = mapper.Map<SlotTypeConfiguration>(model);
+                await dbContext.AddAsync(slotType);
+            }
+            await dbContext.SaveChangesAsync();
+            return mapper.Map<SlotTypeConfigViewModel>(slotType);
         }
     }
 }

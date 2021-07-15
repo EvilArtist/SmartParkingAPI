@@ -11,12 +11,12 @@ namespace SmartParkingCoreModels.Data
 {
     public class SeedData
     {
-        public static void EnsureSeedData(string connectionString)
+        public static void EnsureSeedData(string connectionString, string assemblyName)
         {
             var services = new ServiceCollection();
             services.AddLogging()
                 .AddDbContext<ApplicationDbContext>(options => 
-                    options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName)));
+                    options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(assemblyName)));
             using var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
             MigrateApplicationDb(scope);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.Parking
 {
-    public class SlotTypeConfigViewModel: MutiTanentModel
+    public class SlotTypeConfigViewModel: MultiTanentModel
     {
         public Guid ParkingId { get; set; }
         public ParkingViewModel Parking { get; set; }
@@ -16,7 +16,8 @@ namespace SmartParkingAbstract.ViewModels.Parking
         public Guid SlotTypeId { get; set; }
         public int SlotCount { get; set; }
     }
-    public class UpdateSlotTypeConfigsViewModel : MutiTanentModel
+
+    public class UpdateSlotTypeConfigsViewModel : MultiTanentModel
     {
         public Guid ParkingId { get; set; }
         public IEnumerable<UpdateSlotTypeConfigViewModel> SlotTypeConfigs { get; set; }
@@ -27,4 +28,5 @@ namespace SmartParkingAbstract.ViewModels.Parking
         public Guid SlotTypeId { get; set; }
         public int SlotCount { get; set; }
     }
+
 }

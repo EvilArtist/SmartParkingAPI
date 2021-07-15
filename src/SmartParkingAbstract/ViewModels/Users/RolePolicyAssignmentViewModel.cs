@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.Users
 {
-    public class RolePolicyAssignmentViewModel: MutiTanentModel
+    public class RolePolicyAssignmentViewModel: MultiTanentModel
     {
         public string Role { get; set; }
         public string Policy { get; set; }

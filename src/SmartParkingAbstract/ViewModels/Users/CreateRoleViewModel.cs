@@ -2,7 +2,7 @@
 
 namespace SmartParkingAbstract.ViewModels.Users
 {
-    public class TanentRoleViewModel : MutiTanentModel
+    public class TanentRoleViewModel : MultiTanentModel
     {
         public string RoleName { get; set; }
     }

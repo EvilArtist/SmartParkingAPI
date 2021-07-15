@@ -18,7 +18,7 @@ namespace SmartParkingCoreServices.General
             throw new NotImplementedException();
         }
 
-        public bool CheckRequest(ControllerBase controller, MutiTanentModel model)
+        public bool CheckRequest(ControllerBase controller, MultiTanentModel model)
         {
             throw new NotImplementedException();
         }

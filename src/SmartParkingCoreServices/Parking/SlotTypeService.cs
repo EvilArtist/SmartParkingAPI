@@ -75,5 +75,17 @@ namespace SmartParkingCoreServices.Parking
                 throw new DbUpdateException("No data found");
             }
         }
+
+        public async Task<IEnumerable<SlotTypeViewModel>> GetSlotTypesAvailableAsync(string clientId, Guid parkingId)
+        {
+            var configuredSlotTypes = await dbContext.SlotTypeConfigurations
+                   .Where(x => x.ClientId == clientId && x.ParkingId == parkingId)
+                   .Select(x => x.SlotTypeId)
+                   .ToListAsync();
+            var availableSlotTypes = await dbContext.SlotTypes
+                .Where(x => x.ClientId == clientId && !configuredSlotTypes.Contains(x.Id))
+                .ToListAsync();
+            return mapper.Map<List<SlotType>, List<SlotTypeViewModel>>(availableSlotTypes);
+        }
     }
 }

@@ -141,5 +141,20 @@ namespace SmartParkingApi.Controllers.Parkings
                 return ServiceResponse<bool>.Fail(error);
             }
         }
+
+        [HttpGet("available")]
+        public async Task<ServiceResponse<IEnumerable<SlotTypeViewModel>>> GetAvailableSlotType(Guid parkingId)
+        {
+            try
+            {
+                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
+                var result = await slotTypeService.GetSlotTypesAvailableAsync(clientId, parkingId);
+                return ServiceResponse<IEnumerable<SlotTypeViewModel>>.Success(result);
+            }
+            catch (Exception e)
+            {
+                return ServiceResponse<IEnumerable<SlotTypeViewModel>>.Fail(e);
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ using static SmartParking.Share.Constants.IdentityConstants;
 
 namespace SmartParkingAbstract.ViewModels.General
 {
-    public abstract class MutiTanentModel
+    public abstract class MultiTanentModel
     {
         public virtual Guid Id{ get; set; }
         public string ClientId { get; private set; }

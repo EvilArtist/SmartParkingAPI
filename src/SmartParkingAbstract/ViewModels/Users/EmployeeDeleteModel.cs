@@ -3,7 +3,7 @@ using System;
 
 namespace SmartParkingAbstract.ViewModels.Users
 {
-    public class EmployeeDeleteModel: MutiTanentModel
+    public class EmployeeDeleteModel: MultiTanentModel
     {
         public Guid UserId { get; set; }
     }

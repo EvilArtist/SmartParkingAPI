@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.Users
 {
-    public class AdminCreateModel : MutiTanentModel
+    public class AdminCreateModel : MultiTanentModel
     {
         public string Email { get; set; }
         public string Phone { get; set; }
