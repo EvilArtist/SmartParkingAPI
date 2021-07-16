@@ -33,6 +33,11 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<SlotTypeConfiguration, SlotTypeConfigViewModel>().ReverseMap();
 
             CreateMap<UpdateSlotTypeConfigViewModel, SlotTypeConfiguration>().ReverseMap();
+
+            CreateMap<CreateUpdateVehicleTypeViewModel, VehicleType>().ReverseMap();
+            CreateMap<VehicleTypeViewModel, VehicleType>()
+                .ReverseMap()
+                .ForMember(x => x.CardCount, y=> y.MapFrom(z=> (z.Cards == null) ? 0 : z.Cards.Count));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace SmartParkingCoreServices.Parking
             var slotType = mapper.Map<SlotType>(model);
             var newSlotType = await dbContext.AddAsync(slotType);
             await dbContext.SaveChangesAsync();
-            return mapper.Map<SlotTypeViewModel>(newSlotType);
+            return mapper.Map<SlotTypeViewModel>(newSlotType.Entity);
         }
 
         public async Task<SlotTypeViewModel> GetSlotTypeByIdAsync(Guid id, string clientId)
@@ -37,7 +37,7 @@ namespace SmartParkingCoreServices.Parking
             var slotType = await dbContext.SlotTypes
                .Where(x => x.Id == id && x.ClientId == clientId)
                .FirstOrDefaultAsync();
-            return mapper.Map< SlotTypeViewModel>(slotType);
+            return mapper.Map<SlotTypeViewModel>(slotType);
         }
 
         public async Task<IEnumerable<SlotTypeViewModel>> SearchSlotTypesAsync(string clientId)
