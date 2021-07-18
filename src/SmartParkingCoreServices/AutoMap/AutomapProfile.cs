@@ -38,6 +38,11 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<VehicleTypeViewModel, VehicleType>()
                 .ReverseMap()
                 .ForMember(x => x.CardCount, y=> y.MapFrom(z=> (z.Cards == null) ? 0 : z.Cards.Count));
+
+            CreateMap<SubscriptionTypeViewModel, SubscriptionType>()
+                .ReverseMap()
+                .ForMember(x => x.CardCount, y => y.MapFrom(z => (z.Cards == null) ? 0 : z.Cards.Count));
+            CreateMap<CreateUpdateSubscriptionTypeViewModel, SubscriptionType>().ReverseMap();
         }
     }
 }

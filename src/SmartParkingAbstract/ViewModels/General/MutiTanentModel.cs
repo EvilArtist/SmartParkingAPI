@@ -14,6 +14,14 @@ namespace SmartParkingAbstract.ViewModels.General
         public virtual Guid Id{ get; set; }
         public string ClientId { get; private set; }
 
+        public MultiTanentModel()
+        {
+
+        }
+        public MultiTanentModel(string clientId)
+        {
+            ClientId = clientId;
+        }
         public virtual void GetClientIdFromContext(HttpContext context)
         {
             ClientId = context.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;

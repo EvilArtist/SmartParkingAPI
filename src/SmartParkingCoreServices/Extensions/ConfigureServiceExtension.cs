@@ -55,6 +55,7 @@ namespace SmartParkingCoreServices.Extensions
             services.AddScoped<IParkingLaneService, ParkingLaneService>();
             services.AddScoped<ISlotTypeConfigurationService, SlotTypeConfigurationService>();
             services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            services.AddScoped<ISubscriptionTypeService, SubscriptionTypeService>();
         }
 
         public static void ConfigIdnentityAuthorization(this IServiceCollection services)

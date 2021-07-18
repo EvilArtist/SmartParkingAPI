@@ -9,16 +9,12 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreModels.Parking
 {
-    /// <summary>
-    /// Loại chỗ đậu xe
-    /// </summary>
-    public class SlotType : AuditModel
+    public class SubscriptionType: AuditModel
     {
         [MaxLength(EntityConstants.NameMaxLength)]
-        public string SlotName { get; set; }
+        public string Name { get; set; }
         [MaxLength(EntityConstants.DescriptionMaxLength)]
         public string Description { get; set; }
-
-        public virtual ICollection<SlotTypeConfiguration> SlotTypeConfigurations { get; set; }
+        public virtual ICollection<Card> Cards { get; set; }
     }
 }
