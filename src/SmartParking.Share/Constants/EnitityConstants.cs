@@ -9,7 +9,9 @@ namespace SmartParking.Share.Constants
     public class EntityConstants
     {
         public const int ShortNameMaxLength = 30;
+        public const int CodeMaxLength = 15;
         public const int NameMaxLength = 30;
+        public const int ShortDescriptionMaxLength = 120;
         public const int DescriptionMaxLength = 250;
         public const int UrlMaxLength = 127;
     }

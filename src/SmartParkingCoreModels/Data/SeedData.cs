@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SmartParking.Share.Constants;
 using SmartParkingCoreModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace SmartParkingCoreModels.Data
             {
                 SeedConfigurationTypeData(dbContext);
             }
+            SeedCardStatusData(dbContext);
             dbContext.SaveChanges();
         }
 
@@ -50,7 +52,41 @@ namespace SmartParkingCoreModels.Data
                 ProtocolName = "rtsp",
                 Url = "https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol"
             });
+        }
 
+        private static void SeedCardStatusData(ApplicationDbContext dbContext)
+        {
+            if (!dbContext.CardStatuses.Any())
+            {
+                dbContext.CardStatuses.AddRange(new CardStatus[]
+                {
+
+                    new CardStatus
+                    {
+                         Name = "Hoạt động",
+                         Code = CardStatusCode.Active,
+                         Description = "Thẻ mới tạo, hoặc thẻ vãng lai",
+                    },
+                    new CardStatus
+                    {
+                         Name = "Trong bãi xe",
+                         Code = CardStatusCode.Parking,
+                         Description = "Khi có khách đang sử dụng",
+                    },
+                    new CardStatus
+                    {
+                         Name = "Ngoài bãi xe",
+                         Code = CardStatusCode.Checkout,
+                         Description = "Thẻ khách hàng, đã được mang ra ngoài",
+                    },
+                    new CardStatus
+                    {
+                         Name = "Khoá",
+                         Code = CardStatusCode.Lock,
+                         Description = "Thẻ báo mất, hoặc mất xe",
+                    },
+                });
+            }
         }
     }
 }

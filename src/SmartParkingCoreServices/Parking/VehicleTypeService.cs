@@ -22,6 +22,7 @@ namespace SmartParkingCoreServices.Parking
             this.dbContext = dbContext;
             this.mapper = mapper;
         }
+
         public async Task<VehicleTypeViewModel> CreateVehicleType(CreateUpdateVehicleTypeViewModel model)
         {
             var vehicleType = mapper.Map<VehicleType>(model);

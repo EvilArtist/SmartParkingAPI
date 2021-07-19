@@ -18,6 +18,7 @@ namespace SmartParkingCoreModels.Data
         public DbSet<ParkingConfig> Parkings{ get; set; }
         public DbSet<ParkingLane> ParkingLanes{ get; set; }
         public DbSet<Card> Cards{ get; set; }
+        public DbSet<CardStatus> CardStatuses { get; set; }
         public DbSet<VehicleType> VehicleTypes{ get; set; }
         public DbSet<SubscriptionType> SubscriptionTypes{ get; set; }
 
