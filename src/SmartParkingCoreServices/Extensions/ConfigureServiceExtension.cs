@@ -19,6 +19,8 @@ using SmartParkingAbstract.Services.Parking;
 using SmartParkingCoreServices.Parking;
 using AutoMapper;
 using SmartParkingCoreServices.AutoMap;
+using SmartParkingAbstract.Services.Parking.PriceBook;
+using SmartParkingCoreServices.Parking.PriceBook;
 
 namespace SmartParkingCoreServices.Extensions
 {
@@ -57,6 +59,8 @@ namespace SmartParkingCoreServices.Extensions
             services.AddScoped<IVehicleTypeService, VehicleTypeService>();
             services.AddScoped<ISubscriptionTypeService, SubscriptionTypeService>();
             services.AddScoped<ICardService, CardService>();
+            services.AddScoped<IHelpers, Helpers>();
+            services.AddScoped<IPriceBookService, PriceBookService>();
         }
 
         public static void ConfigIdnentityAuthorization(this IServiceCollection services)

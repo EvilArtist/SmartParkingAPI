@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingCoreModels.Data;
 
 namespace SmartParkingApi.Data.Migrations.SmartParking
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210722032011_AddTimeToPriceCondition")]
+    partial class AddTimeToPriceCondition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -605,7 +607,7 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("SmartParkingCoreModels.Parking.PriceBook.PriceCalculation", "Calculation", b1 =>
+                    b.OwnsOne("SmartParkingCoreModels.Parking.PriceBook.PriceCalcutation", "Calcutation", b1 =>
                         {
                             b1.Property<Guid>("PriceListId")
                                 .HasColumnType("uniqueidentifier");
@@ -631,7 +633,7 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                                 .HasForeignKey("PriceListId");
                         });
 
-                    b.Navigation("Calculation");
+                    b.Navigation("Calcutation");
 
                     b.Navigation("Condition");
 

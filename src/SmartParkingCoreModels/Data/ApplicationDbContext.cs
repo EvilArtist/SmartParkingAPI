@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartParkingCoreModels.Parking;
+using SmartParkingCoreModels.Parking.PriceBook;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,13 @@ namespace SmartParkingCoreModels.Data
         public DbSet<VehicleType> VehicleTypes{ get; set; }
         public DbSet<SubscriptionType> SubscriptionTypes{ get; set; }
 
+        public DbSet<PriceList> PriceLists { get; set; }
+        public DbSet<PriceListCondition> PriceListConditions { get; set; }
+        public DbSet<PriceListDefaultCondition> PriceListDefaultConditions { get; set; }
+        public DbSet<PriceListWeekdayCondition> PriceListWeekdayConditions { get; set; }
+        public DbSet<PriceListHollidayCondition> PriceListHollidayConditions { get; set; }
+        public DbSet<PriceListDurationCondition> PriceListDurationConditions { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)
         {
@@ -43,6 +51,14 @@ namespace SmartParkingCoreModels.Data
                     .WithMany(slotType => slotType.SlotTypeConfigurations)
                     .HasForeignKey(cf => cf.SlotTypeId)
                     .IsRequired();
+
+                builder.Entity<PriceListCondition>()
+                   .HasDiscriminator<string>("condition_type")
+                   .HasValue<PriceListCondition>(nameof(PriceListCondition))
+                   .HasValue<PriceListDefaultCondition>("Default")
+                   .HasValue<PriceListDurationCondition>("Duration")
+                   .HasValue<PriceListHollidayCondition>("Holliday")
+                   .HasValue<PriceListWeekdayCondition>("DayOfWeek");
             });
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.

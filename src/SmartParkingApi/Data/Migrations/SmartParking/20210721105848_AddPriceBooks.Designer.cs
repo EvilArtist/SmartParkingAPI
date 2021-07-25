@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingCoreModels.Data;
 
 namespace SmartParkingApi.Data.Migrations.SmartParking
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210721105848_AddPriceBooks")]
+    partial class AddPriceBooks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,15 +293,9 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
-
                     b.Property<string>("Name")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
 
                     b.Property<string>("condition_type")
                         .IsRequired()
@@ -605,7 +601,7 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("SmartParkingCoreModels.Parking.PriceBook.PriceCalculation", "Calculation", b1 =>
+                    b.OwnsOne("SmartParkingCoreModels.Parking.PriceBook.PriceCalcutation", "Calcutation", b1 =>
                         {
                             b1.Property<Guid>("PriceListId")
                                 .HasColumnType("uniqueidentifier");
@@ -631,7 +627,7 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                                 .HasForeignKey("PriceListId");
                         });
 
-                    b.Navigation("Calculation");
+                    b.Navigation("Calcutation");
 
                     b.Navigation("Condition");
 
