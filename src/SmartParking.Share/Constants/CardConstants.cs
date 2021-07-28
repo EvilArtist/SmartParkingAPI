@@ -16,5 +16,12 @@ namespace SmartParking.Share.Constants
         public const string Checkout = "CHECKOUT";
         public const string Lock = "LOCK";
     }
+
+    public class CardRefinements
+    {
+        public const string ParkingId = "parkingId";
+        public const string NotAssignedToParkingId = "nParkingId";
+        public const string CardStatus = "status";
+    }
    
 }

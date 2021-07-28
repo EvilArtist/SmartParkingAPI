@@ -109,5 +109,35 @@ namespace SmartParkingCoreServices.Parking
                 Name = parking.Name
             };
         }
+
+        public async Task<int> AssignCards(CardParkingAssignmentViewModel assignment)
+        {
+            var duplicateIds = await dbContext.CardParkingAssignments
+                .Where(x => x.ParkingId == assignment.ParkingId && assignment.CardsId.Contains(x.CardId))
+                .Select(x => x.CardId)
+                .ToListAsync();
+            var assignmentList = assignment.CardsId
+                .Where(x => !duplicateIds.Contains(x))
+                .Select(x =>
+                new CardParkingAssignment()
+                {
+                    CardId = x,
+                    ParkingId = assignment.ParkingId
+                });
+
+            await dbContext.CardParkingAssignments.AddRangeAsync(assignmentList);
+            var rows = await dbContext.SaveChangesAsync();
+            return rows;
+        }
+
+        public async Task<int> RemoveCards(CardParkingAssignmentViewModel assignment)
+        {
+            var assignments = await dbContext.CardParkingAssignments
+                .Where(x => x.ParkingId == assignment.ParkingId && assignment.CardsId.Contains(x.CardId))
+                .ToListAsync();
+            dbContext.CardParkingAssignments.RemoveRange(assignments);
+            var rows = await dbContext.SaveChangesAsync();
+            return rows;
+        }
     }
 }

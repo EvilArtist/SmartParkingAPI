@@ -14,5 +14,7 @@ namespace SmartParkingAbstract.Services.Parking
         Task<ParkingViewModel> CreateParking(CreateUpdateParkingViewModel model);
         Task<ParkingDetailsModel> GetParkingById(string clientId, Guid parkingId);
         Task<ParkingViewModel> UpdateParking(CreateUpdateParkingViewModel model);
+        Task<int> AssignCards(CardParkingAssignmentViewModel assignment);
+        Task<int> RemoveCards(CardParkingAssignmentViewModel assignment);
     }
 }

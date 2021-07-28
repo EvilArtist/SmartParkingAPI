@@ -81,5 +81,45 @@ namespace SmartParkingApi.Controllers.Parkings
                 return ServiceResponse<ParkingViewModel>.Fail(e);
             }
         }
+
+        [HttpPost("cards/assign")]
+        public async Task<ServiceResponse<int>> AssignCardsToParking(CardParkingAssignmentViewModel model) 
+        {
+            try
+            {
+                var result = await parkingService.AssignCards(model);
+                return ServiceResponse<int>.Success(result);
+            }
+            catch (Exception e)
+            {
+                return ServiceResponse<int>.Fail(e);
+            }
+        }
+
+        [HttpPost("cards/unassign")]
+        public async Task<ServiceResponse<int>> UnassignCardsFromParking(CardParkingAssignmentViewModel model)
+        {
+            try
+            {
+                var result = await parkingService.RemoveCards(model);
+                var response = ServiceResponse<int>.Success(result);
+                if (result != model.CardsId.Count())
+                {
+                    response.Errors = new List<ServiceError>()
+                    {
+                        new ServiceError()
+                        {
+                            ErrorCode="CARD_COUNT_NOT_MATCHED",
+                            ErrorMessage = "Một số thẻ không được tìm thấy để xoá"
+                        }
+                    };
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                return ServiceResponse<int>.Fail(e);
+            }
+        }
     }
 }

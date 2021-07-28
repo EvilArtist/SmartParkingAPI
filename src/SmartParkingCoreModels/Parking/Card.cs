@@ -19,6 +19,7 @@ namespace SmartParkingCoreModels.Parking
         [ForeignKey(nameof(Status))]
         public Guid CardStatusId { get; set; }
         public CardStatus Status { get; set; }
+        public virtual ICollection<CardParkingAssignment> ParkingAssignments { get; set; }
         // public string CustomerName { get; set; }
     }
 }

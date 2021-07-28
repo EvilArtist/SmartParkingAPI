@@ -86,7 +86,40 @@ namespace SmartParkingCoreServices.Parking
         public async Task<QueryResultModel<CardViewModel>> GetCards(QueryModel queryModel)
         {
             var data = dbContext.Cards
-               .Where(x => x.ClientId == queryModel.ClientId);
+                .Where(x => x.ClientId == queryModel.ClientId);
+            if(!string.IsNullOrEmpty(queryModel.QueryString))
+            {
+                data = data.Where(x => x.Name.Contains(queryModel.QueryString));
+            }
+
+            foreach (var refinement in queryModel.Refinements)
+            {
+                if (refinement.Key == CardRefinements.ParkingId)
+                {
+                    var parkingId = Guid.Parse(refinement.Value);
+                    var parkingAssignment = dbContext.CardParkingAssignments
+                        .Where(x => x.ParkingId == parkingId)
+                        .Select(x => x.CardId)
+                        .Distinct();
+                    data = data.Join(parkingAssignment, x => x.Id, y => y, (x, y) => x);
+                }
+
+                if (refinement.Key == CardRefinements.NotAssignedToParkingId)
+                {
+                    var parkingId = Guid.Parse(refinement.Value);
+                    var parkingAssignment = dbContext.CardParkingAssignments
+                        .Where(x => x.ParkingId == parkingId)
+                        .Select(x => x.CardId)
+                        .Distinct();
+                }
+
+                if (refinement.Key == CardRefinements.CardStatus)
+                {
+                    var cardStatus = refinement.Value;
+
+                    data = data.Where(x => x.Status.Code == cardStatus);
+                }
+            }
             var totalCount = await data.CountAsync();
             var result = await data
                 .Include(x=>x.Status)

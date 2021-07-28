@@ -30,6 +30,8 @@ namespace SmartParkingCoreModels.Data
         public DbSet<PriceListHollidayCondition> PriceListHollidayConditions { get; set; }
         public DbSet<PriceListDurationCondition> PriceListDurationConditions { get; set; }
 
+        public DbSet<CardParkingAssignment> CardParkingAssignments { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)
         {
@@ -51,14 +53,29 @@ namespace SmartParkingCoreModels.Data
                     .WithMany(slotType => slotType.SlotTypeConfigurations)
                     .HasForeignKey(cf => cf.SlotTypeId)
                     .IsRequired();
+            });
 
-                builder.Entity<PriceListCondition>()
-                   .HasDiscriminator<string>("condition_type")
-                   .HasValue<PriceListCondition>(nameof(PriceListCondition))
-                   .HasValue<PriceListDefaultCondition>("Default")
-                   .HasValue<PriceListDurationCondition>("Duration")
-                   .HasValue<PriceListHollidayCondition>("Holliday")
-                   .HasValue<PriceListWeekdayCondition>("DayOfWeek");
+            builder.Entity<PriceListCondition>()
+                .HasDiscriminator<string>("condition_type")
+                .HasValue<PriceListCondition>(nameof(PriceListCondition))
+                .HasValue<PriceListDefaultCondition>("Default")
+                .HasValue<PriceListDurationCondition>("Duration")
+                .HasValue<PriceListHollidayCondition>("Holliday")
+                .HasValue<PriceListWeekdayCondition>("DayOfWeek");
+
+            builder.Entity<CardParkingAssignment>(config =>
+            {
+                config.HasKey(cf => new { cf.ParkingId, cf.CardId });
+
+                config.HasOne(cf => cf.Parking)
+                    .WithMany(parking => parking.CardAssignments)
+                    .HasForeignKey(cf => cf.ParkingId)
+                    .IsRequired();
+
+                config.HasOne(cf => cf.Card)
+                    .WithMany(slotType => slotType.ParkingAssignments)
+                    .HasForeignKey(cf => cf.CardId)
+                    .IsRequired();
             });
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.

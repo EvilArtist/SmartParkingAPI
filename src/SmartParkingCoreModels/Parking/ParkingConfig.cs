@@ -16,5 +16,7 @@ namespace SmartParkingCoreModels.Parking
         public string Name { get; set; }
         [MaxLength(256)]
         public string Address { get; set; }
+        public virtual ICollection<CardParkingAssignment> CardAssignments { get; set; }
+
     }
 }
