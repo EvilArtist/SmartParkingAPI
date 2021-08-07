@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static SmartParking.Share.Constants.IdentityConstants;
 
-namespace SmartParkingApi.Controllers.Admin
+namespace SmartParkingApi.Controllers.Admin  
 {
     [Route("api/[controller]")]
     [ApiController]
