@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SmartParkingApi.Controllers.Operations;
 using SmartParkingCoreServices.Extensions;
 using System;
 using System.Collections.Generic;
@@ -39,20 +40,27 @@ namespace SmartParkingApi
             services.ConfigIdentityDbContext(Configuration, migrationsAssembly);
             services.ConfigParkingDbContext(Configuration, migrationsAssembly);
             services.ConfigCustomizeService();
+            services.ConfigSignalR();
             services.ConfigMainAuthorization();
 
-            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
+            //services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            //{
+            //    builder.AllowAnyOrigin()
+            //           .AllowAnyMethod()
+            //           .AllowAnyHeader()
+            //           .SetIsOriginAllowed(_ => true);
+            //}));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors("CorsPolicy");
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed(_ => true)
+                .AllowCredentials()
+            );
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -71,6 +79,7 @@ namespace SmartParkingApi
             {
                 endpoints.MapControllers()
                     .RequireAuthorization("ApiScope");
+                endpoints.MapHub<OperationHub>("/operation");
             });
         }
     }

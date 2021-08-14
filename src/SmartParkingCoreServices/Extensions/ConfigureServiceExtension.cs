@@ -21,6 +21,10 @@ using AutoMapper;
 using SmartParkingCoreServices.AutoMap;
 using SmartParkingAbstract.Services.Parking.PriceBook;
 using SmartParkingCoreServices.Parking.PriceBook;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Extensions
 {
@@ -63,6 +67,11 @@ namespace SmartParkingCoreServices.Extensions
             services.AddScoped<IPriceBookService, PriceBookService>();
         }
 
+        public static void ConfigSignalR(this IServiceCollection services)
+        {
+            services.AddSignalR();
+        }
+
         public static void ConfigIdnentityAuthorization(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
@@ -103,6 +112,23 @@ namespace SmartParkingCoreServices.Extensions
                 {
                     ValidateAudience = false
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/operation")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddAuthorization(options =>
@@ -121,6 +147,10 @@ namespace SmartParkingCoreServices.Extensions
                     options.AddPolicy(claim, policy => policy.RequireClaim(claim));
                 });
             });
+
+            //services.TryAddEnumerable(
+            //ServiceDescriptor.Singleton<IPostConfigureOptions<JwtBearerOptions>,
+            //    ConfigureJwtBearerOptions>());
         }
 
         public static void ConfigAutoMapper(this IServiceCollection services)
