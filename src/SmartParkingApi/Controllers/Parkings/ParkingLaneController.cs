@@ -84,5 +84,21 @@ namespace SmartParkingApi.Controllers.Parkings
             }
         }
 
+
+        [HttpGet("parking/{parkingId}")]
+        public async Task<ServiceResponse<IEnumerable<ParkingLaneViewModel>>> GetParkingLaneOfParking(Guid parkingId)
+        {
+            try
+            {
+                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
+
+                var result = await parkingLaneService.GetParkingLanes(clientId, parkingId);
+                return ServiceResponse<IEnumerable<ParkingLaneViewModel>>.Success(result);
+            }
+            catch (Exception e)
+            {
+                return ServiceResponse<IEnumerable<ParkingLaneViewModel>>.Fail(e);
+            }
+        }
     }
 }

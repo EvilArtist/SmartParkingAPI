@@ -90,12 +90,12 @@ namespace SmartParkingCoreServices.Parking
             };
         }
 
-        public async Task<IEnumerable<ParkingLaneViewModel>> GetParkingLanes(Guid parkingId)
+        public async Task<IEnumerable<ParkingLaneViewModel>> GetParkingLanes(string clientId, Guid parkingId)
         {
             var parkingLanes = await dbContext.ParkingLanes
                 .Include(x => x.Cameras)
                 .Include(x => x.MutiFunctionGates)
-                .Where(x => x.ParkingId == parkingId)
+                .Where(x => x.ParkingId == parkingId && clientId == x.ClientId)
                 .ToListAsync();
 
             return parkingLanes.Select(x => new ParkingLaneViewModel

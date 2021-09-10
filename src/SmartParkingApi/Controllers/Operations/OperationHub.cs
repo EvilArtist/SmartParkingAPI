@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using SmartParkingAbstract.ViewModels.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,12 @@ namespace SmartParkingApi.Controllers.Operations
     {
         public async Task CheckInCard(string multiGateName, string cardId) 
         {
-            await Clients.Group(multiGateName).SendAsync("Notify", $"Check in on Gate ${multiGateName} with ID: {cardId}");
+            var card = new SignalRCardData
+            {
+                GateName = multiGateName,
+                CardID = cardId
+            };
+            await Clients.Group(multiGateName).SendAsync("CardScan_" + multiGateName, card);
         }
 
         public async Task SubscribeDevice(string deviceName)
@@ -28,11 +34,5 @@ namespace SmartParkingApi.Controllers.Operations
 
             await Clients.Group(deviceName).SendAsync("Notify", $"{Context.ConnectionId} has left the group {deviceName}.");
         }
-    }
-
-    public class CardCheckIn
-    {
-        public string Name { get; set; }
-        public string RFID { get; set; }
     }
 }

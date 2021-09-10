@@ -28,6 +28,7 @@ namespace SmartParking.Share.Constants
         {
             public const string Id = "id";
             public const string ClientId = "ClientId";
+            public const string DisplayName = "displayName";
         }
     }
 }

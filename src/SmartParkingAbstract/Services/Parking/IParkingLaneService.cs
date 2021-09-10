@@ -10,7 +10,7 @@ namespace SmartParkingAbstract.Services.Parking
     public interface IParkingLaneService
     {
         Task<ParkingLaneViewModel> CreateParkingLane(CreateUpdateParkingLaneViewModel model);
-        Task<IEnumerable<ParkingLaneViewModel>> GetParkingLanes(Guid parkingId);
+        Task<IEnumerable<ParkingLaneViewModel>> GetParkingLanes(string clientId, Guid parkingId);
         Task<ParkingLaneViewModel> GetParkingLaneById(string clientId, Guid laneId);
         Task<ParkingLaneViewModel> UpdateParkingLane(CreateUpdateParkingLaneViewModel model);
         Task<ParkingLaneViewModel> DeleteParkingLane(string clientId, Guid laneId);
