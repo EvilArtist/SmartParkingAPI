@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
 using SmartParkingCoreModels.Parking.PriceBook;
 using System;
@@ -31,6 +32,9 @@ namespace SmartParkingCoreModels.Data
         public DbSet<PriceListDurationCondition> PriceListDurationConditions { get; set; }
 
         public DbSet<CardParkingAssignment> CardParkingAssignments { get; set; }
+
+        public DbSet<ParkingRecord> ParkingRecords { get; set; }
+        public DbSet<ParkingRecordStatus> ParkingRecordStatuses { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
                 : base(options)

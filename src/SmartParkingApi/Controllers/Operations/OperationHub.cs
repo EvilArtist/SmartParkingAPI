@@ -34,5 +34,10 @@ namespace SmartParkingApi.Controllers.Operations
 
             await Clients.Group(deviceName).SendAsync("Notify", $"{Context.ConnectionId} has left the group {deviceName}.");
         }
+
+        public async Task OpenGate(string deviceName)
+        {
+            await Clients.Group(deviceName).SendAsync("OpenGate_" + deviceName);
+        }
     }
 }

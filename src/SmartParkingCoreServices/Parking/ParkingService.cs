@@ -78,7 +78,7 @@ namespace SmartParkingCoreServices.Parking
         {
             var parking = await dbContext.Parkings
                 .SingleAsync(x => x.ClientId == clientId && x.Id == parkingId );
-            var parkingLanes = await parkingLaneService.GetParkingLanes(clientId, parkingId);
+            var parkingLanes = await parkingLaneService.GetParkingLanes(parkingId);
             var parkingSlot = await slotConfigService.GetSlotTypeConfigs(clientId, parkingId);
             return new ParkingDetailsModel
             {

@@ -3,6 +3,7 @@ using SmartParkingCoreModels.Identity;
 using SmartParkingCoreModels.Parking;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,13 +16,13 @@ namespace SmartParkingCoreModels.Operation
         public Card Card { get; set; }
         public DateTime CheckinTime { get; set; }
         public DateTime? CheckoutTime { get; set; }
-        public string LaneName { get; set; }
-        public Guid ParkingLaneId { get; set; }
-        public ParkingLane ParkingLane { get; set; }
+        public Guid ParkingId { get; set; }
+        public Guid CheckinParkingLaneId { get; set; }
+        public ParkingLane CheckinParkingLane { get; set; }
+        public Guid? CheckoutParkingLaneId { get; set; }
+        public ParkingLane CheckoutParkingLane { get; set; }
         public Guid CheckinEmployeeId { get; set; }
-        public ApplicationUser CheckinEmployee { get; set; }
         public Guid? CheckoutEmployeeId { get; set; }
-        public ApplicationUser CheckoutEmployee { get; set; }
         public string URLCheckinFrontImage { get; set; }
         public string URLCheckinBackImage { get; set; }
         public string URLCheckoutFrontImage { get; set; }
@@ -32,5 +33,11 @@ namespace SmartParkingCoreModels.Operation
         public SubscriptionType SubscriptionType { get; set; }
         public string CheckinPlateNumber { get; set; }
         public string CheckoutPlateNumber { get; set; }
+        
+        [ForeignKey(nameof(Status))]
+        public string StatusCode { get; set; }
+        public ParkingRecordStatus Status { get; set; }
+        public decimal TotalAmount { get; set; }
+        public virtual ICollection<PriceItem> PriceItems { get; set; }
     }
 }

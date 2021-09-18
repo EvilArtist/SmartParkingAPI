@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.ViewModels.General;
+using SmartParkingAbstract.ViewModels.Operation;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
 using SmartParkingCoreModels.Parking.PriceBook;
 using System;
@@ -123,6 +125,11 @@ namespace SmartParkingCoreServices.AutoMap
                 .ForMember(x => x.Unit, y=>y.MapFrom(z => PriceBookContants.UnitMap[z.Type]));
 
             CreateMap<PriceList, PriceBookViewModel>();
+
+            CreateMap<ParkingRecord, ParkingRecordDetailViewModel>()
+                .ReverseMap();
+            CreateMap<PriceItem, PriceItemViewModel>().ReverseMap();
+            CreateMap<ParkingRecordStatus, ParkingRecordStatusViewModel>().ReverseMap();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartParking.Share.Constants;
+using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace SmartParkingCoreModels.Data
                 SeedConfigurationTypeData(dbContext);
             }
             SeedCardStatusData(dbContext);
+            SeedParkingRecordStatus(dbContext);
             dbContext.SaveChanges();
         }
 
@@ -85,6 +87,59 @@ namespace SmartParkingCoreModels.Data
                          Code = CardStatusCode.Lock,
                          Description = "Thẻ báo mất, hoặc mất xe",
                     },
+                });
+            }
+        }
+
+        private static void SeedParkingRecordStatus(ApplicationDbContext dbContext)
+        {
+            if (!dbContext.ParkingRecordStatuses.Any())
+            {
+                dbContext.ParkingRecordStatuses.AddRange(new List<ParkingRecordStatus>
+                {
+                    new ParkingRecordStatus()
+                    {
+                        Code = ParkingRecordStatusConstants.Created,
+                        Name = "Khởi tạo",
+                        Description = "Bản ghi mới tạo trên hệ thống"
+                    },
+
+                    new ParkingRecordStatus
+                    {
+                        Code = ParkingRecordStatusConstants.Checkout,
+                        Name = "Quẹt thẻ ra",
+                        Description = "Trạng thái sau khi quẹt thẻ ra"
+                    },
+                    new ParkingRecordStatus
+                    {
+                        Code = ParkingRecordStatusConstants.Complete,
+                        Name = "Hoàn thành",
+                        Description = "Trạng thái hoàn tất, sau khi xe đã ra khỏi bãi"
+                    },
+                    new ParkingRecordStatus
+                    {
+                        Code = ParkingRecordStatusConstants.LostTicket,
+                        Name = "Mất thẻ xe",
+                        Description = "Trạng thái khi mất thẻ xe"
+                    },
+                    new ParkingRecordStatus
+                    {
+                        Code = ParkingRecordStatusConstants.LostVehicle,
+                        Name = "Mất thẻ xe",
+                        Description = "Trạng thái khi mất xe"
+                    },
+                    new ParkingRecordStatus
+                    {
+                        Code = ParkingRecordStatusConstants.Parking,
+                        Name = "Xe trong bãi",
+                        Description = "Trạng thái khi vào trong bãi"
+                    },
+                    new ParkingRecordStatus
+                    {
+                        Code = ParkingRecordStatusConstants.Checkin,
+                        Name = "Quẹt thẻ vào",
+                        Description = "Trạng thái sau khi quẹt thẻ vào bãi, chờ xử lý vào bãi"
+                    }
                 });
             }
         }

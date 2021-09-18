@@ -25,6 +25,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using SmartParkingAbstract.Services.Operation;
+using SmartParkingCoreServices.Operation;
 
 namespace SmartParkingCoreServices.Extensions
 {
@@ -51,6 +53,7 @@ namespace SmartParkingCoreServices.Extensions
         public static void ConfigCustomizeService(this IServiceCollection services)
         {
             services.ConfigAutoMapper();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IUserService, EmployeeManagerService>();
             services.AddScoped<IRandomGeneratorService, RandomGeneratorService>();
@@ -65,6 +68,9 @@ namespace SmartParkingCoreServices.Extensions
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IHelpers, Helpers>();
             services.AddScoped<IPriceBookService, PriceBookService>();
+
+            services.AddScoped<IPriceCalculationService, PriceCalculationService>();
+            services.AddScoped<IOperationService, OperationService>();
         }
 
         public static void ConfigSignalR(this IServiceCollection services)
