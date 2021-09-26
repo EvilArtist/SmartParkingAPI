@@ -11,6 +11,12 @@ namespace SmartParkingCoreServices.General
 {
     public class Helpers : IHelpers
     {
+        public string GenerateFileName(string prefix = "", string subfix = "")
+        {
+            string fileName = prefix + DateTime.Now.ToString($"ddMMyyyyTHHmmssfff") + subfix;
+            return fileName.Trim();
+        }
+
         public string GetEnumDescription(Enum @enum)
         {
             FieldInfo fieldInfo = @enum.GetType().GetField(@enum.ToString());

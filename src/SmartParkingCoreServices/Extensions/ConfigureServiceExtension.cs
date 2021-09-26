@@ -27,6 +27,11 @@ using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using SmartParkingAbstract.Services.Operation;
 using SmartParkingCoreServices.Operation;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using SmartParkingAbstract.Services.File;
+using SmartParkingCoreServices.File;
 
 namespace SmartParkingCoreServices.Extensions
 {
@@ -71,6 +76,7 @@ namespace SmartParkingCoreServices.Extensions
 
             services.AddScoped<IPriceCalculationService, PriceCalculationService>();
             services.AddScoped<IOperationService, OperationService>();
+            services.AddScoped<IFileService, FileService>();
         }
 
         public static void ConfigSignalR(this IServiceCollection services)
@@ -168,6 +174,16 @@ namespace SmartParkingCoreServices.Extensions
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+        }
+
+        public static void ConfigFileServer(this IApplicationBuilder app)
+        {
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
+                RequestPath = new PathString("/Images")
+            });
         }
     }
 }

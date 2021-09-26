@@ -54,7 +54,8 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<CardViewModel, Card>()
                 .ReverseMap()
                 .ForMember(x => x.SubscriptionTypeName, y => y.MapFrom(z => z.SubscriptionType.Name))
-                .ForMember(x => x.VehicleTypeName, y => y.MapFrom(z => z.VehicleType.Name));
+                .ForMember(x => x.VehicleTypeName, y => y.MapFrom(z => z.VehicleType.Name))
+                .ForMember(x=> x.Status, y => y.MapFrom(z=>z.Status.Name));
 
             CreateMap<CreatePriceConditionViewModel, PriceListDefaultCondition>()
                 .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
@@ -125,6 +126,8 @@ namespace SmartParkingCoreServices.AutoMap
                 .ForMember(x => x.Unit, y=>y.MapFrom(z => PriceBookContants.UnitMap[z.Type]));
 
             CreateMap<PriceList, PriceBookViewModel>();
+
+            CreateMap<ParkingLane, ParkingLaneViewModel>().ReverseMap();
 
             CreateMap<ParkingRecord, ParkingRecordDetailViewModel>()
                 .ReverseMap();

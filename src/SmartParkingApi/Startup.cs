@@ -69,6 +69,7 @@ namespace SmartParkingApi
             }
 
             app.UseHttpsRedirection();
+            app.ConfigFileServer();
 
             app.UseRouting();
 

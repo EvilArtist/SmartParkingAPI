@@ -9,6 +9,7 @@ namespace SmartParkingAbstract.ViewModels.Operation
 {
     public class ParkingRecordDetailViewModel
     {
+        public Guid Id { get; set; }
         public CardViewModel Card { get; set; }
         public DateTime CheckinTime { get; set; }
         public DateTime? CheckoutTime { get; set; }

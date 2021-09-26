@@ -20,5 +20,6 @@ namespace SmartParking.Share.Constants
         public const string LostTicket = "LOST_TICKET";
         public const string LostVehicle = "LOST_VEHICLE";
         public const string Created = "CREATED";
+        public const string Declined = "DECLINED";
     }
 }

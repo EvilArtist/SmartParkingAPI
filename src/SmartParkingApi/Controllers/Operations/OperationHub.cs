@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using SmartParking.Share.Constants;
 using SmartParkingAbstract.ViewModels.Operation;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,12 @@ namespace SmartParkingApi.Controllers.Operations
                 GateName = multiGateName,
                 CardID = cardId
             };
-            await Clients.Group(multiGateName).SendAsync("CardScan_" + multiGateName, card);
+            UartDataResponse<SignalRCardData> response = new() {
+                Action = OperationConstants.Action.ScanCard,
+                GateName = multiGateName,
+                Data = card
+            };
+            await Clients.Group(multiGateName).SendAsync("CardScan_" + multiGateName, response);
         }
 
         public async Task SubscribeDevice(string deviceName)

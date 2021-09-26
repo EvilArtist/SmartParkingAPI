@@ -11,9 +11,11 @@ namespace SmartParkingAbstract.Services.Operation
     {
         Task<ParkingRecordDetailViewModel> CheckIn(CheckInParkingRecord checkInParkingRecord);
         Task<ParkingRecordDetailViewModel> CheckOut(CheckOutParkingRecord checkInParkingRecord);
-        Task<ParkingRecordDetailViewModel> AllowVehicleIn(Guid recordId);
-        Task<ParkingRecordDetailViewModel> AllowVehicleOut(Guid recordId);
+        Task<ParkingRecordDetailViewModel> AllowVehicleEnter(Guid recordId);
+        Task<ParkingRecordDetailViewModel> AllowVehicleExit(Guid recordId);
         Task<ParkingRecordDetailViewModel> UpdateCheckinRecordInfo(UpdateRecordInfoViewModel recordInfo);
         Task<ParkingRecordDetailViewModel> UpdateCheckoutRecordInfo(UpdateRecordInfoViewModel recordInfo);
+        Task<ParkingRecordDetailViewModel> DeclineVehicleEnter(Guid recordId);
+        Task<ParkingRecordDetailViewModel> DeclineVehicleExit(Guid recordId);
     }
 }

@@ -32,7 +32,7 @@ namespace SmartParkingCoreServices.Operation
         #region Calculation
         public async Task<IEnumerable<PriceItemViewModel>> Calculate(PriceCalculationParam param)
         {
-            var clientId = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
+            var clientId = "ESPACE";//httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
             var query = dbContext.PriceLists
                 .Include(x => x.Condition)
                 .Include(x => x.Calculation)
@@ -58,14 +58,14 @@ namespace SmartParkingCoreServices.Operation
                         var endTimeByCondition = startTime.Date + price.Condition.EndTime;
                         if (price.Condition.Overnight || price.Condition.FullDay)
                         {
-                            endTimeByCondition.AddDays(1);
+                            endTimeByCondition = endTimeByCondition.AddDays(1);
                         }
                         var priceItemEndTime = endTime < endTimeByCondition ? endTime : endTimeByCondition;
                         return new PriceItemViewModel() {
                             StartTime = startTime,
                             EndTime = priceItemEndTime,
                             HourBlock = price.Calculation.HourBlock,
-                            Name = price.Calculation.Name,
+                            Name = price.Name,
                             Price = price.Calculation.Price,
                             Type = price.Calculation.Type
                         };
@@ -89,7 +89,7 @@ namespace SmartParkingCoreServices.Operation
                             StartTime = startTime,
                             EndTime = priceItemEndTime,
                             HourBlock = price.Calculation.HourBlock,
-                            Name = price.Calculation.Name,
+                            Name = price.Name,
                             Price = price.Calculation.Price,
                             Type = price.Calculation.Type
                         };
@@ -100,7 +100,7 @@ namespace SmartParkingCoreServices.Operation
                         EndTime = nextApplicablePrice?.StartTime ?? startTime.Date.AddDays(1),
                         HourBlock = 24,
                         Name = "DEFAULT",
-                        Price = 10,
+                        Price = nextApplicablePrice?.Price ?? 0,
                         Type = PriceFormular.ByDate
                     };
                 }
@@ -124,18 +124,22 @@ namespace SmartParkingCoreServices.Operation
             {
                 return priceListDurationCondition.StartDate.Date <= startTime.Date && startTime.Date <= priceListDurationCondition.EndDate.Date;
             }
-            return false;
+            return true;
         }
 
         private static bool IsMapCondition(PriceListCondition priceCondition, DateTime startTime)
         {
+            if (priceCondition.FullDay)
+            {
+                return true;
+            }
             if (priceCondition.Overnight)
             {
                 return priceCondition.StartTime >= startTime.TimeOfDay || priceCondition.EndTime <= startTime.TimeOfDay;
             }
             else
             {
-                return priceCondition.StartTime <= startTime.TimeOfDay && priceCondition.EndTime >= startTime.TimeOfDay;
+                return priceCondition.StartTime <= startTime.TimeOfDay && priceCondition.EndTime > startTime.TimeOfDay;
             }
         }
         #endregion
@@ -152,8 +156,7 @@ namespace SmartParkingCoreServices.Operation
                 var blockTime = item.HourBlock;
                 var block = (item.EndTime - item.StartTime).TotalHours / blockTime;
                 price = (decimal)(block * item.Price);
-
-            } 
+            }
             else
             {
                 price = (decimal)item.Price;
