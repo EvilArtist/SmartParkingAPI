@@ -19,20 +19,16 @@ namespace SmartParkingCoreServices.Operation
     public class PriceCalculationService : IPriceCalculationService
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public PriceCalculationService(
-            ApplicationDbContext dbContext,
-            IHttpContextAccessor httpContextAccessor)
+        public PriceCalculationService(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
-            this.httpContextAccessor = httpContextAccessor;
         }
 
         #region Calculation
         public async Task<IEnumerable<PriceItemViewModel>> Calculate(PriceCalculationParam param)
         {
-            var clientId = "ESPACE";//httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
+            var clientId = param.ClientId;
             var query = dbContext.PriceLists
                 .Include(x => x.Condition)
                 .Include(x => x.Calculation)

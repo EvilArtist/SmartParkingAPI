@@ -39,7 +39,7 @@ namespace SmartParkingExcel
             }
             if (dataHeaders.Any(x=> string.IsNullOrEmpty(x.ColumnName)))
             {
-                throw new InvalidCastException("Employee data incorrect");
+                throw new InvalidCastException();
             }
 
             int row = 2;

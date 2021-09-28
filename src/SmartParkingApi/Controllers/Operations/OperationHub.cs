@@ -24,26 +24,45 @@ namespace SmartParkingApi.Controllers.Operations
                 GateName = multiGateName,
                 Data = card
             };
-            await Clients.Group(multiGateName).SendAsync("CardScan_" + multiGateName, response);
+            await Clients.Group(multiGateName).SendAsync("ACTION_" + multiGateName, response);
         }
 
         public async Task SubscribeDevice(string deviceName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, deviceName);
+            UartDataResponse<string> response = new()
+            {
+                Action = OperationConstants.Action.Subscribe,
+                GateName = deviceName,
+                Data = Context.ConnectionId
+            };
 
-            await Clients.Group(deviceName).SendAsync("Notify", $"{Context.ConnectionId} has joined the group {deviceName}.");
+            await Clients.Group(deviceName).SendAsync("ACTION_" + deviceName, response);
         }
 
         public async Task UnsubscribeDevice(string deviceName)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, deviceName);
 
-            await Clients.Group(deviceName).SendAsync("Notify", $"{Context.ConnectionId} has left the group {deviceName}.");
+            UartDataResponse<string> response = new()
+            {
+                Action = OperationConstants.Action.Unsubscribe,
+                GateName = deviceName,
+                Data = Context.ConnectionId
+            };
+
+            await Clients.Group(deviceName).SendAsync("ACTION_" + deviceName, response);
         }
 
         public async Task OpenGate(string deviceName)
         {
-            await Clients.Group(deviceName).SendAsync("OpenGate_" + deviceName);
+            UartDataResponse<string> response = new()
+            {
+                Action = OperationConstants.Action.AllowIn,
+                GateName = deviceName,
+                Data = Context.ConnectionId
+            };
+            await Clients.Group(deviceName).SendAsync("ACTION_" + deviceName, response);
         }
     }
 }

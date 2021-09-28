@@ -14,10 +14,12 @@ namespace SmartParkingCoreServices.File
     public class FileService: IFileService
     {
         private readonly IHelpers helpers;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public FileService(IHelpers helpers)
+        public FileService(IHelpers helpers, IHttpContextAccessor httpContextAccessor)
         {
             this.helpers = helpers;
+            this.httpContextAccessor = httpContextAccessor;
         }
         public async Task<string> SaveFile(IFormFile file)
         {
@@ -31,7 +33,8 @@ namespace SmartParkingCoreServices.File
             {
                 await file.CopyToAsync(stream);
             }
-            return dbPath;
+            var request = httpContextAccessor?.HttpContext?.Request;
+            return $"{request?.Scheme ?? ""}://{request?.Host.Value ?? ""}/{dbPath.Replace("\\", "/")}"; ;
         }
     }
 }
