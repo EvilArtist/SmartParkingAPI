@@ -2,11 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SmartParkingAbstract.ViewModels.Parking.PriceBook;
 using SmartParkingCoreModels.Data;
-using SmartParkingCoreServices.Operation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Operation.Tests
@@ -23,7 +19,7 @@ namespace SmartParkingCoreServices.Operation.Tests
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
                 ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
-                PriceCalculationService service = new PriceCalculationService(dbContext, null);
+                PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
                     CheckinTime = DateTime.Today + TimeSpan.FromHours(-5),
@@ -49,7 +45,7 @@ namespace SmartParkingCoreServices.Operation.Tests
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
                 ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
-                PriceCalculationService service = new PriceCalculationService(dbContext, null);
+                PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
                     CheckinTime = DateTime.Today + TimeSpan.FromHours(-5),
@@ -75,7 +71,7 @@ namespace SmartParkingCoreServices.Operation.Tests
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
                 ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
-                PriceCalculationService service = new PriceCalculationService(dbContext, null);
+                PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
                     CheckinTime = DateTime.Today + TimeSpan.FromHours(7),
@@ -101,7 +97,7 @@ namespace SmartParkingCoreServices.Operation.Tests
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
                 ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
-                PriceCalculationService service = new PriceCalculationService(dbContext, null);
+                PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
                     CheckinTime = DateTime.Today + TimeSpan.FromHours(20),

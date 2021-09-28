@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SmartParkingApi.Controllers.Operations;
-using SmartParkingCoreServices.Extensions;
+using SmartParkingExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

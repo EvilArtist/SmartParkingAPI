@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 
-namespace SmartParkingCoreServices.Extensions
+namespace SmartParkingExtensions
 {
     public class ConfigureJwtBearerOptions : IPostConfigureOptions<JwtBearerOptions>
     {

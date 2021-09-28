@@ -33,7 +33,7 @@ using System.IO;
 using SmartParkingAbstract.Services.File;
 using SmartParkingCoreServices.File;
 
-namespace SmartParkingCoreServices.Extensions
+namespace SmartParkingExtensions
 {
     public static class ConfigureServiceExtension
     {
@@ -57,7 +57,7 @@ namespace SmartParkingCoreServices.Extensions
 
         public static void ConfigCustomizeService(this IServiceCollection services)
         {
-            services.ConfigAutoMapper();
+            services.ConfigAutomapper();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IUserService, EmployeeManagerService>();
@@ -165,7 +165,7 @@ namespace SmartParkingCoreServices.Extensions
             //    ConfigureJwtBearerOptions>());
         }
 
-        public static void ConfigAutoMapper(this IServiceCollection services)
+        public static void ConfigAutomapper(this IServiceCollection services)
         {
             var mapperConfig = new MapperConfiguration(mc =>
             {
