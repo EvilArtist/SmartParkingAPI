@@ -10,20 +10,25 @@ namespace SmartParkingExcel
 {
     public class ImportDataService
     {
-        public SpreadsheetDocument Open(Stream stream)
+        private SpreadsheetDocument document;
+        public void Open(Stream stream)
         {
-            return SpreadsheetDocument.Open(stream, false);
+            document = SpreadsheetDocument.Open(stream, false);
         }
 
-        public IEnumerable<T> ParseData<T>(SpreadsheetDocument document, string sheetName, bool ignoreWhenFail) where T: new()
+        public IEnumerable<T> ParseData<T>(string sheetName, bool ignoreWhenFail) where T: new()
         {
-            var workbook = document.WorkbookPart.Workbook;
-            var employeeSheet = workbook.Descendants<Sheet>().FirstOrDefault(x => x.Name == sheetName);
-            if (employeeSheet == null)
+            if(document == null)
             {
                 return new List<T>();
             }
-            WorksheetPart wsPart = (WorksheetPart)(document.WorkbookPart.GetPartById(employeeSheet.Id));
+            var workbook = document.WorkbookPart.Workbook;
+            var sheet = workbook.Descendants<Sheet>().FirstOrDefault(x => x.Name == sheetName);
+            if (sheet == null)
+            {
+                return new List<T>();
+            }
+            WorksheetPart wsPart = (WorksheetPart)(document.WorkbookPart.GetPartById(sheet.Id));
 
             var dataHeaders = ExportProperty.OfType(typeof (T));
             Dictionary<string, string> headerColumns = new();
@@ -63,6 +68,11 @@ namespace SmartParkingExcel
                 firstColumn = ReadCellValue(document.WorkbookPart, wsPart, "A" + row);
             }
             return importData;
+        }
+
+        public void Close()
+        {
+            document.Close();
         }
 
         private static T ReadRowData<T>(List<ExportProperty> properties, WorkbookPart wbPart, WorksheetPart wsPart, int row) where T:new()
