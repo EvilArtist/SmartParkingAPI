@@ -21,8 +21,19 @@ using AutoMapper;
 using SmartParkingCoreServices.AutoMap;
 using SmartParkingAbstract.Services.Parking.PriceBook;
 using SmartParkingCoreServices.Parking.PriceBook;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
+using SmartParkingAbstract.Services.Operation;
+using SmartParkingCoreServices.Operation;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using SmartParkingAbstract.Services.File;
+using SmartParkingCoreServices.File;
 
-namespace SmartParkingCoreServices.Extensions
+namespace SmartParkingExtensions
 {
     public static class ConfigureServiceExtension
     {
@@ -46,7 +57,8 @@ namespace SmartParkingCoreServices.Extensions
 
         public static void ConfigCustomizeService(this IServiceCollection services)
         {
-            services.ConfigAutoMapper();
+            services.ConfigAutomapper();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IUserService, EmployeeManagerService>();
             services.AddScoped<IRandomGeneratorService, RandomGeneratorService>();
@@ -61,6 +73,15 @@ namespace SmartParkingCoreServices.Extensions
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IHelpers, Helpers>();
             services.AddScoped<IPriceBookService, PriceBookService>();
+
+            services.AddScoped<IPriceCalculationService, PriceCalculationService>();
+            services.AddScoped<IOperationService, OperationService>();
+            services.AddScoped<IFileService, FileService>();
+        }
+
+        public static void ConfigSignalR(this IServiceCollection services)
+        {
+            services.AddSignalR();
         }
 
         public static void ConfigIdnentityAuthorization(this IServiceCollection services)
@@ -103,6 +124,23 @@ namespace SmartParkingCoreServices.Extensions
                 {
                     ValidateAudience = false
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/operation")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddAuthorization(options =>
@@ -121,9 +159,13 @@ namespace SmartParkingCoreServices.Extensions
                     options.AddPolicy(claim, policy => policy.RequireClaim(claim));
                 });
             });
+
+            //services.TryAddEnumerable(
+            //ServiceDescriptor.Singleton<IPostConfigureOptions<JwtBearerOptions>,
+            //    ConfigureJwtBearerOptions>());
         }
 
-        public static void ConfigAutoMapper(this IServiceCollection services)
+        public static void ConfigAutomapper(this IServiceCollection services)
         {
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -132,6 +174,16 @@ namespace SmartParkingCoreServices.Extensions
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+        }
+
+        public static void ConfigFileServer(this IApplicationBuilder app)
+        {
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
+                RequestPath = new PathString("/Images")
+            });
         }
     }
 }

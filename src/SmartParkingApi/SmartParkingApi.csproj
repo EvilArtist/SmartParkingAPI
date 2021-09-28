@@ -23,14 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartParking.Share\SmartParking.Share.csproj" />
-    <ProjectReference Include="..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
-    <ProjectReference Include="..\SmartParkingCoreModels\SmartParkingCoreModels.csproj" />
-    <ProjectReference Include="..\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
+    <Folder Include="Controllers\SuperAdmin\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\SuperAdmin\" />
+    <ProjectReference Include="..\SmartParkingExtension\SmartParkingExtension.csproj" />
   </ItemGroup>
 
 </Project>
