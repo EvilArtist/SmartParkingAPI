@@ -22,6 +22,10 @@ namespace SmartParkingCoreModels.Parking.PriceBook
 
         [NotMapped]
         public virtual PriceCondition PriceConditionType { get; }
+        [NotMapped]
+        public virtual bool Overnight => EndTime < StartTime;
+        [NotMapped]
+        public virtual bool FullDay => EndTime == StartTime;
     }
 
 

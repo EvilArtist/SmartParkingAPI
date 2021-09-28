@@ -19,6 +19,152 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("SmartParkingCoreModels.Operation.ParkingRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CheckinEmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CheckinParkingLaneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CheckinPlateNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CheckinTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CheckoutEmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CheckoutParkingLaneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CheckoutPlateNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CheckoutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ParkingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StatusCode")
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<Guid>("SubscriptionTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("URLCheckinBackImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("URLCheckinFrontImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("URLCheckoutBackImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("URLCheckoutFrontImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VehicleTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.HasIndex("CheckinParkingLaneId");
+
+                    b.HasIndex("CheckoutParkingLaneId");
+
+                    b.HasIndex("StatusCode");
+
+                    b.HasIndex("SubscriptionTypeId");
+
+                    b.HasIndex("VehicleTypeId");
+
+                    b.ToTable("ParkingRecords");
+                });
+
+            modelBuilder.Entity("SmartParkingCoreModels.Operation.ParkingRecordStatus", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("ParkingRecordStatuses");
+                });
+
+            modelBuilder.Entity("SmartParkingCoreModels.Operation.PriceItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("HourBlock")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("ParkingRecordId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParkingRecordId");
+
+                    b.ToTable("PriceItem");
+                });
+
             modelBuilder.Entity("SmartParkingCoreModels.Parking.CameraConfiguration", b =>
                 {
                     b.Property<Guid>("Id")
@@ -547,6 +693,64 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                     b.HasDiscriminator().HasValue("DayOfWeek");
                 });
 
+            modelBuilder.Entity("SmartParkingCoreModels.Operation.ParkingRecord", b =>
+                {
+                    b.HasOne("SmartParkingCoreModels.Parking.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartParkingCoreModels.Parking.ParkingLane", "CheckinParkingLane")
+                        .WithMany()
+                        .HasForeignKey("CheckinParkingLaneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartParkingCoreModels.Parking.ParkingLane", "CheckoutParkingLane")
+                        .WithMany()
+                        .HasForeignKey("CheckoutParkingLaneId");
+
+                    b.HasOne("SmartParkingCoreModels.Operation.ParkingRecordStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusCode");
+
+                    b.HasOne("SmartParkingCoreModels.Parking.SubscriptionType", "SubscriptionType")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartParkingCoreModels.Parking.VehicleType", "VehicleType")
+                        .WithMany()
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+
+                    b.Navigation("CheckinParkingLane");
+
+                    b.Navigation("CheckoutParkingLane");
+
+                    b.Navigation("Status");
+
+                    b.Navigation("SubscriptionType");
+
+                    b.Navigation("VehicleType");
+                });
+
+            modelBuilder.Entity("SmartParkingCoreModels.Operation.PriceItem", b =>
+                {
+                    b.HasOne("SmartParkingCoreModels.Operation.ParkingRecord", "ParkingRecord")
+                        .WithMany("PriceItems")
+                        .HasForeignKey("ParkingRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParkingRecord");
+                });
+
             modelBuilder.Entity("SmartParkingCoreModels.Parking.CameraConfiguration", b =>
                 {
                     b.HasOne("SmartParkingCoreModels.Parking.ParkingLane", "ParkingLane")
@@ -711,6 +915,11 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                         .IsRequired();
 
                     b.Navigation("SlotType");
+                });
+
+            modelBuilder.Entity("SmartParkingCoreModels.Operation.ParkingRecord", b =>
+                {
+                    b.Navigation("PriceItems");
                 });
 
             modelBuilder.Entity("SmartParkingCoreModels.Parking.Card", b =>

@@ -47,6 +47,10 @@ namespace SmartParkingCoreServices.IdentityServices
 
             context.IssuedClaims.Add(new Claim(CustomClaimTypes.Id, user.Id.ToString()));
             context.IssuedClaims.Add(new Claim(CustomClaimTypes.ClientId, user.ClientId ?? "Espace"));
+            if (!string.IsNullOrEmpty(user.LastName))
+            {
+                context.IssuedClaims.Add(new Claim(CustomClaimTypes.DisplayName, user.LastName));
+            }
         }
     }
 }
