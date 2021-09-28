@@ -60,6 +60,20 @@ namespace SmartParkingCoreServices.Admin
                 String.Join("", regex.Matches(" " + model.FirstName).Select(x => x.Value.Trim().ToLower()));
             int count = await dataContext.Users.CountAsync(x => x.UserName.StartsWith(userName));
             userName += (count + 1);
+            userName = Regex.Replace(userName, "[àáảãạăằắẵẳặâầấẩẫậ]", "a");
+            userName = Regex.Replace(userName, "[ÀÁẢÃẠĂẰẮẴẲẶÂẦẤẨẪẬ]", "A");
+            userName = Regex.Replace(userName, "[eèéẻẽẹêềếểễệ]", "e");
+            userName = Regex.Replace(userName, "[EÈÉẺẼẸÊỀẾỂỄỆ]", "E");
+            userName = Regex.Replace(userName, "[oòóỏõọôồốổỗộơờớởỡợ]", "O");
+            userName = Regex.Replace(userName, "[OÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢ]", "O");
+            userName = Regex.Replace(userName, "[uùúủũụưừứửữự]", "u");
+            userName = Regex.Replace(userName, "[UÙÚỦŨỤƯỪỨỬỮỰ]", "u");
+            userName = Regex.Replace(userName, "[iìíỉĩị]", "i");
+            userName = Regex.Replace(userName, "[IÌÍỈĨỊ]", "I");
+            userName = Regex.Replace(userName, "[yỳýỷỹỵ]", "y");
+            userName = Regex.Replace(userName, "[YỲÝỶỸỴ]", "y");
+            userName = Regex.Replace(userName, @"[^\u0020-\u007E]", string.Empty);
+
             string password = randomGeneratorService.RandomPasswordString(12);
             Log.Debug($"Password Generated: '{password}'");
             ApplicationUser user = new()

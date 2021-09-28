@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartParking.Share\SmartParking.Share.csproj" />
+    <ProjectReference Include="..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
+    <ProjectReference Include="..\SmartParkingCoreModels\SmartParkingCoreModels.csproj" />
+    <ProjectReference Include="..\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
+  </ItemGroup>
+
+</Project>

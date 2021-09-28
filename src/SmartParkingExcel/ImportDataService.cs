@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using SmartParking.Share.Attributes;
+using SmartParkingAbstract.Services.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace SmartParkingExcel
 {
-    public class ImportDataService
+    public class ExcelDataParsingService : IDataParsingService
     {
         private SpreadsheetDocument document;
         public void Open(Stream stream)
@@ -44,7 +45,7 @@ namespace SmartParkingExcel
             }
             if (dataHeaders.Any(x=> string.IsNullOrEmpty(x.ColumnName)))
             {
-                throw new InvalidCastException("Employee data incorrect");
+                throw new InvalidCastException();
             }
 
             int row = 2;

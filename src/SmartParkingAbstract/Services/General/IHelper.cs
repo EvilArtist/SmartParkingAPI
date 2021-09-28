@@ -9,5 +9,6 @@ namespace SmartParkingAbstract.Services.General
     public interface IHelpers
     {
         public string GetEnumDescription(Enum @enum);
+        public string GenerateFileName(string prefix = "", string subfix = "");
     }
 }

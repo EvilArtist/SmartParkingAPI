@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.Services.Parking;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
+using SmartParkingCoreServices.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +15,25 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Parking
 {
-    public class ParkingLaneService : IParkingLaneService
+    public class ParkingLaneService : MultitanentService, IParkingLaneService
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public ParkingLaneService(ApplicationDbContext dbContext, IMapper mapper)
+        public ParkingLaneService(ApplicationDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper): base(httpContextAccessor)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
         }
+
         public async Task<ParkingLaneViewModel> CreateParkingLane(CreateUpdateParkingLaneViewModel model)
         {
+            var clientId = GetClientId();
             ParkingLane parkingLane = new()
             {
-                ClientId = model.ClientId,
+                ClientId = clientId,
                 Name = model.Name,
                 ParkingId = model.ParkingId
             };
@@ -72,8 +78,9 @@ namespace SmartParkingCoreServices.Parking
             };
         }
 
-        public async Task<ParkingLaneViewModel> GetParkingLaneById(string clientId, Guid laneId)
+        public async Task<ParkingLaneViewModel> GetParkingLaneById( Guid laneId)
         {
+            var clientId = GetClientId();
             var parkingLane = await dbContext.ParkingLanes
                .Include(x => x.Cameras)
                .Include(x => x.MutiFunctionGates)
@@ -92,10 +99,12 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<IEnumerable<ParkingLaneViewModel>> GetParkingLanes(Guid parkingId)
         {
+            var clientId = GetClientId();
+
             var parkingLanes = await dbContext.ParkingLanes
                 .Include(x => x.Cameras)
                 .Include(x => x.MutiFunctionGates)
-                .Where(x => x.ParkingId == parkingId)
+                .Where(x => x.ParkingId == parkingId && clientId == x.ClientId)
                 .ToListAsync();
 
             return parkingLanes.Select(x => new ParkingLaneViewModel
@@ -111,8 +120,9 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<ParkingLaneViewModel> UpdateParkingLane(CreateUpdateParkingLaneViewModel model)
         {
+            var clientId = GetClientId();
             ParkingLane parkingLane = await dbContext.ParkingLanes
-                .Where(x => x.ClientId == model.ClientId && x.Id == model.Id)
+                .Where(x => x.ClientId == clientId && x.Id == model.Id)
                 .FirstOrDefaultAsync();
 
             var cameraIds = model.CameraIds;
@@ -173,8 +183,9 @@ namespace SmartParkingCoreServices.Parking
             };
         }
 
-        public async Task<ParkingLaneViewModel> DeleteParkingLane(string clientId, Guid laneId)
+        public async Task<ParkingLaneViewModel> DeleteParkingLane(Guid laneId)
         {
+            var clientId = GetClientId();
             var parkingLane = await dbContext.ParkingLanes
                .Include(x => x.Cameras)
                .Include(x => x.MutiFunctionGates)

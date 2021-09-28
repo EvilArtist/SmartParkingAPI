@@ -27,7 +27,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await parkingLaneService.CreateParkingLane(model);
                 return ServiceResponse<ParkingLaneViewModel>.Success(result);
             }
@@ -41,10 +40,8 @@ namespace SmartParkingApi.Controllers.Parkings
         public async Task<ServiceResponse<ParkingLaneViewModel>> GetParkingLaneById(Guid laneId)
         {
             try
-            {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-               
-                var result = await parkingLaneService.GetParkingLaneById(clientId, laneId);
+            { 
+                var result = await parkingLaneService.GetParkingLaneById(laneId);
                 return ServiceResponse<ParkingLaneViewModel>.Success(result);
             }
             catch (Exception e)
@@ -58,7 +55,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await parkingLaneService.UpdateParkingLane(model);
                 return ServiceResponse<ParkingLaneViewModel>.Success(result);
             }
@@ -73,9 +69,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-
-                var result = await parkingLaneService.DeleteParkingLane(clientId, laneId);
+                var result = await parkingLaneService.DeleteParkingLane(laneId);
                 return ServiceResponse<ParkingLaneViewModel>.Success(result);
             }
             catch (Exception e)
@@ -84,5 +78,21 @@ namespace SmartParkingApi.Controllers.Parkings
             }
         }
 
+
+        [HttpGet("parking/{parkingId}")]
+        public async Task<ServiceResponse<IEnumerable<ParkingLaneViewModel>>> GetParkingLaneOfParking(Guid parkingId)
+        {
+            try
+            {
+                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
+
+                var result = await parkingLaneService.GetParkingLanes(parkingId);
+                return ServiceResponse<IEnumerable<ParkingLaneViewModel>>.Success(result);
+            }
+            catch (Exception e)
+            {
+                return ServiceResponse<IEnumerable<ParkingLaneViewModel>>.Fail(e);
+            }
+        }
     }
 }
