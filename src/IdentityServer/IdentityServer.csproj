@@ -31,5 +31,6 @@
     <ProjectReference Include="..\SmartParking.Share\SmartParking.Share.csproj" />
     <ProjectReference Include="..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
     <ProjectReference Include="..\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
+    <ProjectReference Include="..\SmartParkingExtension\SmartParkingExtension.csproj" />
   </ItemGroup>
 </Project>

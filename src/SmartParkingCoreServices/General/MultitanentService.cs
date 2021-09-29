@@ -18,8 +18,17 @@ namespace SmartParkingCoreServices.General
         }
         protected string GetClientId()
         {
-            var clientId = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-            return clientId;
+            if (httpContextAccessor != null )
+            {
+                var claim = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId);
+
+                var clientId = claim?.Value ?? "";
+                return clientId;
+            } 
+            else
+            {
+                return "";
+            }
         }
 
         protected Guid GetCurrentUserId()

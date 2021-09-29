@@ -16,6 +16,7 @@
     <ProjectReference Include="..\SmartParkingAbstract\SmartParkingAbstract.csproj" />
     <ProjectReference Include="..\SmartParkingCoreModels\SmartParkingCoreModels.csproj" />
     <ProjectReference Include="..\SmartParkingCoreServices\SmartParkingCoreServices.csproj" />
+    <ProjectReference Include="..\SmartParkingExcel\SmartParkingExcel.csproj" />
   </ItemGroup>
 
 </Project>

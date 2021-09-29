@@ -1,4 +1,5 @@
-﻿using SmartParkingAbstract.ViewModels.Parking;
+﻿using SmartParkingAbstract.ViewModels.DataImport;
+using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace SmartParkingAbstract.Services.Parking
         Task<ParkingLaneViewModel> GetParkingLaneById(Guid laneId);
         Task<ParkingLaneViewModel> UpdateParkingLane(CreateUpdateParkingLaneViewModel model);
         Task<ParkingLaneViewModel> DeleteParkingLane(Guid laneId);
+        Task<IEnumerable<ParkingLaneViewModel>> ImportData(IEnumerable<ParkingLaneDataImport> data); 
     }
 }

@@ -42,7 +42,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await parkingService.CreateParking(model);
                 return ServiceResponse<ParkingViewModel>.Success(result);
             }
@@ -72,7 +71,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await parkingService.UpdateParking(model);
                 return ServiceResponse<ParkingViewModel>.Success(result);
             }

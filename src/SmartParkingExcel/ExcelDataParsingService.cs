@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using SmartParking.Share.Attributes;
 using SmartParkingAbstract.Services.Data;
+using SmartParkingAbstract.ViewModels.DataImport;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,14 +17,18 @@ namespace SmartParkingExcel
             document = SpreadsheetDocument.Open(stream, false);
         }
 
-        public IEnumerable<T> ParseData<T>(string sheetName, bool ignoreWhenFail) where T: new()
+        public IEnumerable<T> ParseData<T>(ParsingOption parsingOption) where T: new()
         {
-            if(document == null)
+            if (parsingOption is not ExcelParsingOption excelParsingOption || string.IsNullOrEmpty(excelParsingOption.SheetName))
+            {
+                return new List<T>();
+            }
+            if (document == null)
             {
                 return new List<T>();
             }
             var workbook = document.WorkbookPart.Workbook;
-            var sheet = workbook.Descendants<Sheet>().FirstOrDefault(x => x.Name == sheetName);
+            var sheet = workbook.Descendants<Sheet>().FirstOrDefault(x => x.Name == excelParsingOption.SheetName);
             if (sheet == null)
             {
                 return new List<T>();
@@ -55,12 +59,12 @@ namespace SmartParkingExcel
             {
                 try
                 {
-                    T employeeData = ReadRowData<T>(dataHeaders, workbook.WorkbookPart, wsPart, row);
-                    importData.Add(employeeData);
+                    T data = ReadRowData<T>(dataHeaders, workbook.WorkbookPart, wsPart, row);
+                    importData.Add(data);
                 }
                 catch (Exception )
                 {
-                    if(!ignoreWhenFail)
+                    if(!excelParsingOption.IgnoredIfFailed)
                     {
                         throw;
                     }
@@ -74,6 +78,7 @@ namespace SmartParkingExcel
         public void Close()
         {
             document.Close();
+            document = null;
         }
 
         private static T ReadRowData<T>(List<ExportProperty> properties, WorkbookPart wbPart, WorksheetPart wsPart, int row) where T:new()
@@ -111,32 +116,6 @@ namespace SmartParkingExcel
                 cellValue = cell.InnerText;
             }
             return cellValue;
-        }
-    }
-
-    public class ExportProperty
-    {
-        public string PropertyName { get; set; }
-        public string ColumnHeader { get; set; }
-        public string ColumnName { get; set; }
-
-        public static List<ExportProperty> OfType(Type type)
-        {
-            var properties = type.GetProperties();
-            var exportProperties = new List<ExportProperty>();
-            foreach (var property in properties)
-            {
-                if (Attribute.GetCustomAttribute(property, typeof(ExcelDataImportAttribute)) is ExcelDataImportAttribute dataAttributes)
-                {
-                    exportProperties.Add(new ExportProperty()
-                    {
-                        ColumnHeader = dataAttributes.ColumnHeader,
-                        PropertyName = property.Name,
-                        ColumnName = ""
-                    });
-                }
-            }
-            return exportProperties;
         }
     }
 }

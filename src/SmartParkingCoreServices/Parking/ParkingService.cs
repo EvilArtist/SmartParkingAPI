@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartParking.Share.Extensions;
 using SmartParkingAbstract.Services.Parking;
+using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
+using SmartParkingCoreServices.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,30 +17,33 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Parking
 {
-    public class ParkingService : IParkingService
+    public class ParkingService : MultitanentService, IParkingService
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
         private readonly IParkingLaneService parkingLaneService;
         private readonly ISlotTypeConfigurationService slotConfigService;
+        private string ClientId => GetClientId();
 
         public ParkingService(ApplicationDbContext dbContext, 
             IMapper mapper, 
             IParkingLaneService parkingLaneService,
-            ISlotTypeConfigurationService slotConfigService)
+            ISlotTypeConfigurationService slotConfigService,
+            IHttpContextAccessor httpContextAccessor): base(httpContextAccessor)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.parkingLaneService = parkingLaneService;
             this.slotConfigService = slotConfigService;
         }
+
         public async Task<ParkingViewModel> CreateParking(CreateUpdateParkingViewModel model)
         {
             ParkingConfig parking = new()
             {
                 Name = model.Name,
                 Address = model.Address,
-                ClientId = model.ClientId
+                ClientId = GetClientId()
             };
             var result = await dbContext.AddAsync(parking);
             await dbContext.SaveChangesAsync();
@@ -56,10 +62,12 @@ namespace SmartParkingCoreServices.Parking
             var dataQuery = dbContext.Parkings
                 .Include(x => x.ParkingLanes)
                 .Include(x=>x.SlotTypeConfigurations)
-                .Where(x => x.ClientId == query.ClientId);
+                .Where(x => x.ClientId == ClientId);
             var totalCount = await dataQuery.CountAsync();
             var page = query.Page;
-            var data = await dataQuery.PagedBy(query.Page, query.PageSize)
+            var data = await dataQuery
+                .OrderBy(x=>x.Name)
+                .PagedBy(query.Page, query.PageSize)
                 .Select(x=> new ParkingViewModel() {
                     Id = x.Id,
                     Address = x.Address,
@@ -93,7 +101,7 @@ namespace SmartParkingCoreServices.Parking
         public async Task<ParkingViewModel> UpdateParking(CreateUpdateParkingViewModel model)
         {
             var parking = await dbContext.Parkings
-               .Where(x => x.ClientId == model.ClientId && x.Id == model.Id)
+               .Where(x => x.ClientId == ClientId && x.Id == model.Id)
                .FirstOrDefaultAsync();
             if (parking != null)
             {
@@ -138,6 +146,30 @@ namespace SmartParkingCoreServices.Parking
             dbContext.CardParkingAssignments.RemoveRange(assignments);
             var rows = await dbContext.SaveChangesAsync();
             return rows;
+        }
+
+        public async Task<IEnumerable<ParkingViewModel>> ImportData(IEnumerable<ParkingDataImport> data)
+        {
+            var parkings = data.Select(model =>
+            {
+                ParkingConfig parking = new()
+                {
+                    Name = model.Name,
+                    Address = model.Address,
+                    ClientId = GetClientId(),
+                };
+                return parking;
+            });
+            await dbContext.AddRangeAsync(parkings);
+            await dbContext.SaveChangesAsync();
+            return parkings.Select(x => new ParkingViewModel()
+            {
+                Id = x.Id,
+                Address = x.Address,
+                Name = x.Name,
+                NumberOfLanes = 0,
+                NumberOfLots = 0
+            });
         }
     }
 }

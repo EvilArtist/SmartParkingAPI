@@ -15,8 +15,9 @@ namespace SmartParkingAbstract.ViewModels.Parking
         public int NumberOfLots { get; set; }
     }
 
-    public class CreateUpdateParkingViewModel: MultiTanentModel
+    public class CreateUpdateParkingViewModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
     }
