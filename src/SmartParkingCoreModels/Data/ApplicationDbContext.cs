@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using SmartParkingCoreModels.Common;
 using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
 using SmartParkingCoreModels.Parking.PriceBook;
@@ -6,12 +8,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using static SmartParking.Share.Constants.IdentityConstants;
 
 namespace SmartParkingCoreModels.Data
 {
     public class ApplicationDbContext: DbContext
     {
+        private readonly IHttpContextAccessor httpContextAccessor;
+
         public DbSet<SerialPortConfiguration> SerialPortConfigurations { get; set; }
         public DbSet<CameraConfiguration> CameraConfigurations { get; set; }
         public DbSet<CameraProtocolType> CameraProtocolType { get; set; }
@@ -36,9 +42,10 @@ namespace SmartParkingCoreModels.Data
         public DbSet<ParkingRecord> ParkingRecords { get; set; }
         public DbSet<ParkingRecordStatus> ParkingRecordStatuses { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
                 : base(options)
         {
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -84,6 +91,32 @@ namespace SmartParkingCoreModels.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
+        }
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var item in ChangeTracker.Entries() )
+            {
+                if (item.State == EntityState.Added && item.Entity is MultiTanentModel model)
+                {
+                    model.ClientId = GetClientId();
+                }
+            }
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        protected string GetClientId()
+        {
+            if (httpContextAccessor != null)
+            {
+                var claim = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId);
+
+                var clientId = claim?.Value ?? "";
+                return clientId;
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 }

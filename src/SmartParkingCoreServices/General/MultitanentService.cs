@@ -11,6 +11,7 @@ namespace SmartParkingCoreServices.General
     public class MultitanentService
     {
         private readonly IHttpContextAccessor httpContextAccessor;
+        protected string ClientId => GetClientId();
 
         public MultitanentService(IHttpContextAccessor httpContextAccessor)
         {

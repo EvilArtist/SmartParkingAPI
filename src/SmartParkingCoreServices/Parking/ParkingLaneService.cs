@@ -23,8 +23,6 @@ namespace SmartParkingCoreServices.Parking
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        private string ClientId => GetClientId();
-
         public ParkingLaneService(ApplicationDbContext dbContext,
             IHttpContextAccessor httpContextAccessor,
             IMapper mapper): base(httpContextAccessor)
@@ -304,6 +302,7 @@ namespace SmartParkingCoreServices.Parking
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
                     //logger.LogError(e.Message);
                 }
             });

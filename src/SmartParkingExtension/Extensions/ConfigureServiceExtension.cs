@@ -80,6 +80,7 @@ namespace SmartParkingExtensions
             services.AddScoped<IPriceCalculationService, PriceCalculationService>();
             services.AddScoped<IOperationService, OperationService>();
             services.AddScoped<IFileService, FileService>();
+            services.ConfigDataParsingService();
         }
 
         public static void ConfigSignalR(this IServiceCollection services)
@@ -191,9 +192,9 @@ namespace SmartParkingExtensions
 
         public static void ConfigDataParsingService(this IServiceCollection services)
         {
-            services.AddTransient<ExcelDataParsingService>();
+            services.AddScoped<ExcelDataParsingService>();
 
-            services.AddTransient<DataParsingResolver>(serviceProvider => key =>
+            services.AddScoped<DataParsingResolver>(serviceProvider => key =>
             {
                 return key switch
                 {

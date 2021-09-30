@@ -4,6 +4,7 @@ using SmartParkingAbstract.Services.Data;
 using SmartParkingAbstract.Services.Parking;
 using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
+using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingExcel;
 using System;
 using System.Collections.Generic;
@@ -19,15 +20,18 @@ namespace SmartParkingApi.Controllers.Parkings
         private readonly DataParsingResolver dataParsingResolver;
         private readonly IParkingService parkingService;
         private readonly IParkingLaneService parkingLaneService;
+        private readonly ICameraConfigService cameraConfigService;
 
         public ImportDataController(DataParsingResolver dataParsingResolver,
             IParkingService parkingService,
-            IParkingLaneService parkingLaneService
+            IParkingLaneService parkingLaneService,
+            ICameraConfigService cameraConfigService
             )
         {
             this.dataParsingResolver = dataParsingResolver;
             this.parkingService = parkingService;
             this.parkingLaneService = parkingLaneService;
+            this.cameraConfigService = cameraConfigService;
         }
 
         [HttpPost("Import-Parking")]
@@ -67,6 +71,49 @@ namespace SmartParkingApi.Controllers.Parkings
                 await parkingLaneService.ImportData(parkingLaneData);
             }
             return ServiceResponse<string>.Success("");
+        }
+
+
+        [HttpPost("Import-Camera")]
+        public async Task<ServiceResponse<IEnumerable<CameraConfigurationViewModel>>> ImportCameraConfig(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                IDataParsingService service = dataParsingResolver("EXCEL");
+                service.Open(stream);
+                ExcelParsingOption parsingOption = new()
+                {
+                    IgnoredIfFailed = true,
+                    SheetName = "Camera"
+                };
+                var cameraData = service.ParseData<CameraImportData>(parsingOption);
+                service.Close();
+                var result = await cameraConfigService.ImportData(cameraData);
+                return ServiceResponse<IEnumerable<CameraConfigurationViewModel>>.Success(result);
+            }
+            return ServiceResponse<IEnumerable<CameraConfigurationViewModel>>.Success(new List<CameraConfigurationViewModel>() );
+        }
+
+        [HttpPost("Import-Multigate")]
+        public async Task<ServiceResponse<IEnumerable<CameraConfigurationViewModel>>> ImportMuntifunctionGateConfig(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                IDataParsingService service = dataParsingResolver("EXCEL");
+                service.Open(stream);
+                ExcelParsingOption parsingOption = new()
+                {
+                    IgnoredIfFailed = true,
+                    SheetName = "SerialPort"
+                };
+                var cameraData = service.ParseData<MultigateImportData>(parsingOption);
+                service.Close();
+                var result = await cameraConfigService.ImportData(cameraData);
+                return ServiceResponse<IEnumerable<CameraConfigurationViewModel>>.Success(result);
+            }
+            return ServiceResponse<IEnumerable<CameraConfigurationViewModel>>.Success(new List<CameraConfigurationViewModel>());
         }
     }
 }

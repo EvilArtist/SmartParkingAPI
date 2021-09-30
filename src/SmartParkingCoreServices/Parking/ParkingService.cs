@@ -23,7 +23,6 @@ namespace SmartParkingCoreServices.Parking
         private readonly IMapper mapper;
         private readonly IParkingLaneService parkingLaneService;
         private readonly ISlotTypeConfigurationService slotConfigService;
-        private string ClientId => GetClientId();
 
         public ParkingService(ApplicationDbContext dbContext, 
             IMapper mapper, 
