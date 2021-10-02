@@ -221,7 +221,7 @@ namespace SmartParkingCoreServices.Parking
                 .Where(x => x.ClientId == ClientId && parkingNames.Contains(x.Name))
                 .Select(x => new { x.Name, x.Id }).ToListAsync();
             var parkingLaneViewModels= new List<ParkingLaneViewModel>();
-            data.ToList().ForEach(async parkingLaneData =>
+            foreach (var parkingLaneData in data.ToList())
             {
                 try
                 {
@@ -286,7 +286,6 @@ namespace SmartParkingCoreServices.Parking
                             serialPort.ParkingLaneId = null;
                         }
                     }
-                    dbContext.Update(parkingLane);
                     dbContext.UpdateRange(cameras);
                     dbContext.UpdateRange(serialPorts);
                     await dbContext.SaveChangesAsync();
@@ -305,7 +304,7 @@ namespace SmartParkingCoreServices.Parking
                     Console.WriteLine(e.Message);
                     //logger.LogError(e.Message);
                 }
-            });
+            };
             return parkingLaneViewModels;
         }
     }

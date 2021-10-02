@@ -33,7 +33,7 @@ namespace SmartParkingExcel
             {
                 return new List<T>();
             }
-            WorksheetPart wsPart = (WorksheetPart)(document.WorkbookPart.GetPartById(sheet.Id));
+            WorksheetPart wsPart = (WorksheetPart)document.WorkbookPart.GetPartById(sheet.Id);
 
             var dataHeaders = ExportProperty.OfType(typeof (T));
             Dictionary<string, string> headerColumns = new();
@@ -116,6 +116,70 @@ namespace SmartParkingExcel
                 cellValue = cell.InnerText;
             }
             return cellValue;
+        }
+
+        public IEnumerable<T> ParseData<T, T1>( 
+            Func<string, string, T1, T> assignment, 
+            ParsingOption parsingOption) where T : new()
+        {
+            if (parsingOption is not ExcelParsingOption excelParsingOption || string.IsNullOrEmpty(excelParsingOption.SheetName))
+            {
+                return new List<T>();
+            }
+            if (document == null)
+            {
+                return new List<T>();
+            }
+            var workbook = document.WorkbookPart.Workbook;
+            var sheet = workbook.Descendants<Sheet>().FirstOrDefault(x => x.Name == excelParsingOption.SheetName);
+            if (sheet == null)
+            {
+                return new List<T>();
+            }
+            WorksheetPart wsPart = (WorksheetPart)(document.WorkbookPart.GetPartById(sheet.Id));
+
+            Dictionary<string, string> headerColumns = new();
+            int column = 2;
+            var headerValue = ReadCellValue(document.WorkbookPart, wsPart, GetExcelColumnName(column) + "" + 1);
+            var headers = new List<string>();
+            while (!string.IsNullOrEmpty(headerValue))
+            {
+                headers.Add(headerValue);
+                column++;
+                headerValue = ReadCellValue(document.WorkbookPart, wsPart, GetExcelColumnName(column) + 1);
+            }
+
+            var rows = new List<string>();
+            int row = 2;
+            var rowHeader = ReadCellValue(document.WorkbookPart, wsPart, "A" + row);
+            var result = new List<T>();
+            while (!string.IsNullOrEmpty(rowHeader))
+            {
+                for (column = 2; column < headers.Count + 2; column++)
+                {
+                    var cellValue = ReadCellValue(document.WorkbookPart, wsPart, GetExcelColumnName(column) + row);
+                    var value = (T1)Convert.ChangeType(cellValue, typeof(T1));
+                    var data = assignment(headers[column - 2], rowHeader, value);
+                    result.Add(data);
+                }
+                row++;
+                rowHeader = ReadCellValue(document.WorkbookPart, wsPart, "A" + row);
+            }
+            return result;
+        }
+
+        private static string GetExcelColumnName(int columnNumber)
+        {
+            string columnName = "";
+
+            while (columnNumber > 0)
+            {
+                int modulo = (columnNumber - 1) % 26;
+                columnName = Convert.ToChar('A' + modulo) + columnName;
+                columnNumber = (columnNumber - modulo) / 26;
+            }
+
+            return columnName;
         }
     }
 }

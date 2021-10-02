@@ -135,7 +135,11 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<PriceItem, PriceItemViewModel>().ReverseMap();
             CreateMap<ParkingRecordStatus, ParkingRecordStatusViewModel>().ReverseMap();
 
-            CreateMap<CameraImportData, CameraConfiguration>().ForMember(x=>x.Protocol, y => y.Ignore());
+            CreateMap<CameraDataImport, CameraConfiguration>().ForMember(x=>x.Protocol, y => y.Ignore());
+            CreateMap<MultigateDataImport, SerialPortConfiguration>();
+
+            CreateMap<SlotTypeDataImport, SlotType>();
+
         }
     }
 }

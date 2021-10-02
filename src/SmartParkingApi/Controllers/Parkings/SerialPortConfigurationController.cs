@@ -38,7 +38,7 @@ namespace SmartParkingApi.Controllers.Parkings
                         deviceStatus = tempDeviceStatus;
                     }
                 }
-                var result = await serialPortService.SearchSerialPortConfig(clientId, deviceStatus);
+                var result = await serialPortService.SearchSerialPortConfig(deviceStatus);
                 return ServiceResponse<IEnumerable<SerialPortConfigViewModel>>.Success(result);
             }
             catch (Exception e)
@@ -53,7 +53,7 @@ namespace SmartParkingApi.Controllers.Parkings
             try
             {
                 var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await serialPortService.GetSerialPortConfigById(id, clientId);
+                var result = await serialPortService.GetSerialPortConfigById(id);
                 return ServiceResponse<SerialPortConfigViewModel>.Success(result);
             }
             catch (Exception e)
@@ -67,7 +67,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                configurationViewModel.GetClientIdFromContext(HttpContext);
                 var result = await serialPortService.CreateConfig(configurationViewModel);
                 return ServiceResponse<SerialPortConfigViewModel>.Success(result);
             }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreModels.Parking
 {
-    public class SlotTypeConfiguration
+    public class SlotTypeConfiguration 
     {
         public virtual string ClientId { get; set; }
         public DateTime? CreateTime { get; set; }

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartParkingAbstract.Services.Parking;
+using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
+using SmartParkingCoreServices.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +15,14 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Parking
 {
-    public class SlotTypeConfigurationService : ISlotTypeConfigurationService
+    public class SlotTypeConfigurationService : MultitanentService, ISlotTypeConfigurationService
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        public SlotTypeConfigurationService(ApplicationDbContext dbContext, IMapper mapper)
+        public SlotTypeConfigurationService(ApplicationDbContext dbContext, 
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper) : base(httpContextAccessor)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -65,7 +70,7 @@ namespace SmartParkingCoreServices.Parking
         public async Task<SlotTypeConfigViewModel> CreateOrUpdateSlotTypeConfig(SlotTypeConfigViewModel model)
         {
             var slotType = await dbContext.SlotTypeConfigurations
-                .Where(x => x.ClientId == model.ClientId && 
+                .Where(x => x.ClientId == ClientId && 
                     x.ParkingId == model.ParkingId &&
                     x.SlotTypeId == model.SlotTypeId)
                 .FirstOrDefaultAsync();
@@ -81,6 +86,63 @@ namespace SmartParkingCoreServices.Parking
             }
             await dbContext.SaveChangesAsync();
             return mapper.Map<SlotTypeConfigViewModel>(slotType);
+        }
+
+        public async Task<IEnumerable<SlotTypeConfigViewModel>> ImportData(IEnumerable<SlotTypeConfigDataImport> data)
+        {
+            var slotTypesName = data.Select(x => x.SlotName).Distinct();
+            var parkingsName = data.Select(x => x.ParkingName).Distinct();
+            var slotTypes = await dbContext.SlotTypes
+                .Where(x => x.ClientId == ClientId && slotTypesName.Contains(x.SlotName))
+                .ToListAsync(); ;
+            var parkings = await dbContext.Parkings
+                .Where(x => x.ClientId == ClientId && parkingsName.Contains(x.Name))
+                .ToListAsync();
+            var slotTypeConfigs = new List<SlotTypeConfiguration>();
+            var notFoundParkings = parkingsName.Where(x => !parkings.Any(y => y.Name == x));
+            var notFoundSlotTypes = slotTypesName.Where(x => !slotTypes.Any(y => y.SlotName == x));
+            foreach (var item in notFoundParkings)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Not found parking " + item);
+                Console.ResetColor();
+            }
+            foreach (var item in notFoundSlotTypes)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Not found SlotType " + item);
+                Console.ResetColor();
+            }
+            foreach (var parking in parkings)
+            {
+                foreach (var slotType in slotTypes)
+                {
+                    var slotTypeConfig = await dbContext.SlotTypeConfigurations
+                        .Where(x => x.ClientId == ClientId &&
+                            x.ParkingId == parking .Id &&
+                            x.SlotTypeId == slotType.Id)
+                        .FirstOrDefaultAsync();
+                    var slotCount = data.First(x => x.SlotName == slotType.SlotName && x.ParkingName == parking.Name).NumberOfSlot;
+                    if(slotTypeConfig != null)
+                    {
+                        slotTypeConfig.SlotCount = slotCount;
+                        dbContext.Update(slotTypeConfig);
+                    } 
+                    else
+                    {
+                        slotTypeConfig = new SlotTypeConfiguration()
+                        {
+                            SlotTypeId = slotType.Id,
+                            ParkingId = parking.Id,
+                            SlotCount = slotCount
+                        };
+                        await dbContext.AddAsync(slotTypeConfig);
+                    }
+                    slotTypeConfigs.Add(slotTypeConfig);
+                }
+            }
+            await dbContext.SaveChangesAsync();
+            return mapper.Map<List<SlotTypeConfiguration>, List<SlotTypeConfigViewModel>>(slotTypeConfigs);
         }
     }
 }

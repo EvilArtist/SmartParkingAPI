@@ -28,6 +28,16 @@ namespace SmartParkingAbstract.Services.Data
         /// <typeparam name="T">Object type</typeparam>
         /// <param name="parsingOption">Option</param>
         /// <returns></returns>
-        public IEnumerable<T> ParseData<T>(ParsingOption parsingOption) where T : new(); 
+        public IEnumerable<T> ParseData<T>(ParsingOption parsingOption) where T : new();
+
+        /// <summary>
+        /// Parsing Data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T1"></typeparam>
+        /// <param name="assignment"></param>
+        /// <param name="parsingOption"></param>
+        /// <returns></returns>
+        public IEnumerable<T> ParseData<T,T1>(Func<string,string, T1, T> assignment, ParsingOption parsingOption) where T : new();
     }
 }

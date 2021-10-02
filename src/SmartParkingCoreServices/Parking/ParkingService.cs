@@ -20,18 +20,15 @@ namespace SmartParkingCoreServices.Parking
     public class ParkingService : MultitanentService, IParkingService
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IMapper mapper;
         private readonly IParkingLaneService parkingLaneService;
         private readonly ISlotTypeConfigurationService slotConfigService;
 
         public ParkingService(ApplicationDbContext dbContext, 
-            IMapper mapper, 
             IParkingLaneService parkingLaneService,
             ISlotTypeConfigurationService slotConfigService,
             IHttpContextAccessor httpContextAccessor): base(httpContextAccessor)
         {
             this.dbContext = dbContext;
-            this.mapper = mapper;
             this.parkingLaneService = parkingLaneService;
             this.slotConfigService = slotConfigService;
         }

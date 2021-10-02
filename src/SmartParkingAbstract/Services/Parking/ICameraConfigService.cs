@@ -15,6 +15,6 @@ namespace SmartParkingAbstract.Services.Parking
         Task<CameraConfigurationViewModel> CreateCameraAsync(CameraConfigurationViewModel model);
         Task<CameraConfigurationViewModel> GetCameraById(Guid id);
         Task<IEnumerable<CameraProtocolTypeViewModel>> GetCameraProtocols();
-        Task<IEnumerable<CameraConfigurationViewModel>> ImportData(IEnumerable<CameraImportData> data);
+        Task<IEnumerable<CameraConfigurationViewModel>> ImportData(IEnumerable<CameraDataImport> data);
     }
 }

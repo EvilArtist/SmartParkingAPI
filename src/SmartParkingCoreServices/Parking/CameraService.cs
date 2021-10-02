@@ -62,7 +62,7 @@ namespace SmartParkingCoreServices.Parking
             return mapper.Map<List<CameraProtocolType>, List<CameraProtocolTypeViewModel>>(protocols);
         }
 
-        public async Task<IEnumerable<CameraConfigurationViewModel>> ImportData(IEnumerable<CameraImportData> data)
+        public async Task<IEnumerable<CameraConfigurationViewModel>> ImportData(IEnumerable<CameraDataImport> data)
         {
             var protocols = await dbContext.CameraProtocolType.ToListAsync();
             var cameraNameList = data.Select(x => x.CameraName);
