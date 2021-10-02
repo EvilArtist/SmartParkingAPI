@@ -1,4 +1,5 @@
 ﻿using SmartParking.Share.Constants;
+using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,8 @@ namespace SmartParkingAbstract.Services.Parking
     public interface ISerialPortService
     {
         Task<SerialPortConfigViewModel> CreateConfig(SerialPortConfigViewModel configurationViewModel);
-        Task<IEnumerable<SerialPortConfigViewModel>> SearchSerialPortConfig(string clienId, DeviceStatus? status);
-        Task<SerialPortConfigViewModel> GetSerialPortConfigById(Guid id, string clientId);
+        Task<IEnumerable<SerialPortConfigViewModel>> SearchSerialPortConfig(DeviceStatus? status);
+        Task<SerialPortConfigViewModel> GetSerialPortConfigById(Guid id);
+        Task<IEnumerable<SerialPortConfigViewModel>> ImportData(IEnumerable<MultigateDataImport> data);
     }
 }

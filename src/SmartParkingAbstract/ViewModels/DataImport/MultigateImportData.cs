@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.DataImport
 {
-    public class MultigateImportData
+    public class MultigateDataImport
     {
         [ExcelDataImport("Tên")]
         [Required]

@@ -11,8 +11,8 @@ namespace ApplicationTest
         {
             string fileName = @"C:\temp\test.xlsx";
             using SpreadsheetDocument document = SpreadsheetDocument.Open(fileName, false);
-            ImportDataService importDataService = new();
-            var employees = importDataService.ParseData<EmployeeDataImport>(document, "Employees", true);
+            ExcelDataParsingService importDataService = new();
+            var employees = importDataService.ParseData<EmployeeDataImport>(new ExcelParsingOption());
         }
     }
 }

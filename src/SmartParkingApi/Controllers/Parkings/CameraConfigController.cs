@@ -27,7 +27,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
                 DeviceStatus? deviceStatus = null;
                 if (!string.IsNullOrEmpty(status))
                 {
@@ -37,7 +36,7 @@ namespace SmartParkingApi.Controllers.Parkings
                         deviceStatus = tempDeviceStatus;
                     }
                 }
-                var result = await service.GetCamerasAsync(clientId, deviceStatus);
+                var result = await service.GetCamerasAsync(deviceStatus);
 
                 return ServiceResponse<IEnumerable<CameraConfigurationViewModel>>.Success(result);
             }
@@ -67,8 +66,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await service.GetCameraById(id, clientId);
+                var result = await service.GetCameraById(id);
                 return ServiceResponse<CameraConfigurationViewModel>.Success(result);
             }
             catch (Exception e)

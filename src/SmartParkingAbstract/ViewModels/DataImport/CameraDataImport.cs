@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SmartParkingAbstract.ViewModels.DataImport
 {
-    public class CameraImportData
+    public class CameraDataImport
     {
         [ExcelDataImport("Tên")]
         [Required]

@@ -14,7 +14,7 @@ using SmartParkingCoreModels.Identity;
 using SmartParkingCoreServices.IdentityServices;
 using System.Reflection;
 using SmartParkingCoreModels.Data;
-using SmartParkingCoreServices.Extensions;
+using SmartParkingExtensions;
 using Serilog;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServer4.Services;

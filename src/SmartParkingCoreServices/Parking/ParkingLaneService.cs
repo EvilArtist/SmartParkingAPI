@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.Services.Parking;
+using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
@@ -30,10 +33,9 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<ParkingLaneViewModel> CreateParkingLane(CreateUpdateParkingLaneViewModel model)
         {
-            var clientId = GetClientId();
             ParkingLane parkingLane = new()
             {
-                ClientId = clientId,
+                ClientId = ClientId,
                 Name = model.Name,
                 ParkingId = model.ParkingId
             };
@@ -80,11 +82,10 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<ParkingLaneViewModel> GetParkingLaneById( Guid laneId)
         {
-            var clientId = GetClientId();
             var parkingLane = await dbContext.ParkingLanes
                .Include(x => x.Cameras)
                .Include(x => x.MutiFunctionGates)
-               .Where(x => x.Id == laneId && clientId == x.ClientId)
+               .Where(x => x.Id == laneId && ClientId == x.ClientId)
                .FirstOrDefaultAsync();
 
             return new ParkingLaneViewModel
@@ -99,12 +100,10 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<IEnumerable<ParkingLaneViewModel>> GetParkingLanes(Guid parkingId)
         {
-            var clientId = GetClientId();
-
             var parkingLanes = await dbContext.ParkingLanes
                 .Include(x => x.Cameras)
                 .Include(x => x.MutiFunctionGates)
-                .Where(x => x.ParkingId == parkingId && clientId == x.ClientId)
+                .Where(x => x.ParkingId == parkingId && ClientId == x.ClientId)
                 .ToListAsync();
 
             return parkingLanes.Select(x => new ParkingLaneViewModel
@@ -120,9 +119,8 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<ParkingLaneViewModel> UpdateParkingLane(CreateUpdateParkingLaneViewModel model)
         {
-            var clientId = GetClientId();
             ParkingLane parkingLane = await dbContext.ParkingLanes
-                .Where(x => x.ClientId == clientId && x.Id == model.Id)
+                .Where(x => x.ClientId == ClientId && x.Id == model.Id)
                 .FirstOrDefaultAsync();
 
             var cameraIds = model.CameraIds;
@@ -185,11 +183,10 @@ namespace SmartParkingCoreServices.Parking
 
         public async Task<ParkingLaneViewModel> DeleteParkingLane(Guid laneId)
         {
-            var clientId = GetClientId();
             var parkingLane = await dbContext.ParkingLanes
                .Include(x => x.Cameras)
                .Include(x => x.MutiFunctionGates)
-               .Where(x => x.Id == laneId && clientId == x.ClientId)
+               .Where(x => x.Id == laneId && ClientId == x.ClientId)
                .FirstOrDefaultAsync();
 
             foreach (var camera in parkingLane.Cameras)
@@ -215,6 +212,100 @@ namespace SmartParkingCoreServices.Parking
                 Cameras = mapper.Map<List<CameraConfiguration>, List<CameraConfigurationViewModel>>(parkingLane.Cameras.ToList()),
                 MultiFunctionGates = mapper.Map<List<SerialPortConfiguration>, List<SerialPortConfigViewModel>>(parkingLane.MutiFunctionGates.ToList())
             };
+        }
+
+        public async Task<IEnumerable<ParkingLaneViewModel>> ImportData(IEnumerable<ParkingLaneDataImport> data)
+        {
+            var parkingNames = data.Select(x => x.ParkingName);
+            var parkingIds = await dbContext.Parkings
+                .Where(x => x.ClientId == ClientId && parkingNames.Contains(x.Name))
+                .Select(x => new { x.Name, x.Id }).ToListAsync();
+            var parkingLaneViewModels= new List<ParkingLaneViewModel>();
+            foreach (var parkingLaneData in data.ToList())
+            {
+                try
+                {
+                    //logger.LogInformation($"Tạo làn xe {parkingLaneData.Name}");
+                    var parkingId = parkingIds.FirstOrDefault(y => y.Name == parkingLaneData.ParkingName)?.Id ?? null;
+                    ParkingLane parkingLane = await dbContext.ParkingLanes
+                        .Where(x => x.Name == parkingLaneData.Name && ClientId == ClientId)
+                        .FirstOrDefaultAsync();
+
+                    var cameraNames = parkingLaneData.Cameras.Split(",").Distinct().ToList();
+                    var cameras = await dbContext.CameraConfigurations
+                        .Where(x => x.ClientId == ClientId && cameraNames.Contains(x.CameraName) && x.ParkingLaneId == null)
+                        .ToListAsync();
+                    if (cameras.Count != cameraNames.Count)
+                    {
+                        throw new Exception("Invalid Camera Config");
+                    }
+
+                    var serialPortNames = parkingLaneData.MultiFunctionGates.Split("|").Distinct().ToList();
+                    var serialPorts = await dbContext.SerialPortConfigurations
+                        .Where(x => x.ClientId == ClientId && serialPortNames.Contains(x.Name) && x.ParkingLaneId == null)
+                        .ToListAsync();
+                    if (serialPorts.Count != serialPortNames.Count)
+                    {
+                        throw new Exception("Invalid Serail Port Config");
+                    }
+
+                    EntityEntry<ParkingLane> result;
+                    if (parkingLane != null)
+                    {
+                        result = dbContext.Update(parkingLane);
+                    }
+                    else
+                    {
+                        parkingLane = new ParkingLane()
+                        {
+                            ClientId = ClientId,
+                            Name = parkingLaneData.Name,
+                            ParkingId = parkingId
+                        };
+                        result = await dbContext.AddAsync(parkingLane);
+                    }
+                    foreach (var camera in cameras)
+                    {
+                        if (cameraNames.Contains(camera.CameraName))
+                        {
+                            camera.ParkingLaneId = parkingLane.Id;
+                        }
+                        else
+                        {
+                            camera.ParkingLaneId = null;
+                        }
+                    }
+                    foreach (var serialPort in serialPorts)
+                    {
+                        if (serialPortNames.Contains(serialPort.Name))
+                        {
+                            serialPort.ParkingLaneId = parkingLane.Id;
+                        }
+                        else
+                        {
+                            serialPort.ParkingLaneId = null;
+                        }
+                    }
+                    dbContext.UpdateRange(cameras);
+                    dbContext.UpdateRange(serialPorts);
+                    await dbContext.SaveChangesAsync();
+                    parkingLaneViewModels.Add(new ParkingLaneViewModel()
+                    {
+                        Id = parkingLane.Id,
+                        Name = parkingLane.Name,
+                        ParkingId = parkingLane.ParkingId.Value,
+                        Cameras = mapper.Map<List<CameraConfiguration>, List<CameraConfigurationViewModel>>(parkingLane.Cameras.ToList()),
+                        MultiFunctionGates = mapper.Map<List<SerialPortConfiguration>, List<SerialPortConfigViewModel>>(parkingLane.MutiFunctionGates.ToList())
+                    });
+                    //logger.LogInformation("Thành công ");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    //logger.LogError(e.Message);
+                }
+            };
+            return parkingLaneViewModels;
         }
     }
 }

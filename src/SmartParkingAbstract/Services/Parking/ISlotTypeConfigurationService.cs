@@ -1,4 +1,5 @@
-﻿using SmartParkingAbstract.ViewModels.Parking;
+﻿using SmartParkingAbstract.ViewModels.DataImport;
+using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace SmartParkingAbstract.Services.Parking
         Task<IEnumerable<SlotTypeConfigViewModel>> GetSlotTypeConfigs(string clientId, Guid parkingId);
         Task<IEnumerable<SlotTypeConfigViewModel>> CreateOrUpdateSlotTypeConfigs(UpdateSlotTypeConfigsViewModel model);
         Task<SlotTypeConfigViewModel> CreateOrUpdateSlotTypeConfig(SlotTypeConfigViewModel model);
+        Task<IEnumerable<SlotTypeConfigViewModel>> ImportData(IEnumerable<SlotTypeConfigDataImport> slotTypeConfig);
     }
 }

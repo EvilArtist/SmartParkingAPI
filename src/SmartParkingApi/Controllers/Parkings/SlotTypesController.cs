@@ -31,8 +31,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await slotTypeService.SearchSlotTypesAsync(clientId);
+                var result = await slotTypeService.SearchSlotTypesAsync();
                 return ServiceResponse<IEnumerable<SlotTypeViewModel>>.Success(result);
             }
             catch (Exception e)
@@ -52,8 +51,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await slotTypeService.GetSlotTypeByIdAsync(id, clientId);
+                var result = await slotTypeService.GetSlotTypeByIdAsync(id);
                 return ServiceResponse<SlotTypeViewModel>.Success(result);
             }
             catch (Exception e)
@@ -74,7 +72,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                slotType.GetClientIdFromContext(HttpContext);
                 var result = await slotTypeService.CreateSlotTypeAsync(slotType);
                 return ServiceResponse<SlotTypeViewModel>.Success(result);
             }
@@ -94,7 +91,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                slotType.GetClientIdFromContext(HttpContext);
                 var result = await slotTypeService.UpdateSlotTypeAsync(slotType);
                 return ServiceResponse<SlotTypeViewModel>.Success(result);
             }
@@ -115,7 +111,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                deleteViewModel.GetClientIdFromContext(HttpContext);
                 var result = await slotTypeService.DeleteSlotTypeAsync(deleteViewModel);
                 if (result)
                 {
@@ -147,8 +142,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await slotTypeService.GetSlotTypesAvailableAsync(clientId, parkingId);
+                var result = await slotTypeService.GetSlotTypesAvailableAsync(parkingId);
                 return ServiceResponse<IEnumerable<SlotTypeViewModel>>.Success(result);
             }
             catch (Exception e)

@@ -1,4 +1,5 @@
-﻿using SmartParkingAbstract.ViewModels.General;
+﻿using SmartParkingAbstract.ViewModels.DataImport;
+using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,7 @@ namespace SmartParkingAbstract.Services.Parking
         Task<ParkingViewModel> UpdateParking(CreateUpdateParkingViewModel model);
         Task<int> AssignCards(CardParkingAssignmentViewModel assignment);
         Task<int> RemoveCards(CardParkingAssignmentViewModel assignment);
+
+        Task<IEnumerable<ParkingViewModel>> ImportData(IEnumerable<ParkingDataImport> data);
     }
 }

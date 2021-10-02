@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SmartParking.Share.Constants;
+using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Operation;
 using SmartParkingAbstract.ViewModels.Parking;
@@ -133,6 +134,12 @@ namespace SmartParkingCoreServices.AutoMap
                 .ReverseMap();
             CreateMap<PriceItem, PriceItemViewModel>().ReverseMap();
             CreateMap<ParkingRecordStatus, ParkingRecordStatusViewModel>().ReverseMap();
+
+            CreateMap<CameraDataImport, CameraConfiguration>().ForMember(x=>x.Protocol, y => y.Ignore());
+            CreateMap<MultigateDataImport, SerialPortConfiguration>();
+
+            CreateMap<SlotTypeDataImport, SlotType>();
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SmartParkingAbstract.ViewModels.General;
+﻿using SmartParkingAbstract.ViewModels.DataImport;
+using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace SmartParkingAbstract.Services.Parking
     public interface ISlotTypeService
     {
         Task<SlotTypeViewModel> CreateSlotTypeAsync(SlotTypeViewModel model);
-        Task<IEnumerable<SlotTypeViewModel>> SearchSlotTypesAsync(string clientId);
-        Task<SlotTypeViewModel> GetSlotTypeByIdAsync(Guid id, string clientId);
+        Task<IEnumerable<SlotTypeViewModel>> SearchSlotTypesAsync();
+        Task<SlotTypeViewModel> GetSlotTypeByIdAsync(Guid id);
         Task<bool> DeleteSlotTypeAsync(EntityDeleteViewModel deleteViewModel);
         Task<SlotTypeViewModel> UpdateSlotTypeAsync(SlotTypeViewModel model);
-        Task<IEnumerable<SlotTypeViewModel>> GetSlotTypesAvailableAsync(string clientId, Guid ParkingId);
-
+        Task<IEnumerable<SlotTypeViewModel>> GetSlotTypesAvailableAsync(Guid ParkingId);
+        Task<IEnumerable<SlotTypeViewModel>> ImportData(IEnumerable<SlotTypeDataImport> data);
     }
 }

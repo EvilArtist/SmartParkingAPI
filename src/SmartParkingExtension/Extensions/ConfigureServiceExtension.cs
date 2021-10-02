@@ -32,6 +32,9 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using SmartParkingAbstract.Services.File;
 using SmartParkingCoreServices.File;
+using SmartParkingAbstract.Services.Data;
+using SmartParkingExcel;
+using System.Collections.Generic;
 
 namespace SmartParkingExtensions
 {
@@ -77,6 +80,7 @@ namespace SmartParkingExtensions
             services.AddScoped<IPriceCalculationService, PriceCalculationService>();
             services.AddScoped<IOperationService, OperationService>();
             services.AddScoped<IFileService, FileService>();
+            services.ConfigDataParsingService();
         }
 
         public static void ConfigSignalR(this IServiceCollection services)
@@ -183,6 +187,20 @@ namespace SmartParkingExtensions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
                 RequestPath = new PathString("/Images")
+            });
+        }
+
+        public static void ConfigDataParsingService(this IServiceCollection services)
+        {
+            services.AddScoped<ExcelDataParsingService>();
+
+            services.AddScoped<DataParsingResolver>(serviceProvider => key =>
+            {
+                return key switch
+                {
+                    "EXCEL" => serviceProvider.GetService<ExcelDataParsingService>(),
+                    _ => throw new KeyNotFoundException(),// or maybe return null, up to you
+                };
             });
         }
     }

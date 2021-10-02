@@ -18,7 +18,7 @@ namespace SmartParkingCoreServices.Operation.Tests
             {
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
-                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
+                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options, null);
                 PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
@@ -44,7 +44,7 @@ namespace SmartParkingCoreServices.Operation.Tests
             {
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
-                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
+                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options, null);
                 PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
@@ -70,7 +70,7 @@ namespace SmartParkingCoreServices.Operation.Tests
             {
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
-                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
+                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options, null);
                 PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
@@ -96,7 +96,7 @@ namespace SmartParkingCoreServices.Operation.Tests
             {
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
-                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options);
+                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options, null);
                 PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {
