@@ -1,4 +1,4 @@
-name: .NET
+name: Build BE only
 
 on:
   push:
