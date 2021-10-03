@@ -14,5 +14,8 @@ namespace SmartParking.Share.Constants
         public const int ShortDescriptionMaxLength = 120;
         public const int DescriptionMaxLength = 250;
         public const int UrlMaxLength = 127;
+        public const int LicensePlateMaxLength = 12;
+        public const int LicensePlateMinLength = 6;
+
     }
 }
