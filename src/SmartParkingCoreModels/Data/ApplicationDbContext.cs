@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartParkingCoreModels.Common;
+using SmartParkingCoreModels.Customers;
 using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
 using SmartParkingCoreModels.Parking.PriceBook;
@@ -41,6 +42,11 @@ namespace SmartParkingCoreModels.Data
 
         public DbSet<ParkingRecord> ParkingRecords { get; set; }
         public DbSet<ParkingRecordStatus> ParkingRecordStatuses { get; set; }
+
+        public DbSet<Customer> Customers{ get; set; }
+        public DbSet<Subscription> Subscriptions{ get; set; }
+        public DbSet<Vehicle> Vehicles{ get; set; }
+        public DbSet<CustomerType> CustomerTypes { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
                 : base(options)
@@ -96,7 +102,7 @@ namespace SmartParkingCoreModels.Data
         {
             foreach (var item in ChangeTracker.Entries() )
             {
-                if (item.State == EntityState.Added && item.Entity is MultiTanentModel model)
+                if (item.State == EntityState.Added && item.Entity is IMultiTanentModel model && model.ClientId == "")
                 {
                     model.ClientId = GetClientId();
                 }

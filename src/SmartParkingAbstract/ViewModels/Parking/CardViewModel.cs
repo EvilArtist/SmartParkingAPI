@@ -34,14 +34,12 @@ namespace SmartParkingAbstract.ViewModels.Parking
     {
         public string IdentityCode { get; set; }
         public string Name { get; set; }
-        public Guid SubscriptionTypeId { get; set; }
         public Guid VehicleTypeId { get; set; }
     }
 
     public class UpdateCardViewModel : MultiTanentModel
     {
         public string Name { get; set; }
-        public Guid SubscriptionTypeId { get; set; }
         public Guid VehicleTypeId { get; set; }
     }
 }

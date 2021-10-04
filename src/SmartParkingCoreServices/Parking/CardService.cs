@@ -27,9 +27,13 @@ namespace SmartParkingCoreServices.Parking
             IdentityCode = x.IdentityCode,
             Name = x.Name,
             Status = x.Status.Name,
-            SubscriptionTypeName = x.SubscriptionType.Name,
+            SubscriptionTypeName = x.Subscription == null || x.Subscription.SubscriptionType == null ?
+                SystemSubscriptionType.DefaultSubscriptionType.Name : 
+                x.Subscription.SubscriptionType.Name,
             VehicleTypeName = x.VehicleType.Name,
-            SubscriptionTypeId = x.SubscriptionTypeId,
+            SubscriptionTypeId = x.Subscription == null ?
+                SystemSubscriptionType.DefaultSubscriptionType.Code :
+                x.Subscription.SubscriptionTypeId,
             VehicleTypeId = x.VehicleTypeId
         };
 
@@ -51,7 +55,7 @@ namespace SmartParkingCoreServices.Parking
             newCard.CardStatusId = cardStatus.Id;
             var result = await dbContext.AddAsync(newCard);
             await dbContext.SaveChangesAsync();
-            dbContext.Entry(result.Entity).Reference(x => x.SubscriptionType).Load();
+            dbContext.Entry(result.Entity).Reference(x => x.Subscription.SubscriptionType).Load();
             dbContext.Entry(result.Entity).Reference(x => x.VehicleType).Load();
             return mapper.Map<CardViewModel>(result.Entity);
         }
@@ -123,7 +127,8 @@ namespace SmartParkingCoreServices.Parking
             var totalCount = await data.CountAsync();
             var result = await data
                 .Include(x=>x.Status)
-                .Include(x=>x.SubscriptionType)
+                .Include(x=>x.Subscription)
+                .ThenInclude(y => y.SubscriptionType)
                 .Include(x=>x.VehicleType)
                 .OrderBy(x => x.Name)
                 .Select(selector)
@@ -146,7 +151,8 @@ namespace SmartParkingCoreServices.Parking
             var result = dbContext.Update(card);
             await dbContext.SaveChangesAsync();
 
-            dbContext.Entry(result.Entity).Reference(x => x.SubscriptionType).Load();
+            dbContext.Entry(result.Entity).Reference(x => x.Subscription).Load();
+            dbContext.Entry(result.Entity).Reference(x => x.Subscription.SubscriptionType).Load();
             dbContext.Entry(result.Entity).Reference(x => x.VehicleType).Load();
             return mapper.Map<CardViewModel>(result.Entity);
         }

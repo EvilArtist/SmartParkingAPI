@@ -35,9 +35,16 @@ namespace SmartParkingApi
             try
             {
                 var seed = args.Contains("/seed");
+                var clientIdIndex = Array.IndexOf(args, "/client");
+                string clientId = "";
                 if (seed)
                 {
-                    args = args.Except(new[] { "/seed" }).ToArray();
+                    if (clientIdIndex < 0 || clientIdIndex == args.Length - 1)
+                    {
+                        throw new ArgumentException("Client ID Not found or invalid");
+                    }
+                    clientId = args[clientIdIndex + 1];
+                    args = args.Except(new[] { "/seed", "/client", clientId }).ToArray();
                 }
                 var host = CreateHostBuilder(args).Build();
 
@@ -46,7 +53,8 @@ namespace SmartParkingApi
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
                     var connectionString = config.GetConnectionString("SmartParking");
-                    SeedData.EnsureSeedData(connectionString, typeof(Program).Assembly.FullName);
+                    var seeder = new SeedData(clientId);
+                    seeder.EnsureSeedData(connectionString, typeof(Program).Assembly.FullName);
                     Log.Information("Done seeding database.");
                     return 0;
                 }
