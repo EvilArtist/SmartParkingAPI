@@ -23,18 +23,18 @@ namespace SmartParkingCoreModels.Data
         }
         public void EnsureSeedData(string connectionString, string assemblyName)
         {
-            
             DbContextOptionsBuilder<ApplicationDbContext> builder = new DbContextOptionsBuilder<ApplicationDbContext>();
             builder.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(assemblyName));
 
-            ApplicationDbContext context = new ApplicationDbContext(builder.Options, null);
+            ApplicationDbContext context = new(builder.Options, null);
             MigrateApplicationDb(context);
         }
 
-        private void MigrateApplicationDb(ApplicationDbContext context)
+        private void MigrateApplicationDb(ApplicationDbContext dbContext)
         {
-            context.Database.Migrate();
-            EnsureSeedData(context);
+            dbContext.Database.Migrate();
+            EnsureSeedData(dbContext);
+            dbContext.SaveChanges();
         }
 
         public void EnsureSeedData(ApplicationDbContext dbContext)
@@ -43,7 +43,7 @@ namespace SmartParkingCoreModels.Data
             SeedCardStatusData(dbContext);
             SeedParkingRecordStatus(dbContext);
             SeedCustomerType(dbContext);
-            dbContext.SaveChanges();
+            SeedSubscriptionType(dbContext);
         }
 
         private static void SeedConfigurationTypeData(ApplicationDbContext dbContext)
@@ -107,6 +107,22 @@ namespace SmartParkingCoreModels.Data
                     });
                 dbContext.CustomerTypes.AddRange(defaultCustomerTypes);
             }
+        }
+
+        private void SeedSubscriptionType(ApplicationDbContext dbContext)
+        {
+            if (!dbContext.SubscriptionTypes.Any())
+            {
+                var defaultCustomerTypes = SystemSubscriptionType.GetAll()
+                    .Select(x => new SubscriptionType()
+                    {
+                        Id = x.Code,
+                        Name = x.Name,
+                        Description = x.Description,
+                        ClientId = clientId
+                    });
+                dbContext.SubscriptionTypes.AddRange(defaultCustomerTypes);
+            }            
         }
     }
 }
