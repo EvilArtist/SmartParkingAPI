@@ -28,8 +28,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await service.GetSlotTypeConfigs(clientId, parkingId);
+                var result = await service.GetSlotTypeConfigs(parkingId);
                 return ServiceResponse<IEnumerable<SlotTypeConfigViewModel>>.Success(result);
             }
             catch (Exception e)
@@ -43,7 +42,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await service.CreateOrUpdateSlotTypeConfig(model);
                 return ServiceResponse<SlotTypeConfigViewModel>.Success(result);
             }

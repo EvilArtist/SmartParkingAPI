@@ -18,7 +18,7 @@ namespace SmartParkingCoreServices.Operation.Tests
             {
                 DbContextOptionsBuilder<ApplicationDbContext> contextBuilder = new();
                 contextBuilder.UseSqlServer(CONNECTION_STRING);
-                ApplicationDbContext dbContext = new ApplicationDbContext(contextBuilder.Options, null);
+                ApplicationDbContext dbContext = new(contextBuilder.Options, null);
                 PriceCalculationService service = new PriceCalculationService(dbContext);
                 PriceCalculationParam calculationParam = new()
                 {

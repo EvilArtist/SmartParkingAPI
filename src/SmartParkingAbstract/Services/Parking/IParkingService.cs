@@ -13,7 +13,7 @@ namespace SmartParkingAbstract.Services.Parking
     {
         Task<QueryResultModel<ParkingViewModel>> GetParkings(QueryModel query);
         Task<ParkingViewModel> CreateParking(CreateUpdateParkingViewModel model);
-        Task<ParkingDetailsModel> GetParkingById(string clientId, Guid parkingId);
+        Task<ParkingDetailsModel> GetParkingById(Guid parkingId);
         Task<ParkingViewModel> UpdateParking(CreateUpdateParkingViewModel model);
         Task<int> AssignCards(CardParkingAssignmentViewModel assignment);
         Task<int> RemoveCards(CardParkingAssignmentViewModel assignment);

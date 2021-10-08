@@ -53,7 +53,6 @@ namespace IdentityServer.RestAPI
                 LastName = model.LastName,
                 Phone = model.Phone,
             };
-            model.GetClientIdFromContext(HttpContext);
             return await userService.CreateAdminAsync(employeeModel);
         }
     }

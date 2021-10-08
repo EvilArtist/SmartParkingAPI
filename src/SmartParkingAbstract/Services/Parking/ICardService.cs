@@ -12,9 +12,10 @@ namespace SmartParkingAbstract.Services.Parking
     {
         Task<QueryResultModel<CardViewModel>> GetCards(QueryModel query);
         Task<CardViewModel> CreateCard(CreateCardViewModel model);
-        Task<CardViewModel> GetCardById(string clientId, Guid cardId);
-        Task<CardViewModel> GetCardByCode(string clientId, string cardCode);
-        Task<CardViewModel> GetCardByName(string clientId, string cardName);
+        Task<CardViewModel> GetCardById(Guid cardId);
+        Task<CardViewModel> GetCardByCode(string cardCode);
+        Task<CardViewModel> GetCardByName(string cardName);
         Task<CardViewModel> UpdateCard(UpdateCardViewModel model);
+        Task<IEnumerable<CardViewModel>> ImportData(UpdateCardViewModel model);
     }
 }

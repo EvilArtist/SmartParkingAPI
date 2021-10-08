@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartParking.Share.Constants;
 using SmartParking.Share.Extensions;
@@ -7,6 +8,7 @@ using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking;
+using SmartParkingCoreServices.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,28 +18,26 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Parking
 {
-    public class CardService : ICardService
+    public class CardService : MultitanentService, ICardService
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        private readonly Expression<Func<Card, CardViewModel>> selector = x => new CardViewModel(x.ClientId)
+        private readonly Expression<Func<Card, CardViewModel>> selector = x => new CardViewModel()
         {
             Id = x.Id,
             IdentityCode = x.IdentityCode,
             Name = x.Name,
-            Status = x.Status.Name,
-            SubscriptionTypeName = x.Subscription == null || x.Subscription.SubscriptionType == null ?
-                SystemSubscriptionType.DefaultSubscriptionType.Name : 
-                x.Subscription.SubscriptionType.Name,
-            VehicleTypeName = x.VehicleType.Name,
-            SubscriptionTypeId = x.Subscription == null ?
-                SystemSubscriptionType.DefaultSubscriptionType.Code :
-                x.Subscription.SubscriptionTypeId,
-            VehicleTypeId = x.VehicleTypeId
+            Status = new CardStatusViewModel(){
+                Name = x.Status.Name,
+                Code = x.Status.Code,
+                Description = x.Status.Description
+            },
         };
 
-        public CardService(ApplicationDbContext dbContext, IMapper mapper)
+        public CardService(ApplicationDbContext dbContext,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor): base(httpContextAccessor)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -51,8 +51,7 @@ namespace SmartParkingCoreServices.Parking
             {
                 throw new Exception("Thẻ đã được thêm");
             }
-            var cardStatus = await dbContext.CardStatuses.Where(x => x.Code == CardStatusCode.Active).FirstOrDefaultAsync();
-            newCard.CardStatusId = cardStatus.Id;
+            newCard.StatusCode = CardStatusCode.Active;
             var result = await dbContext.AddAsync(newCard);
             await dbContext.SaveChangesAsync();
             dbContext.Entry(result.Entity).Reference(x => x.Subscription.SubscriptionType).Load();
@@ -60,28 +59,28 @@ namespace SmartParkingCoreServices.Parking
             return mapper.Map<CardViewModel>(result.Entity);
         }
 
-        public async Task<CardViewModel> GetCardById(string clientId, Guid cardId)
+        public async Task<CardViewModel> GetCardById(Guid cardId)
         {
             var result = await dbContext.Cards
-                .Where(x => x.Id == cardId && x.ClientId == clientId)
+                .Where(x => x.Id == cardId && x.ClientId == ClientId)
                 .Select(selector)
                 .FirstOrDefaultAsync();
             return result;
         }
 
-        public async Task<CardViewModel> GetCardByCode(string clientId, string code)
+        public async Task<CardViewModel> GetCardByCode(string code)
         {
             var result = await dbContext.Cards
-                .Where(x => x.IdentityCode == code && x.ClientId == clientId)
+                .Where(x => x.IdentityCode == code && x.ClientId == ClientId)
                 .Select(selector)
                 .FirstOrDefaultAsync();
             return result;
         }
 
-        public async Task<CardViewModel> GetCardByName(string clientId, string cardName)
+        public async Task<CardViewModel> GetCardByName(string cardName)
         {
             var result = await dbContext.Cards
-                .Where(x => x.Name == cardName && x.ClientId == clientId)
+                .Where(x => x.Name == cardName && x.ClientId == ClientId)
                 .Select(selector)
                 .FirstOrDefaultAsync();
             return result;
@@ -90,7 +89,7 @@ namespace SmartParkingCoreServices.Parking
         public async Task<QueryResultModel<CardViewModel>> GetCards(QueryModel queryModel)
         {
             var data = dbContext.Cards
-                .Where(x => x.ClientId == queryModel.ClientId);
+                .Where(x => x.ClientId == ClientId);
             if(!string.IsNullOrEmpty(queryModel.QueryString))
             {
                 data = data.Where(x => x.Name.Contains(queryModel.QueryString));
@@ -129,6 +128,8 @@ namespace SmartParkingCoreServices.Parking
                 .Include(x=>x.Status)
                 .Include(x=>x.Subscription)
                 .ThenInclude(y => y.SubscriptionType)
+                .Include(x => x.Subscription)
+                .ThenInclude(y=>y.Customer)
                 .Include(x=>x.VehicleType)
                 .OrderBy(x => x.Name)
                 .Select(selector)
@@ -144,7 +145,7 @@ namespace SmartParkingCoreServices.Parking
         public async Task<CardViewModel> UpdateCard(UpdateCardViewModel model)
         {
             var card = await dbContext.Cards
-                .Where(x => x.Id == model.Id && x.ClientId == model.ClientId)
+                .Where(x => x.Id == model.Id && x.ClientId == ClientId)
                 .FirstOrDefaultAsync();
 
             mapper.Map(model, card);
@@ -155,6 +156,11 @@ namespace SmartParkingCoreServices.Parking
             dbContext.Entry(result.Entity).Reference(x => x.Subscription.SubscriptionType).Load();
             dbContext.Entry(result.Entity).Reference(x => x.VehicleType).Load();
             return mapper.Map<CardViewModel>(result.Entity);
+        }
+
+        public Task<IEnumerable<CardViewModel>> ImportData(UpdateCardViewModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SmartParkingAbstract.ViewModels.General;
+﻿using SmartParkingAbstract.ViewModels.Customers;
+using SmartParkingAbstract.ViewModels.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +12,13 @@ namespace SmartParkingAbstract.ViewModels.Parking
     {
         public string Name { get; set; }
         public string IdentityCode { get; set; }
-        public string SubscriptionTypeName { get; set; }
-        public string VehicleTypeName { get; set; }
-        public string Status { get; set; }
-        public string CustomerName { get; set; }
-        public string LicencePalate { get; set; }
-        public Guid SubscriptionId { get; set; }
-        public Guid SubscriptionTypeId { get; set; }
         public Guid VehicleTypeId { get; set; }
+        public VehicleTypeViewModel VehicleType { get; set; }
+        public Guid CardStatusId { get; set; }
+        public CardStatusViewModel Status { get; set; }
+        public Guid? SubscriptionId { get; set; }
+        public SubscriptionViewModel Subscription { get; set; }
 
-        public CardViewModel(string clientId) : base(clientId)
-        {
-
-        }
         public CardViewModel() : base()
         {
 
@@ -42,4 +37,12 @@ namespace SmartParkingAbstract.ViewModels.Parking
         public string Name { get; set; }
         public Guid VehicleTypeId { get; set; }
     }
+
+    public class CardStatusViewModel
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+
 }

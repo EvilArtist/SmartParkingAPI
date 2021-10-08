@@ -35,6 +35,8 @@ using SmartParkingCoreServices.File;
 using SmartParkingAbstract.Services.Data;
 using SmartParkingExcel;
 using System.Collections.Generic;
+using SmartParkingAbstract.Services.Customers;
+using SmartParkingCoreServices.Customers;
 
 namespace SmartParkingExtensions
 {
@@ -80,6 +82,7 @@ namespace SmartParkingExtensions
             services.AddScoped<IPriceCalculationService, PriceCalculationService>();
             services.AddScoped<IOperationService, OperationService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ICustomerService, CustomerService>();
             services.ConfigDataParsingService();
         }
 

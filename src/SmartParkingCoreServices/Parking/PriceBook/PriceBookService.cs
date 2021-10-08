@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartParking.Share.Constants;
 using SmartParking.Share.Extensions;
@@ -9,6 +10,7 @@ using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingAbstract.ViewModels.Parking.PriceBook;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Parking.PriceBook;
+using SmartParkingCoreServices.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +20,17 @@ using System.Threading.Tasks;
 
 namespace SmartParkingCoreServices.Parking.PriceBook
 {
-    public class PriceBookService : IPriceBookService
+    public class PriceBookService : MultitanentService, IPriceBookService
     {
 
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
         private readonly IHelpers helpers;
 
-        public PriceBookService(ApplicationDbContext dbContext, IMapper mapper, IHelpers helpers)
+        public PriceBookService(ApplicationDbContext dbContext,
+            IMapper mapper,
+            IHelpers helpers,
+            IHttpContextAccessor httpContextAccessor): base(httpContextAccessor)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
@@ -63,16 +68,14 @@ namespace SmartParkingCoreServices.Parking.PriceBook
             return condition;
         }
 
-        public async Task<PriceBookViewModel> GetPriceBookById(string clientId, Guid id)
+        public async Task<PriceBookViewModel> GetPriceBookById(Guid id)
         {
             var query = dbContext.PriceLists
                 .Include(x => x.VehicleType)
                 .Include(x => x.SubscriptionType)
                 .Include(x => x.Condition)
                 .Include(x => x.Calculation)
-                .Where(x => x.ClientId == clientId &&
-                    x.Id == id 
-                );
+                .Where(x => x.ClientId == ClientId && x.Id == id);
             var result = await query.FirstOrDefaultAsync();
             var viewModel = mapper.Map<PriceBookViewModel>(result);
             viewModel.Condition = mapper.Map<PriceConditionViewModel>(result.Condition);
@@ -86,7 +89,7 @@ namespace SmartParkingCoreServices.Parking.PriceBook
                 .Include(x=>x.SubscriptionType)
                 .Include(x=>x.Condition)
                 .Include(x=>x.Calculation)
-                .Where(x => x.ClientId == queryParam.ClientId &&
+                .Where(x => x.ClientId == ClientId &&
                     x.VehicleTypeId == queryParam.VehicleTypeId &&
                     x.SubscriptionTypeId == queryParam.SubscriptionTypeId
                 );
@@ -141,7 +144,7 @@ namespace SmartParkingCoreServices.Parking.PriceBook
                 .Include(x => x.SubscriptionType)
                 .Include(x => x.Condition)
                 .Include(x => x.Calculation)
-                .Where(x => x.ClientId == model.ClientId &&
+                .Where(x => x.ClientId == ClientId &&
                     x.Id == model.Id
                 ).FirstOrDefaultAsync();
             mapper.Map(model, priceList);

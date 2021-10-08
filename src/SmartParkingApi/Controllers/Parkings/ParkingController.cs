@@ -27,7 +27,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                queryModel.GetClientIdFromContext(HttpContext);
                 var result = await parkingService.GetParkings(queryModel);
                 return ServiceResponse<QueryResultModel<ParkingViewModel>>.Success(result);
             }
@@ -56,8 +55,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await parkingService.GetParkingById(clientId, parkingId);
+                var result = await parkingService.GetParkingById(parkingId);
                 return ServiceResponse<ParkingDetailsModel>.Success(result);
             }
             catch (Exception e)
