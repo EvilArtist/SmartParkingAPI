@@ -44,8 +44,9 @@ namespace SmartParkingCoreServices.Operation
             var userId = GetCurrentUserId();
             var card = await dbContext.Cards
                 .Include(x=>x.Status)
-               .Where(x => x.IdentityCode == checkInParkingRecord.CardCode)
-               .FirstOrDefaultAsync();
+                .Include(x=>x.Subscription)
+                .Where(x => x.IdentityCode == checkInParkingRecord.CardCode)
+                .FirstOrDefaultAsync();
             if (card == null)
             {
                 throw new CardNotFoundException("Thẻ Không hợp lệ");
@@ -82,7 +83,7 @@ namespace SmartParkingCoreServices.Operation
                 CheckinParkingLaneId = checkInParkingRecord.ParkingLaneId,
                 ClientId = clientId,
                 VehicleTypeId = card.VehicleTypeId,
-                SubscriptionTypeId = card.SubscriptionTypeId,
+                SubscriptionTypeId = card.Subscription.SubscriptionTypeId,
                 ParkingId = checkInParkingRecord.ParkingId,
                 StatusCode = ParkingRecordStatusConstants.Checkin
             };

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SmartParking.Share.Constants;
+using SmartParking.Share.Models;
 using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Operation;
@@ -54,7 +55,9 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<UpdateCardViewModel, Card>();
             CreateMap<CardViewModel, Card>()
                 .ReverseMap()
-                .ForMember(x => x.SubscriptionTypeName, y => y.MapFrom(z => z.SubscriptionType.Name))
+                .ForMember(x => x.SubscriptionTypeName, y => y.MapFrom(z =>
+                        z.Subscription == null || z.Subscription.SubscriptionType == null ? SystemSubscriptionType.DefaultSubscriptionType.Name :
+                        z.Subscription.SubscriptionType.Name))
                 .ForMember(x => x.VehicleTypeName, y => y.MapFrom(z => z.VehicleType.Name))
                 .ForMember(x=> x.Status, y => y.MapFrom(z=>z.Status.Name));
 
@@ -139,7 +142,6 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<MultigateDataImport, SerialPortConfiguration>();
 
             CreateMap<SlotTypeDataImport, SlotType>();
-
         }
     }
 }
