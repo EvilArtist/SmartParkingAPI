@@ -102,7 +102,7 @@ namespace SmartParkingCoreModels.Data
         {
             foreach (var item in ChangeTracker.Entries() )
             {
-                if (item.State == EntityState.Added && item.Entity is IMultiTanentModel model && model.ClientId == "")
+                if (item.State == EntityState.Added && item.Entity is IMultiTanentModel model && string.IsNullOrEmpty(model.ClientId))
                 {
                     model.ClientId = GetClientId();
                 }

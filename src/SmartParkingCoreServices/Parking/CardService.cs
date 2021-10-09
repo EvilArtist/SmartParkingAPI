@@ -23,18 +23,6 @@ namespace SmartParkingCoreServices.Parking
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper mapper;
 
-        private readonly Expression<Func<Card, CardViewModel>> selector = x => new CardViewModel()
-        {
-            Id = x.Id,
-            IdentityCode = x.IdentityCode,
-            Name = x.Name,
-            Status = new CardStatusViewModel(){
-                Name = x.Status.Name,
-                Code = x.Status.Code,
-                Description = x.Status.Description
-            },
-        };
-
         public CardService(ApplicationDbContext dbContext,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor): base(httpContextAccessor)
@@ -62,33 +50,46 @@ namespace SmartParkingCoreServices.Parking
         public async Task<CardViewModel> GetCardById(Guid cardId)
         {
             var result = await dbContext.Cards
+                .Include(x => x.Status)
+                .Include(x => x.VehicleType)
+                .Include(x => x.Subscription)
+                .ThenInclude(x => x.SubscriptionType)
                 .Where(x => x.Id == cardId && x.ClientId == ClientId)
-                .Select(selector)
                 .FirstOrDefaultAsync();
-            return result;
+            return mapper.Map<CardViewModel>(result);
         }
 
         public async Task<CardViewModel> GetCardByCode(string code)
         {
             var result = await dbContext.Cards
+                .Include(x => x.Status)
+                .Include(x => x.VehicleType)
+                .Include(x => x.Subscription)
+                .ThenInclude(x => x.SubscriptionType)
                 .Where(x => x.IdentityCode == code && x.ClientId == ClientId)
-                .Select(selector)
                 .FirstOrDefaultAsync();
-            return result;
+            return mapper.Map<CardViewModel>(result);
         }
 
         public async Task<CardViewModel> GetCardByName(string cardName)
         {
             var result = await dbContext.Cards
+                .Include(x => x.Status)
+                .Include(x => x.VehicleType)
+                .Include(x => x.Subscription)
+                .ThenInclude(x => x.SubscriptionType)
                 .Where(x => x.Name == cardName && x.ClientId == ClientId)
-                .Select(selector)
                 .FirstOrDefaultAsync();
-            return result;
+            return mapper.Map<CardViewModel>(result);
         }
 
         public async Task<QueryResultModel<CardViewModel>> GetCards(QueryModel queryModel)
         {
             var data = dbContext.Cards
+                .Include(x=>x.Status)
+                .Include(x=>x.VehicleType)
+                .Include(x=>x.Subscription)
+                .ThenInclude(x=>x.SubscriptionType)
                 .Where(x => x.ClientId == ClientId);
             if(!string.IsNullOrEmpty(queryModel.QueryString))
             {
@@ -132,10 +133,9 @@ namespace SmartParkingCoreServices.Parking
                 .ThenInclude(y=>y.Customer)
                 .Include(x=>x.VehicleType)
                 .OrderBy(x => x.Name)
-                .Select(selector)
                 .PagedBy(queryModel.Page, queryModel.PageSize)
                 .ToListAsync();
-            return new QueryResultModel<CardViewModel>(result)
+            return new QueryResultModel<CardViewModel>(mapper.Map<IEnumerable<CardViewModel>>(result))
             {
                 Page = queryModel.Page,
                 TotalCount = totalCount

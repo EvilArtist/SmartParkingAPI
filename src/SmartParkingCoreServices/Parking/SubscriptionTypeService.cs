@@ -62,9 +62,27 @@ namespace SmartParkingCoreServices.Parking
             return subscriptions;
         }
 
-        public Task<IEnumerable<SubscriptionTypeViewModel>> ImportData(SubscriptionTypeDataImport data)
+        public async Task<IEnumerable<SubscriptionTypeViewModel>> ImportData(IEnumerable<SubscriptionTypeDataImport> data)
         {
-            throw new NotImplementedException();
+            var subscriptionTypesName = data.Select(x => x.Name);
+            var existingSubTypes = await dbContext.SubscriptionTypes
+                .Where(x => x.ClientId == ClientId && subscriptionTypesName.Contains(x.Name))
+                .ToListAsync();
+            foreach (var subType in existingSubTypes)
+            {
+                var dataSubType = data.First(x => x.Name == subType.Name);
+                subType.Description = dataSubType.Description;
+            }
+            dbContext.UpdateRange(existingSubTypes);
+            var newSubTypes = data.Where(x => !existingSubTypes.Any(y => y.Name == x.Name))
+                .Select(x=> new SubscriptionType()
+                {
+                    Name = x.Name,
+                    Description = x.Description
+                });
+            await dbContext.AddRangeAsync(newSubTypes);
+            await dbContext.SaveChangesAsync();
+            return mapper.Map<IEnumerable<SubscriptionType>, IEnumerable<SubscriptionTypeViewModel>>(existingSubTypes.Union(newSubTypes));
         }
 
         public async Task<SubscriptionTypeViewModel> UpdateSubscriptionType(CreateUpdateSubscriptionTypeViewModel model)

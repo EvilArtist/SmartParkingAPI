@@ -14,7 +14,7 @@ namespace SmartParkingAbstract.ViewModels.Parking
         public string IdentityCode { get; set; }
         public Guid VehicleTypeId { get; set; }
         public VehicleTypeViewModel VehicleType { get; set; }
-        public Guid CardStatusId { get; set; }
+        public string StatusCode { get; set; }
         public CardStatusViewModel Status { get; set; }
         public Guid? SubscriptionId { get; set; }
         public SubscriptionViewModel Subscription { get; set; }

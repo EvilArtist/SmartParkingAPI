@@ -14,6 +14,6 @@ namespace SmartParkingAbstract.Services.Parking
         Task<SubscriptionTypeViewModel> GetSubscriptionTypeById( Guid id);
         Task<SubscriptionTypeViewModel> CreateSubscriptionType(CreateUpdateSubscriptionTypeViewModel model);
         Task<SubscriptionTypeViewModel> UpdateSubscriptionType(CreateUpdateSubscriptionTypeViewModel model);
-        Task<IEnumerable<SubscriptionTypeViewModel>> ImportData(SubscriptionTypeDataImport data);
+        Task<IEnumerable<SubscriptionTypeViewModel>> ImportData(IEnumerable<SubscriptionTypeDataImport> data);
     }
 }
