@@ -29,6 +29,7 @@ namespace SmartParkingApi.Controllers.Parkings
         private readonly ICustomerService customerService;
         private readonly ISubscriptionTypeService subscriptionTypeService;
         private readonly IVehicleTypeService vehicleTypeService;
+        private readonly ICardService cardService;
 
         public ImportDataController(DataParsingResolver dataParsingResolver,
             IParkingService parkingService,
@@ -39,7 +40,8 @@ namespace SmartParkingApi.Controllers.Parkings
             ISlotTypeConfigurationService slotTypeConfigurationService,
             ICustomerService customerService,
             ISubscriptionTypeService subscriptionTypeService,
-            IVehicleTypeService vehicleTypeService)
+            IVehicleTypeService vehicleTypeService,
+            ICardService cardService)
         {
             this.dataParsingResolver = dataParsingResolver;
             this.parkingService = parkingService;
@@ -51,6 +53,7 @@ namespace SmartParkingApi.Controllers.Parkings
             this.customerService = customerService;
             this.subscriptionTypeService = subscriptionTypeService;
             this.vehicleTypeService = vehicleTypeService;
+            this.cardService = cardService;
         }
 
         [HttpPost("Import-Parking")]
@@ -228,6 +231,27 @@ namespace SmartParkingApi.Controllers.Parkings
                 return ServiceResponse<IEnumerable<SubscriptionTypeViewModel>>.Success(result);
             }
             return ServiceResponse<IEnumerable<SubscriptionTypeViewModel>>.Success(new List<SubscriptionTypeViewModel>());
+        }
+
+        [HttpPost("Import-Card")]
+        public async Task<ServiceResponse<IEnumerable<CardViewModel>>> ImportCard(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                IDataParsingService service = dataParsingResolver("EXCEL");
+                service.Open(stream);
+                ExcelParsingOption parsingOption = new()
+                {
+                    IgnoredIfFailed = true,
+                    SheetName = "Card"
+                };
+                var subscriptionType = service.ParseData<CardDataImport>(parsingOption);
+                service.Close();
+                var result = await cardService.ImportData(subscriptionType);
+                return ServiceResponse<IEnumerable<CardViewModel>>.Success(result);
+            }
+            return ServiceResponse<IEnumerable<CardViewModel>>.Success(new List<CardViewModel>());
         }
     }
 }

@@ -145,9 +145,14 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<CustomerViewModel, Customer>()
                 .ReverseMap();
             CreateMap<CustomerDataImport, Customer>();
-            CreateMap<Subscription, SubscriptionViewModel>().ReverseMap();
-            CreateMap<Subscription, SubscriptionViewModel>().ReverseMap();
-            CreateMap<Vehicle, VehicleTypeViewModel>().ReverseMap();
+            CreateMap<Subscription, SubscriptionViewModel>()
+                 .ForMember(x => x.AssignedCard, y => y.Ignore())
+                 .ReverseMap()
+                 .ForMember(x => x.AssignedCard, y => y.Ignore());
+            CreateMap<Vehicle, VehicleViewModel>()
+                 .ForMember(x => x.Subscription, y => y.Ignore())
+                 .ReverseMap()
+                .ForMember(x=>x.Subscription, y=>y.Ignore());
         }
     }
 }

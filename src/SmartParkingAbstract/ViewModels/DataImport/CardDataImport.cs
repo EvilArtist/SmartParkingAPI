@@ -22,5 +22,7 @@ namespace SmartParkingAbstract.ViewModels.DataImport
         public string CustomerName { get; set; }
         [ExcelDataImport("Loại vé")]
         public string SubscriptionTypeName { get; set; }
+        [ExcelDataImport("Biển số")]
+        public string LicensePlate { get; set; }
     }
 }
