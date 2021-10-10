@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartParkingAbstract.Services.Customers;
 using SmartParkingAbstract.Services.Data;
 using SmartParkingAbstract.Services.Parking;
+using SmartParkingAbstract.ViewModels.Customers;
 using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Parking;
@@ -24,6 +26,10 @@ namespace SmartParkingApi.Controllers.Parkings
         private readonly ISerialPortService serialPortService;
         private readonly ISlotTypeService slotTypeService;
         private readonly ISlotTypeConfigurationService slotTypeConfigurationService;
+        private readonly ICustomerService customerService;
+        private readonly ISubscriptionTypeService subscriptionTypeService;
+        private readonly IVehicleTypeService vehicleTypeService;
+        private readonly ICardService cardService;
 
         public ImportDataController(DataParsingResolver dataParsingResolver,
             IParkingService parkingService,
@@ -31,7 +37,11 @@ namespace SmartParkingApi.Controllers.Parkings
             ICameraConfigService cameraConfigService,
             ISerialPortService serialPortService,
             ISlotTypeService slotTypeService,
-            ISlotTypeConfigurationService slotTypeConfigurationService)
+            ISlotTypeConfigurationService slotTypeConfigurationService,
+            ICustomerService customerService,
+            ISubscriptionTypeService subscriptionTypeService,
+            IVehicleTypeService vehicleTypeService,
+            ICardService cardService)
         {
             this.dataParsingResolver = dataParsingResolver;
             this.parkingService = parkingService;
@@ -40,6 +50,10 @@ namespace SmartParkingApi.Controllers.Parkings
             this.serialPortService = serialPortService;
             this.slotTypeService = slotTypeService;
             this.slotTypeConfigurationService = slotTypeConfigurationService;
+            this.customerService = customerService;
+            this.subscriptionTypeService = subscriptionTypeService;
+            this.vehicleTypeService = vehicleTypeService;
+            this.cardService = cardService;
         }
 
         [HttpPost("Import-Parking")]
@@ -175,6 +189,69 @@ namespace SmartParkingApi.Controllers.Parkings
                 return ServiceResponse<IEnumerable<SlotTypeConfigViewModel>>.Success(result);
             }
             return ServiceResponse<IEnumerable<SlotTypeConfigViewModel>>.Success(new List<SlotTypeConfigViewModel>());
+        }
+
+        [HttpPost("Import-Customer")]
+        public async Task<ServiceResponse<IEnumerable<CustomerViewModel>>> ImportCustomers(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                IDataParsingService service = dataParsingResolver("EXCEL");
+                service.Open(stream);
+                ExcelParsingOption parsingOption = new()
+                {
+                    IgnoredIfFailed = true,
+                    SheetName = "Customer"
+                };
+                var customers = service.ParseData<CustomerDataImport>(parsingOption);
+                service.Close();
+                var result = await customerService.ImportData(customers);
+                return ServiceResponse<IEnumerable<CustomerViewModel>>.Success(result);
+            }
+            return ServiceResponse<IEnumerable<CustomerViewModel>>.Success(new List<CustomerViewModel>());
+        }
+
+        [HttpPost("Import-SubscriptionType")]
+        public async Task<ServiceResponse<IEnumerable<SubscriptionTypeViewModel>>> ImportSubscriptionType(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                IDataParsingService service = dataParsingResolver("EXCEL");
+                service.Open(stream);
+                ExcelParsingOption parsingOption = new()
+                {
+                    IgnoredIfFailed = true,
+                    SheetName = "SubscriptionType"
+                };
+                var subscriptionType = service.ParseData<SubscriptionTypeDataImport>(parsingOption);
+                service.Close();
+                var result = await subscriptionTypeService.ImportData(subscriptionType);
+                return ServiceResponse<IEnumerable<SubscriptionTypeViewModel>>.Success(result);
+            }
+            return ServiceResponse<IEnumerable<SubscriptionTypeViewModel>>.Success(new List<SubscriptionTypeViewModel>());
+        }
+
+        [HttpPost("Import-Card")]
+        public async Task<ServiceResponse<IEnumerable<CardViewModel>>> ImportCard(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                IDataParsingService service = dataParsingResolver("EXCEL");
+                service.Open(stream);
+                ExcelParsingOption parsingOption = new()
+                {
+                    IgnoredIfFailed = true,
+                    SheetName = "Card"
+                };
+                var subscriptionType = service.ParseData<CardDataImport>(parsingOption);
+                service.Close();
+                var result = await cardService.ImportData(subscriptionType);
+                return ServiceResponse<IEnumerable<CardViewModel>>.Success(result);
+            }
+            return ServiceResponse<IEnumerable<CardViewModel>>.Success(new List<CardViewModel>());
         }
     }
 }

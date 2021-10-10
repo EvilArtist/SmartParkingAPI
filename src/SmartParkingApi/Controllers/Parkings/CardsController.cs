@@ -27,7 +27,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                queryModel.GetClientIdFromContext(HttpContext);
                 var result = await cardService.GetCards(queryModel);
                 return ServiceResponse<QueryResultModel<CardViewModel>>.Success(result);
             }
@@ -42,7 +41,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await cardService.CreateCard(model);
                 return ServiceResponse<CardViewModel>.Success(result);
             }
@@ -57,8 +55,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await cardService.GetCardById(clientId, cardId);
+                var result = await cardService.GetCardById( cardId);
                 return ServiceResponse<CardViewModel>.Success(result);
             }
             catch (Exception e)
@@ -72,8 +69,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await cardService.GetCardByName(clientId, name);
+                var result = await cardService.GetCardByName(name);
                 return ServiceResponse<CardViewModel>.Success(result);
             }
             catch (Exception e)
@@ -87,7 +83,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await cardService.UpdateCard(model);
                 return ServiceResponse<CardViewModel>.Success(result);
             }

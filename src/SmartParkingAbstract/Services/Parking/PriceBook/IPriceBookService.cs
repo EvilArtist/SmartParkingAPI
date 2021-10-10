@@ -14,7 +14,7 @@ namespace SmartParkingAbstract.Services.Parking.PriceBook
         IEnumerable<EnumViewModel> GetPriceCondition();
         Task<QueryResultModel<PriceBookViewModel>> GetPriceBooks(PriceListQuery query);
         Task<PriceBookViewModel> CreatePriceBooks(CreateUpdatePriceViewModel model);
-        Task<PriceBookViewModel> GetPriceBookById(string clientId, Guid id);
+        Task<PriceBookViewModel> GetPriceBookById( Guid id);
         Task<PriceBookViewModel> UpdatePriceBooks(CreateUpdatePriceViewModel model);
     }
 }

@@ -18,11 +18,13 @@ using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using SmartParkingCoreServices.General;
+using Microsoft.AspNetCore.Http;
 
 namespace SmartParkingCoreServices.Admin
 {
     [Authorize(Policy = RoleClaims.EmployeeView)]
-    public class EmployeeManagerService : IUserService
+    public class EmployeeManagerService : MultitanentService, IUserService
     {
         private readonly ApplicationIdentityContext dataContext;
         private readonly UserManager<ApplicationUser> userManager;
@@ -32,7 +34,8 @@ namespace SmartParkingCoreServices.Admin
         public EmployeeManagerService(ApplicationIdentityContext dataContext,
             IRandomGeneratorService randomGeneratorService,
             UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager)
+            RoleManager<ApplicationRole> roleManager,
+            IHttpContextAccessor httpContextAccessor): base(httpContextAccessor)
         {
             this.dataContext = dataContext;
             this.randomGeneratorService = randomGeneratorService;
@@ -81,7 +84,7 @@ namespace SmartParkingCoreServices.Admin
                 UserName = userName,
                 Email = model.Email,
                 Address = model.Address,
-                ClientId = model.ClientId,
+                ClientId = ClientId,
                 FirstName = model.FirstName,
                 IDCardNumber = model.IDCardNumber,
                 LastName = model.LastName,
@@ -164,14 +167,14 @@ namespace SmartParkingCoreServices.Admin
 
         public async Task<QueryResultModel<EmployeeViewModel>> SearchManagedUserAsync(EmployeeQueryModel queryModels)
         {
-            if(string.IsNullOrEmpty(queryModels.ClientId))
+            if(string.IsNullOrEmpty(ClientId))
             {
                 return QueryResultModel<EmployeeViewModel>.Empty();
             }
             var query = dataContext.Users
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
-                .Where(x => x.ClientId == queryModels.ClientId);
+                .Where(x => x.ClientId == ClientId);
             if (!string.IsNullOrEmpty(queryModels.QueryString))
             {
                 query = query
@@ -203,9 +206,8 @@ namespace SmartParkingCoreServices.Admin
 
         public async Task<EmployeeDetail> GetEmployeeById(Guid userId)
         {
-            
             var query = dataContext.Users
-                .Where(x => x.Id == userId)
+                .Where(x => x.Id == userId && x.ClientId == ClientId)
                 .Select( x => new EmployeeDetail
                 {
                     Id = x.Id,
@@ -312,7 +314,8 @@ namespace SmartParkingCoreServices.Admin
         {
             var applicationRole = new ApplicationRole()
             {
-                Name = roleName
+                Name = roleName,
+                ClientId = ClientId
             };
             return await roleManager.CreateAsync(applicationRole);
         }

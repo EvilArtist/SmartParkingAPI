@@ -43,7 +43,6 @@ namespace SmartParkingApi.Controllers.Admin
         [HttpPost("search")]
         public async Task<QueryResultModel<EmployeeViewModel>> SearchUsers(EmployeeQueryModel queryModel)
         {
-            queryModel.GetClientIdFromContext(HttpContext);
             return await userService.SearchManagedUserAsync(queryModel);
         }
 
@@ -61,7 +60,6 @@ namespace SmartParkingApi.Controllers.Admin
                 Phone = model.Phone,
 
             };
-            employeeCreateModel.GetClientIdFromContext(HttpContext);
             return await userService.CreateAdminAsync(employeeCreateModel);
         }
 
@@ -69,7 +67,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<ServiceResponse<EmployeeDetail>> CreateUsers(EmployeeCreateModel model)
         {
-            model.GetClientIdFromContext(HttpContext);
             return await userService.CreateEmployeeAsync(model);
         }
 
@@ -77,7 +74,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<IdentityResult> UpdateUsers(Guid userId, EmployeeUpdateModel model)
         {
-            model.GetClientIdFromContext(HttpContext);
             return await userService.UpdateEmployeeAsync(userId, model);
         }
 
@@ -93,7 +89,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<IdentityResult> AssignRolePolicyAsync(RolePolicyAssignmentViewModel assignment)
         {
-            assignment.GetClientIdFromContext(HttpContext);
             return await userService.AssignRolePolicyAsync(assignment);
         }
 
@@ -101,7 +96,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<IdentityResult> UnassignRolePolicyAsync(RolePolicyAssignmentViewModel assignment)
         {
-            assignment.GetClientIdFromContext(HttpContext);
             return await userService.UnassignRolePolicyAsync(assignment);
         }
 
@@ -117,7 +111,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.RoleManager)]
         public async Task<IdentityResult> CreateRoleAsync(TanentRoleViewModel model)
         {
-            model.GetClientIdFromContext(HttpContext);
             return await userService.CreateRoleAsync(model.RoleName);
         }
 
@@ -125,7 +118,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.RoleManager)]
         public async Task<IdentityResult> RemoveRoleAsync(TanentRoleViewModel model)
         {
-            model.GetClientIdFromContext(HttpContext);
             return await userService.RemoveRoleAsync(model.RoleName);
         }
 
@@ -133,7 +125,6 @@ namespace SmartParkingApi.Controllers.Admin
         [Authorize(RoleClaims.EmployeeManager)]
         public async Task<IdentityResult> DeleteUserAsync(EmployeeDeleteModel model)
         {
-            model.GetClientIdFromContext(HttpContext);
             return await userService.RemoveEmployeeAsync(model.UserId);
         }
     }

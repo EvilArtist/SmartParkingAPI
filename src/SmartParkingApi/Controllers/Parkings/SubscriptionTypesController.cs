@@ -27,8 +27,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await subscriptionService.GetSubscriptionTypes(clientId);
+                var result = await subscriptionService.GetSubscriptionTypes();
                 return ServiceResponse<IEnumerable<SubscriptionTypeViewModel>>.Success(result);
             }
             catch (Exception e)
@@ -42,7 +41,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await subscriptionService.CreateSubscriptionType(model);
                 return ServiceResponse<SubscriptionTypeViewModel>.Success(result);
             }
@@ -57,8 +55,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await subscriptionService.GetSubscriptionTypeById(clientId, id);
+                var result = await subscriptionService.GetSubscriptionTypeById(id);
                 return ServiceResponse<SubscriptionTypeViewModel>.Success(result);
             }
             catch (Exception e)
@@ -72,7 +69,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await subscriptionService.UpdateSubscriptionType(model);
                 return ServiceResponse<SubscriptionTypeViewModel>.Success(result);
             }

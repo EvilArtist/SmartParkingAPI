@@ -15,15 +15,6 @@ namespace SmartParkingAbstract.ViewModels.Parking.PriceBook
         public VehicleTypeViewModel VehicleType { get; set; }
         public SubscriptionTypeViewModel SubscriptionType { get; set; }
 
-        public PriceBookViewModel()
-        {
-
-        }
-
-        public PriceBookViewModel(string clientId) : base(clientId)
-        {
-
-        }
     }
 
     public class CreateUpdatePriceViewModel : MultiTanentModel

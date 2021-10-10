@@ -78,12 +78,12 @@ namespace SmartParkingCoreServices.Parking
             };
         }
 
-        public async Task<ParkingDetailsModel> GetParkingById(string clientId, Guid parkingId)
+        public async Task<ParkingDetailsModel> GetParkingById(Guid parkingId)
         {
             var parking = await dbContext.Parkings
-                .SingleAsync(x => x.ClientId == clientId && x.Id == parkingId );
+                .SingleAsync(x => x.ClientId == ClientId && x.Id == parkingId );
             var parkingLanes = await parkingLaneService.GetParkingLanes(parkingId);
-            var parkingSlot = await slotConfigService.GetSlotTypeConfigs(clientId, parkingId);
+            var parkingSlot = await slotConfigService.GetSlotTypeConfigs(parkingId);
             return new ParkingDetailsModel
             {
                 Id = parking.Id,

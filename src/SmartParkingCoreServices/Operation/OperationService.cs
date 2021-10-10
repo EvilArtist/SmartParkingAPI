@@ -83,7 +83,7 @@ namespace SmartParkingCoreServices.Operation
                 CheckinParkingLaneId = checkInParkingRecord.ParkingLaneId,
                 ClientId = clientId,
                 VehicleTypeId = card.VehicleTypeId,
-                SubscriptionTypeId = card.Subscription.SubscriptionTypeId,
+                SubscriptionTypeId = card.Subscription?.SubscriptionTypeId ?? SystemSubscriptionType.DefaultSubscriptionType.Code,
                 ParkingId = checkInParkingRecord.ParkingId,
                 StatusCode = ParkingRecordStatusConstants.Checkin
             };
@@ -153,10 +153,8 @@ namespace SmartParkingCoreServices.Operation
             await dbContext.Entry(record).Reference(x => x.Card).LoadAsync();
             await dbContext.Entry(record).Reference(x => x.CheckinParkingLane).LoadAsync();
             var card = record.Card;
-            var cardStatus = await dbContext.CardStatuses.Where(x => x.Code == CardStatusCode.Parking)
-                    .FirstOrDefaultAsync();
 
-            card.CardStatusId = cardStatus.Id;
+            card.StatusCode = CardStatusCode.Parking;
             dbContext.Update(card);
             var result = dbContext.Update(record);
             await dbContext.SaveChangesAsync();
@@ -187,7 +185,7 @@ namespace SmartParkingCoreServices.Operation
             var cardStatus = await dbContext.CardStatuses.Where(x => x.Code == CardStatusCode.Checkout)
                     .FirstOrDefaultAsync();
 
-            card.CardStatusId = cardStatus.Id;
+            card.StatusCode = CardStatusCode.Checkout;
             dbContext.Update(card);
             var result = dbContext.Update(record);
             await dbContext.SaveChangesAsync();
