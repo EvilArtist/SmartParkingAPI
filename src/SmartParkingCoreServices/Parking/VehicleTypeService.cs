@@ -124,7 +124,7 @@ namespace SmartParkingCoreServices.Parking
             {
                 SlotTypeId = x.SlotTypeId,
                 Id = x.Id,
-                SlotTypeName = x.SlotType.SlotName,
+                SlotTypeName = x.SlotType?.SlotName ?? "",
                 CardCount = x.Cards == null ? 0 : x.Cards.Count,
                 Description = x.Description,
                 Name = x.Name
