@@ -27,7 +27,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                queryModel.GetClientIdFromContext(HttpContext);
                 var result = await priceBookService.GetPriceBooks(queryModel);
                 return ServiceResponse<QueryResultModel<PriceBookViewModel>>.Success(result);
             }
@@ -42,7 +41,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await priceBookService.CreatePriceBooks(model);
                 return ServiceResponse<PriceBookViewModel>.Success(result);
             }
@@ -57,8 +55,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                var clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await priceBookService.GetPriceBookById(clientId, priceBookId);
+                var result = await priceBookService.GetPriceBookById(priceBookId);
                 return ServiceResponse<PriceBookViewModel>.Success(result);
             }
             catch (Exception e)
@@ -72,7 +69,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await priceBookService.UpdatePriceBooks(model);
                 return ServiceResponse<PriceBookViewModel>.Success(result);
             }

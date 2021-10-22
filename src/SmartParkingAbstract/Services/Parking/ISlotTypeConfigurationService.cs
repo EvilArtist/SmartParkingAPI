@@ -10,7 +10,7 @@ namespace SmartParkingAbstract.Services.Parking
 {
     public interface ISlotTypeConfigurationService
     {
-        Task<IEnumerable<SlotTypeConfigViewModel>> GetSlotTypeConfigs(string clientId, Guid parkingId);
+        Task<IEnumerable<SlotTypeConfigViewModel>> GetSlotTypeConfigs( Guid parkingId);
         Task<IEnumerable<SlotTypeConfigViewModel>> CreateOrUpdateSlotTypeConfigs(UpdateSlotTypeConfigsViewModel model);
         Task<SlotTypeConfigViewModel> CreateOrUpdateSlotTypeConfig(SlotTypeConfigViewModel model);
         Task<IEnumerable<SlotTypeConfigViewModel>> ImportData(IEnumerable<SlotTypeConfigDataImport> slotTypeConfig);

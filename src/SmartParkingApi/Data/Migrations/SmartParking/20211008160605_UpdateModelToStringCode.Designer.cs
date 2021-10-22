@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingCoreModels.Data;
 
 namespace SmartParkingApi.Data.Migrations.SmartParking
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211008160605_UpdateModelToStringCode")]
+    partial class UpdateModelToStringCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,29 +187,6 @@ namespace SmartParkingApi.Data.Migrations.SmartParking
                     b.HasIndex("VehicleTypeId");
 
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("SmartParkingCoreModels.Operation.DeviceLock", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ClientId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConnectionId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeviceName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("IssueAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeviceLocks");
                 });
 
             modelBuilder.Entity("SmartParkingCoreModels.Operation.ParkingRecord", b =>

@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using SmartParking.Share.Constants;
 using SmartParking.Share.Models;
+using SmartParkingAbstract.ViewModels.Customers;
 using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Operation;
 using SmartParkingAbstract.ViewModels.Parking;
 using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingCoreModels.Customers;
 using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
 using SmartParkingCoreModels.Parking.PriceBook;
@@ -53,13 +55,8 @@ namespace SmartParkingCoreServices.AutoMap
 
             CreateMap<CreateCardViewModel, Card>();
             CreateMap<UpdateCardViewModel, Card>();
-            CreateMap<CardViewModel, Card>()
-                .ReverseMap()
-                .ForMember(x => x.SubscriptionTypeName, y => y.MapFrom(z =>
-                        z.Subscription == null || z.Subscription.SubscriptionType == null ? SystemSubscriptionType.DefaultSubscriptionType.Name :
-                        z.Subscription.SubscriptionType.Name))
-                .ForMember(x => x.VehicleTypeName, y => y.MapFrom(z => z.VehicleType.Name))
-                .ForMember(x=> x.Status, y => y.MapFrom(z=>z.Status.Name));
+            CreateMap<CardViewModel, Card>().ReverseMap();
+            CreateMap<CardStatusViewModel, CardStatus>().ReverseMap();
 
             CreateMap<CreatePriceConditionViewModel, PriceListDefaultCondition>()
                 .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
@@ -142,6 +139,20 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<MultigateDataImport, SerialPortConfiguration>();
 
             CreateMap<SlotTypeDataImport, SlotType>();
+
+            CreateMap<CustomerTypeViewModel, CustomerType>()
+                .ReverseMap();
+            CreateMap<CustomerViewModel, Customer>()
+                .ReverseMap();
+            CreateMap<CustomerDataImport, Customer>();
+            CreateMap<Subscription, SubscriptionViewModel>()
+                 .ForMember(x => x.AssignedCard, y => y.Ignore())
+                 .ReverseMap()
+                 .ForMember(x => x.AssignedCard, y => y.Ignore());
+            CreateMap<Vehicle, VehicleViewModel>()
+                 .ForMember(x => x.Subscription, y => y.Ignore())
+                 .ReverseMap()
+                .ForMember(x=>x.Subscription, y=>y.Ignore());
         }
     }
 }

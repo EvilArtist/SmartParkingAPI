@@ -1,4 +1,5 @@
-﻿using SmartParkingAbstract.ViewModels.General;
+﻿using SmartParkingAbstract.ViewModels.DataImport;
+using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Parking;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace SmartParkingAbstract.Services.Parking
     {
         Task<VehicleTypeViewModel> CreateVehicleType(CreateUpdateVehicleTypeViewModel model);
         Task<VehicleTypeViewModel> UpdateVehicleType(CreateUpdateVehicleTypeViewModel model);
-        Task<IEnumerable<VehicleTypeViewModel>> GetVehicleTypes(string clientId);
-        Task<VehicleTypeViewModel> GetVehicleTypeById(string clientId, Guid id);
+        Task<IEnumerable<VehicleTypeViewModel>> GetVehicleTypes();
+        Task<VehicleTypeViewModel> GetVehicleTypeById(Guid id);
+        Task<IEnumerable<VehicleTypeViewModel>> ImportData(IEnumerable<VehicleTypeDataImport> data);
     }
 }

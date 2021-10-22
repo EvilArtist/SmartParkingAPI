@@ -27,8 +27,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await vehicleTypeService.GetVehicleTypes(clientId);
+                var result = await vehicleTypeService.GetVehicleTypes();
                 return ServiceResponse<IEnumerable<VehicleTypeViewModel>>.Success(result);
             }
             catch (Exception e)
@@ -42,7 +41,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await vehicleTypeService.CreateVehicleType(model);
                 return ServiceResponse<VehicleTypeViewModel>.Success(result);
             }
@@ -57,8 +55,7 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                string clientId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.ClientId).Value;
-                var result = await vehicleTypeService.GetVehicleTypeById(clientId, id);
+                var result = await vehicleTypeService.GetVehicleTypeById(id);
                 return ServiceResponse<VehicleTypeViewModel>.Success(result);
             }
             catch (Exception e)
@@ -72,7 +69,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await vehicleTypeService.UpdateVehicleType(model);
                 return ServiceResponse<VehicleTypeViewModel>.Success(result);
             }

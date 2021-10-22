@@ -51,7 +51,6 @@ namespace SmartParkingApi.Controllers.Parkings
         {
             try
             {
-                model.GetClientIdFromContext(HttpContext);
                 var result = await service.CreateCameraAsync(model);
                 return ServiceResponse<CameraConfigurationViewModel>.Success(result);
             }

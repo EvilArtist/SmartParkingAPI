@@ -23,7 +23,7 @@ namespace SmartParkingCoreModels.Data
         }
         public void EnsureSeedData(string connectionString, string assemblyName)
         {
-            DbContextOptionsBuilder<ApplicationDbContext> builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            DbContextOptionsBuilder<ApplicationDbContext> builder = new();
             builder.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(assemblyName));
 
             ApplicationDbContext context = new(builder.Options, null);

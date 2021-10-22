@@ -67,7 +67,7 @@ namespace SmartParkingCoreServices.Parking
         public async Task<SlotTypeViewModel> UpdateSlotTypeAsync(SlotTypeViewModel model)
         {
             var slotType = await dbContext.SlotTypes
-                   .Where(x => x.ClientId == model.ClientId && x.Id == model.Id)
+                   .Where(x => x.ClientId == ClientId && x.Id == model.Id)
                    .FirstOrDefaultAsync();
             if (slotType != null)
             {

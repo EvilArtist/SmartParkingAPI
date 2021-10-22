@@ -31,7 +31,7 @@ namespace SmartParkingCoreServices.Parking
         public async Task<IEnumerable<SlotTypeConfigViewModel>> CreateOrUpdateSlotTypeConfigs(UpdateSlotTypeConfigsViewModel model)
         {
             var currentConfig = await dbContext.SlotTypeConfigurations
-                .Where(x => x.ClientId == model.ClientId && x.ParkingId == model.ParkingId)
+                .Where(x => x.ClientId == ClientId && x.ParkingId == model.ParkingId)
                 .ToListAsync();
             for (int i = 0; i < currentConfig.Count; i++)
             {
@@ -52,17 +52,17 @@ namespace SmartParkingCoreServices.Parking
             await dbContext.AddRangeAsync(mapper.Map<IEnumerable<UpdateSlotTypeConfigViewModel>, IEnumerable<SlotTypeConfiguration>>(newConfigs));
             await dbContext.SaveChangesAsync();
             currentConfig = await dbContext.SlotTypeConfigurations
-                .Where(x => x.ClientId == model.ClientId && x.ParkingId == model.ParkingId)
+                .Where(x => x.ClientId == ClientId && x.ParkingId == model.ParkingId)
                 .ToListAsync();
             return mapper.Map<List<SlotTypeConfiguration>, List<SlotTypeConfigViewModel>>(currentConfig);
 
         }
 
-        public async Task<IEnumerable<SlotTypeConfigViewModel>> GetSlotTypeConfigs(string clientId, Guid parkingId)
+        public async Task<IEnumerable<SlotTypeConfigViewModel>> GetSlotTypeConfigs(Guid parkingId)
         {
             var query = dbContext.SlotTypeConfigurations
                 .Include(x=>x.SlotType)
-                .Where(x => x.ClientId == clientId && x.ParkingId == parkingId);
+                .Where(x => x.ClientId == ClientId && x.ParkingId == parkingId);
             var result = await query.ToListAsync();
             return mapper.Map<List<SlotTypeConfiguration>, List<SlotTypeConfigViewModel>>(result);
         }
