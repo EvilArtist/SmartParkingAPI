@@ -287,5 +287,38 @@ namespace SmartParkingCoreServices.Operation
             await dbContext.SaveChangesAsync();
             return mapper.Map<ParkingRecordDetailViewModel>(result.Entity);
         }
+
+        public async Task LockDevice(string deviceName, string connectId)
+        {
+            var isLocked = await dbContext.DeviceLocks.AnyAsync(x => x.ConnectionId != connectId && deviceName == x.DeviceName && x.ClientId == ClientId);
+            if (isLocked)
+            {
+                throw new Exception("Thiết bị đã bị khoá bởi một kết nối khác");
+            }
+            DeviceLock deviceLock = new() { ClientId = ClientId, DeviceName = deviceName, ConnectionId = connectId, IssueAt = DateTime.Now };
+            await dbContext.DeviceLocks.AddAsync(deviceLock);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UnlockDevice(string connectId)
+        {
+            var locks = await dbContext.DeviceLocks.Where(x => x.ConnectionId == connectId && x.ClientId == ClientId)
+                .ToListAsync();
+            dbContext.DeviceLocks.RemoveRange(locks);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<string> GetActiveClient(string deviceName)
+        {
+            var locks = await dbContext.DeviceLocks.Where(x => x.DeviceName == deviceName && x.ClientId == ClientId)
+               .FirstOrDefaultAsync();
+            if (locks!=null)
+            {
+                return locks.ConnectionId;
+            } else
+            {
+                return string.Empty;
+            }
+        }
     }
 }

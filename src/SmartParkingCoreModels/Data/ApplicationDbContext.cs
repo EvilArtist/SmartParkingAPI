@@ -48,6 +48,8 @@ namespace SmartParkingCoreModels.Data
         public DbSet<Vehicle> Vehicles{ get; set; }
         public DbSet<CustomerType> CustomerTypes { get; set; }
 
+        public DbSet<DeviceLock> DeviceLocks { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
                 : base(options)
         {

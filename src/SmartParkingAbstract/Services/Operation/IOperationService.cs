@@ -17,5 +17,9 @@ namespace SmartParkingAbstract.Services.Operation
         Task<ParkingRecordDetailViewModel> UpdateCheckoutRecordInfo(UpdateRecordInfoViewModel recordInfo);
         Task<ParkingRecordDetailViewModel> DeclineVehicleEnter(Guid recordId);
         Task<ParkingRecordDetailViewModel> DeclineVehicleExit(Guid recordId);
+
+        Task LockDevice(string deviceName, string connectId);
+        Task<string> GetActiveClient(string deviceName);
+        Task UnlockDevice(string connectId);
     }
 }
