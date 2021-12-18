@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartParkingCoreModels.Parking.PriceBook
+namespace SmartParkingCoreModels.Parking.PriceBooks
 {
-    public class PriceList : MultiTanentModel
+    public class PriceBook : AuditModel
     {
         [MaxLength(EntityConstants.NameMaxLength)]
         public string Name { get; set; }
@@ -18,10 +18,10 @@ namespace SmartParkingCoreModels.Parking.PriceBook
         public VehicleType VehicleType { get; set; }
         public Guid SubscriptionTypeId { get; set; }
         public SubscriptionType SubscriptionType { get; set; }
-
         [ForeignKey(nameof(Condition))]
-        public Guid PriceListConditionId { get; set; }
-        public PriceListCondition Condition { get; set; }
-        public PriceCalculation Calculation { get; set; }
+        public Guid PriceBookConditionId { get; set; }
+        public PriceBookCondition Condition { get; set; }
+        public bool Active { get; set; }
+        public virtual ICollection<PriceList> PriceLists { get; set; }
     }
 }

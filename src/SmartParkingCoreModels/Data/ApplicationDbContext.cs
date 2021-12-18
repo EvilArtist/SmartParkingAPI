@@ -4,7 +4,7 @@ using SmartParkingCoreModels.Common;
 using SmartParkingCoreModels.Customers;
 using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
-using SmartParkingCoreModels.Parking.PriceBook;
+using SmartParkingCoreModels.Parking.PriceBooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +31,9 @@ namespace SmartParkingCoreModels.Data
         public DbSet<VehicleType> VehicleTypes{ get; set; }
         public DbSet<SubscriptionType> SubscriptionTypes{ get; set; }
 
+        public DbSet<PriceBook> PriceBooks { get; set; }
         public DbSet<PriceList> PriceLists { get; set; }
-        public DbSet<PriceListCondition> PriceListConditions { get; set; }
+        public DbSet<PriceBookCondition> PriceListConditions { get; set; }
         public DbSet<PriceListDefaultCondition> PriceListDefaultConditions { get; set; }
         public DbSet<PriceListWeekdayCondition> PriceListWeekdayConditions { get; set; }
         public DbSet<PriceListHollidayCondition> PriceListHollidayConditions { get; set; }
@@ -74,9 +75,9 @@ namespace SmartParkingCoreModels.Data
                     .IsRequired();
             });
 
-            builder.Entity<PriceListCondition>()
+            builder.Entity<PriceBookCondition>()
                 .HasDiscriminator<string>("condition_type")
-                .HasValue<PriceListCondition>(nameof(PriceListCondition))
+                .HasValue<PriceBookCondition>(nameof(PriceBookCondition))
                 .HasValue<PriceListDefaultCondition>("Default")
                 .HasValue<PriceListDurationCondition>("Duration")
                 .HasValue<PriceListHollidayCondition>("Holliday")

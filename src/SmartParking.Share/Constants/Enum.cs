@@ -25,7 +25,11 @@ namespace SmartParking.Share.Constants
         [Description("Theo tuần")]
         ByWeek,
         [Description("Theo tháng")]
-        ByMonth
+        Monthly,
+        [Description("Theo quý")]
+        Quarterly,
+        [Description("Theo năm")]
+        Annual
     }
 
     public enum PriceCondition

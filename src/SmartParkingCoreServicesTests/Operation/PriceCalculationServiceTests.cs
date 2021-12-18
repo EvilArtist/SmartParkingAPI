@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using SmartParkingCoreModels.Data;
 using System;
 using System.Threading.Tasks;

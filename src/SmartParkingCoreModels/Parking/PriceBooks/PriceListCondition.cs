@@ -9,33 +9,25 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SmartParkingCoreModels.Parking.PriceBook
+namespace SmartParkingCoreModels.Parking.PriceBooks
 {
-    public abstract class PriceListCondition : MultiTanentModel
+    public abstract class PriceBookCondition : MultiTanentModel
     {
         [MaxLength(EntityConstants.NameMaxLength)]
         public virtual string Name { get; set; }
         [MaxLength(EntityConstants.DescriptionMaxLength)]
         public virtual string Condition { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
-
         [NotMapped]
-        public virtual PriceCondition PriceConditionType { get; }
-        [NotMapped]
-        public virtual bool Overnight => EndTime < StartTime;
-        [NotMapped]
-        public virtual bool FullDay => EndTime == StartTime;
+        public virtual PriceCondition PriceConditionType { get; }       
     }
 
-
-    public class PriceListDefaultCondition : PriceListCondition
+    public class PriceListDefaultCondition : PriceBookCondition
     {
         [NotMapped]
         public override PriceCondition PriceConditionType => PriceCondition.Default;
     }
 
-    public class PriceListWeekdayCondition : PriceListCondition
+    public class PriceListWeekdayCondition : PriceBookCondition
     {
         [NotMapped]
         public override PriceCondition PriceConditionType => PriceCondition.Weekday;
@@ -52,7 +44,7 @@ namespace SmartParkingCoreModels.Parking.PriceBook
         }
     }
 
-    public class PriceListHollidayCondition : PriceListCondition
+    public class PriceListHollidayCondition : PriceBookCondition
     {
         [NotMapped]
         public override PriceCondition PriceConditionType => PriceCondition.Holliday;
@@ -68,7 +60,7 @@ namespace SmartParkingCoreModels.Parking.PriceBook
         }
     }
 
-    public class PriceListDurationCondition : PriceListCondition
+    public class PriceListDurationCondition : PriceBookCondition
     {
         [NotMapped]
         public override PriceCondition PriceConditionType => PriceCondition.Duration;

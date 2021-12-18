@@ -11,6 +11,7 @@ namespace SmartParkingAbstract.ViewModels.Parking
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool PayByDuration { get; set; }
         public int CardCount { get; set; }
     }
 
@@ -18,5 +19,6 @@ namespace SmartParkingAbstract.ViewModels.Parking
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool PayByDuration { get; set; }
     }
 }

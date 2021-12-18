@@ -10,6 +10,7 @@ namespace SmartParking.Share.Constants
     {
         public const int ShortNameMaxLength = 30;
         public const int CodeMaxLength = 15;
+        public const int CodeMinLength = 3;
         public const int NameMaxLength = 30;
         public const int ShortDescriptionMaxLength = 120;
         public const int DescriptionMaxLength = 250;

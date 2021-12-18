@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.General
 {
-    public class QueryModel: MultiTanentModel
+    public class QueryModel
     {
         public string QueryString { get; set; }
         public int Page { get; set; } = 1;

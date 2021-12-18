@@ -21,5 +21,11 @@ namespace SmartParkingAbstract.ViewModels.General
         {
             Data = data;
         }
+
+        public QueryResultModel(IEnumerable<T> data, QueryModel query)
+        {
+            Data = data;
+            Page = query.Page;
+        }
     }
 }

@@ -2,7 +2,7 @@
 using SmartParkingAbstract.ViewModels.General;
 using System;
 
-namespace SmartParkingAbstract.ViewModels.Parking.PriceBook
+namespace SmartParkingAbstract.ViewModels.Parking.PriceBooks
 {
     public class PriceConditionViewModel: MultiTanentModel
     {
@@ -11,8 +11,6 @@ namespace SmartParkingAbstract.ViewModels.Parking.PriceBook
         public string Condition { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public ApiTime StartTime { get; set; }
-        public ApiTime EndTime { get; set; }
         public DayOfWeek[] Days { get; set; }
     }
 
@@ -23,8 +21,6 @@ namespace SmartParkingAbstract.ViewModels.Parking.PriceBook
         public string Condition { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public ApiTime StartTime { get; set; }
-        public ApiTime EndTime { get; set; }
         public DayOfWeek[] Days { get; set; }
     }
 }

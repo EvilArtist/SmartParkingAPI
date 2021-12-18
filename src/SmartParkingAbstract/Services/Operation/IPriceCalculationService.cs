@@ -1,5 +1,5 @@
 ﻿using SmartParkingAbstract.ViewModels.Operation;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;

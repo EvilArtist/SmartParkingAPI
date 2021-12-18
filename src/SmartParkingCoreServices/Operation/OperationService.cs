@@ -6,7 +6,7 @@ using SmartParking.Share.Exceptions;
 using SmartParkingAbstract.Services.File;
 using SmartParkingAbstract.Services.Operation;
 using SmartParkingAbstract.ViewModels.Operation;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using SmartParkingCoreModels.Data;
 using SmartParkingCoreModels.Operation;
 using SmartParkingCoreServices.General;

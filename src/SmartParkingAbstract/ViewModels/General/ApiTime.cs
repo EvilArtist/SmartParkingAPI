@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartParkingAbstract.ViewModels.General
 {
-    public class ApiTime
+    public class ApiTime : IComparable<ApiTime>, IEquatable<ApiTime>
     {
         public int Hours { get; set; }
         public int Minutes { get; set; }
@@ -24,5 +25,18 @@ namespace SmartParkingAbstract.ViewModels.General
                 Minutes = t.Minutes
             };
         }
+
+        public int CompareTo(ApiTime other)
+        {
+            return TotalMinutes.CompareTo(other.TotalMinutes);
+        }
+
+        public bool Equals(ApiTime other)
+        {
+            return CompareTo(other) == 0;
+        }
+
+        private int TotalMinutes => Hours * 60 + Minutes;
+
     }
 }

@@ -6,11 +6,11 @@ using SmartParkingAbstract.ViewModels.DataImport;
 using SmartParkingAbstract.ViewModels.General;
 using SmartParkingAbstract.ViewModels.Operation;
 using SmartParkingAbstract.ViewModels.Parking;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using SmartParkingCoreModels.Customers;
 using SmartParkingCoreModels.Operation;
 using SmartParkingCoreModels.Parking;
-using SmartParkingCoreModels.Parking.PriceBook;
+using SmartParkingCoreModels.Parking.PriceBooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<CreateUpdateVehicleTypeViewModel, VehicleType>().ReverseMap();
             CreateMap<VehicleTypeViewModel, VehicleType>()
                 .ReverseMap()
-                .ForMember(x => x.CardCount, y=> y.MapFrom(z=> (z.Cards == null) ? 0 : z.Cards.Count));
+                .ForMember(x => x.CardCount, y => y.MapFrom(z => (z.Cards == null) ? 0 : z.Cards.Count));
 
             CreateMap<SubscriptionTypeViewModel, SubscriptionType>()
                 .ReverseMap()
@@ -58,75 +58,7 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<CardViewModel, Card>().ReverseMap();
             CreateMap<CardStatusViewModel, CardStatus>().ReverseMap();
 
-            CreateMap<CreatePriceConditionViewModel, PriceListDefaultCondition>()
-                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
-                .ForMember(x => x.Id, y => y.Ignore())
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => z.StartTime.ToTimeSpan()))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => z.EndTime.ToTimeSpan()));
-
-            CreateMap<CreatePriceConditionViewModel, PriceListWeekdayCondition>()
-                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
-                .ForMember(x => x.Id, y => y.Ignore())
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => z.StartTime.ToTimeSpan()))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => z.EndTime.ToTimeSpan()));
-
-            CreateMap<CreatePriceConditionViewModel, PriceListHollidayCondition>()
-                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
-                .ForMember(x => x.Id, y => y.Ignore())
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => z.StartTime.ToTimeSpan()))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => z.EndTime.ToTimeSpan()));
-
-            CreateMap<CreatePriceConditionViewModel, PriceListDurationCondition>()
-                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
-                .ForMember(x => x.Id, y => y.Ignore())
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => z.StartTime.ToTimeSpan()))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => z.EndTime.ToTimeSpan()));
-
-            CreateMap<CreatePriceCalcutationViewModel, PriceCalculation>()
-                .ForMember(x => x.Type, y => y.MapFrom(z => z.FormularType));
-
-            CreateMap<CreateUpdatePriceViewModel, PriceList>()
-                .ForMember(x => x.Condition, y => y.Ignore());
-
-            CreateMap<PriceListCondition, PriceConditionViewModel>()
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.StartTime)))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.EndTime)));
-            CreateMap<PriceListDefaultCondition, PriceConditionViewModel>()
-                .ForMember(x => x.StartDate, y => y.Ignore())
-                .ForMember(x => x.EndDate, y => y.Ignore())
-                .ForMember(x => x.Days, y => y.Ignore())
-                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType))
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.StartTime)))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.EndTime)));
-
-            CreateMap<PriceListHollidayCondition, PriceConditionViewModel>()
-                .ForMember(x => x.StartDate, y => y.Ignore())
-                .ForMember(x => x.EndDate, y => y.Ignore())
-                .ForMember(x => x.Days, y => y.Ignore())
-                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType))
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.StartTime)))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.EndTime)));
-
-            CreateMap<PriceListWeekdayCondition, PriceConditionViewModel>()
-                .ForMember(x => x.StartDate, y => y.Ignore())
-                .ForMember(x => x.EndDate, y => y.Ignore())
-                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType))
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.StartTime)))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.EndTime)));
-
-
-            CreateMap<PriceListDurationCondition, PriceConditionViewModel>()
-                .ForMember(x => x.Condition, y => y.MapFrom(z => z.StartDate.ToString("MM/dd/yyyy") + " - " + z.EndDate.ToString("MM/dd/yyyy")))
-                .ForMember(x => x.Days, y => y.Ignore())
-                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType))
-                .ForMember(x => x.StartTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.StartTime)))
-                .ForMember(x => x.EndTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.EndTime)));
-
-            CreateMap<PriceCalculation, PriceCalculationViewModel>()
-                .ForMember(x => x.FormularType, z => z.MapFrom(y => y.Type))
-                .ForMember(x => x.Unit, y=>y.MapFrom(z => PriceBookContants.UnitMap[z.Type]));
-
-            CreateMap<PriceList, PriceBookViewModel>();
+            CreatePriceMapping();
 
             CreateMap<ParkingLane, ParkingLaneViewModel>().ReverseMap();
 
@@ -135,7 +67,7 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<PriceItem, PriceItemViewModel>().ReverseMap();
             CreateMap<ParkingRecordStatus, ParkingRecordStatusViewModel>().ReverseMap();
 
-            CreateMap<CameraDataImport, CameraConfiguration>().ForMember(x=>x.Protocol, y => y.Ignore());
+            CreateMap<CameraDataImport, CameraConfiguration>().ForMember(x => x.Protocol, y => y.Ignore());
             CreateMap<MultigateDataImport, SerialPortConfiguration>();
 
             CreateMap<SlotTypeDataImport, SlotType>();
@@ -152,7 +84,68 @@ namespace SmartParkingCoreServices.AutoMap
             CreateMap<Vehicle, VehicleViewModel>()
                  .ForMember(x => x.Subscription, y => y.Ignore())
                  .ReverseMap()
-                .ForMember(x=>x.Subscription, y=>y.Ignore());
+                .ForMember(x => x.Subscription, y => y.Ignore());
+        }
+
+        private void CreatePriceMapping()
+        {
+            CreateMap<PriceBook, PriceBookViewModel>();
+            CreateMap<PriceList, PriceListViewModel>()
+                .ForMember(x => x.StartTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.StartTime)))
+                .ForMember(x => x.EndTime, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.EndTime)))
+                .ForMember(x => x.Offset, y => y.MapFrom(z => ApiTime.FromTimeSpan(z.Offset)));
+            CreateMap<PriceCalculation, PriceCalculationViewModel>()
+                .ForMember(x => x.Unit, y => y.MapFrom(z => PriceBookContants.UnitMap[z.FormularType]));
+            CreateMap<PriceBookCondition, PriceConditionViewModel>();
+
+            CreateMap<PriceListDefaultCondition, PriceConditionViewModel>()
+                .ForMember(x => x.StartDate, y => y.Ignore())
+                .ForMember(x => x.EndDate, y => y.Ignore())
+                .ForMember(x => x.Days, y => y.Ignore())
+                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType));
+
+            CreateMap<PriceListHollidayCondition, PriceConditionViewModel>()
+                .ForMember(x => x.StartDate, y => y.Ignore())
+                .ForMember(x => x.EndDate, y => y.Ignore())
+                .ForMember(x => x.Days, y => y.Ignore())
+                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType));
+
+            CreateMap<PriceListWeekdayCondition, PriceConditionViewModel>()
+                .ForMember(x => x.StartDate, y => y.Ignore())
+                .ForMember(x => x.EndDate, y => y.Ignore())
+                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType));
+
+            CreateMap<PriceListDurationCondition, PriceConditionViewModel>()
+                .ForMember(x => x.Condition, y => y.MapFrom(z => z.StartDate.ToString("MM/dd/yyyy") + " - " + z.EndDate.ToString("MM/dd/yyyy")))
+                .ForMember(x => x.Days, y => y.Ignore())
+                .ForMember(x => x.ConditionType, y => y.MapFrom(z => z.PriceConditionType));
+
+            CreateMap<CreateUpdatePriceBookViewModel, PriceBook>()
+                .ForMember(x => x.Condition, y => y.Ignore())
+                .ForMember(x => x.PriceLists, y => y.Ignore());
+
+            CreateMap<CreatePriceListViewModel, PriceList>()
+                .ForMember(x => x.StartTime, y => y.MapFrom(z => z.StartTime.ToTimeSpan()))
+                .ForMember(x => x.EndTime, y => y.MapFrom(z => z.EndTime.ToTimeSpan()))
+                .ForMember(x => x.Offset, y => y.MapFrom(z => z.Offset.ToTimeSpan()));
+
+            CreateMap<CreatePriceCalcutationViewModel, PriceCalculation>();
+
+            CreateMap<CreatePriceConditionViewModel, PriceListDefaultCondition>()
+                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
+                .ForMember(x => x.Id, y => y.Ignore());
+
+            CreateMap<CreatePriceConditionViewModel, PriceListWeekdayCondition>()
+                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
+                .ForMember(x => x.Id, y => y.Ignore());
+
+            CreateMap<CreatePriceConditionViewModel, PriceListHollidayCondition>()
+                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
+                .ForMember(x => x.Id, y => y.Ignore());
+
+            CreateMap<CreatePriceConditionViewModel, PriceListDurationCondition>()
+                .ForMember(x => x.PriceConditionType, y => y.MapFrom(z => z.ConditionType))
+                .ForMember(x => x.Id, y => y.Ignore());
         }
     }
 }

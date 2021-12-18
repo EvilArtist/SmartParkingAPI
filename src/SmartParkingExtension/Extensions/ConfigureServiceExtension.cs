@@ -20,7 +20,7 @@ using SmartParkingCoreServices.Parking;
 using AutoMapper;
 using SmartParkingCoreServices.AutoMap;
 using SmartParkingAbstract.Services.Parking.PriceBook;
-using SmartParkingCoreServices.Parking.PriceBook;
+using SmartParkingCoreServices.Parking.PriceBooks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;

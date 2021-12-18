@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartParkingAbstract.ViewModels.Parking.PriceBook
+namespace SmartParkingAbstract.ViewModels.Parking.PriceBooks
 {
     public class PriceCalculationParam
     {

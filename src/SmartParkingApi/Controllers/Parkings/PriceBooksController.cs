@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartParking.Share.Exceptions;
 using SmartParkingAbstract.Services.Parking.PriceBook;
 using SmartParkingAbstract.ViewModels.General;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,12 +38,19 @@ namespace SmartParkingApi.Controllers.Parkings
         }
 
         [HttpPost("create")]
-        public async Task<ServiceResponse<PriceBookViewModel>> CreateParking(CreateUpdatePriceViewModel model)
+        public async Task<ServiceResponse<PriceBookViewModel>> CreateParking(CreateUpdatePriceBookViewModel model)
         {
             try
             {
-                var result = await priceBookService.CreatePriceBooks(model);
+                var result = await priceBookService.CreatePriceBook(model);
                 return ServiceResponse<PriceBookViewModel>.Success(result);
+            }
+            catch (PricebookValidationException validationException)
+            {
+                return ServiceResponse<PriceBookViewModel>.Fail(new ServiceError() {
+                    ErrorCode = validationException.Code,
+                    ErrorMessage = validationException.Message
+                });
             }
             catch (Exception e)
             {
@@ -65,7 +73,7 @@ namespace SmartParkingApi.Controllers.Parkings
         }
 
         [HttpPost("update")]
-        public async Task<ServiceResponse<PriceBookViewModel>> UpdateParking(CreateUpdatePriceViewModel model)
+        public async Task<ServiceResponse<PriceBookViewModel>> UpdateParking(CreateUpdatePriceBookViewModel model)
         {
             try
             {

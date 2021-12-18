@@ -1,5 +1,5 @@
 ﻿using SmartParkingAbstract.ViewModels.General;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +13,8 @@ namespace SmartParkingAbstract.Services.Parking.PriceBook
         IEnumerable<EnumViewModel> GetPriceFomulars();
         IEnumerable<EnumViewModel> GetPriceCondition();
         Task<QueryResultModel<PriceBookViewModel>> GetPriceBooks(PriceListQuery query);
-        Task<PriceBookViewModel> CreatePriceBooks(CreateUpdatePriceViewModel model);
+        Task<PriceBookViewModel> CreatePriceBook(CreateUpdatePriceBookViewModel model);
         Task<PriceBookViewModel> GetPriceBookById( Guid id);
-        Task<PriceBookViewModel> UpdatePriceBooks(CreateUpdatePriceViewModel model);
+        Task<PriceBookViewModel> UpdatePriceBooks(CreateUpdatePriceBookViewModel model);
     }
 }

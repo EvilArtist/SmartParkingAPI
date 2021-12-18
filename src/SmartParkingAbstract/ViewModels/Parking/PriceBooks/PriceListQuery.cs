@@ -1,7 +1,7 @@
 ﻿using SmartParkingAbstract.ViewModels.General;
 using System;
 
-namespace SmartParkingAbstract.ViewModels.Parking.PriceBook
+namespace SmartParkingAbstract.ViewModels.Parking.PriceBooks
 {
     public class PriceListQuery: QueryModel
     {

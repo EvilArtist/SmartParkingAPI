@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using SmartParking.Share.Constants;
 using SmartParkingAbstract.Services.Operation;
 using SmartParkingAbstract.ViewModels.Operation;
-using SmartParkingAbstract.ViewModels.Parking.PriceBook;
+using SmartParkingAbstract.ViewModels.Parking.PriceBooks;
 using SmartParkingCoreModels.Data;
-using SmartParkingCoreModels.Parking.PriceBook;
+using SmartParkingCoreModels.Parking.PriceBooks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,101 +29,92 @@ namespace SmartParkingCoreServices.Operation
         public async Task<IEnumerable<PriceItemViewModel>> Calculate(PriceCalculationParam param)
         {
             var clientId = param.ClientId;
-            var query = dbContext.PriceLists
+            var query = dbContext.PriceBooks
                 .Include(x => x.Condition)
-                .Include(x => x.Calculation)
+                .Include(x => x.PriceLists)
                 .Where(x => x.ClientId == clientId &&
+                    x.Active &&
                     x.VehicleTypeId == param.VehicleTypeId &&
-                    x.SubscriptionTypeId == param.SubscriptionTypeId
-                ).OrderBy(x=>x.Condition.StartTime);
-            var priceList = await query.ToListAsync();
+                    x.SubscriptionTypeId == param.SubscriptionTypeId &&
+                    x.PriceLists.Count > 0
+                ).OrderBy(x=>x.Condition.PriceConditionType);
+            var priceBooks = await query.ToListAsync();
             var startTime = param.CheckinTime;
             var endTime = param.CheckoutTime;
-            List<PriceCondition> orderOfConditionType =new(){ PriceCondition.Holliday, PriceCondition.Duration, PriceCondition.Weekday, PriceCondition.Default};
+            List<PriceCondition> orderOfConditionType = new(){ PriceCondition.Holliday, PriceCondition.Duration, PriceCondition.Weekday, PriceCondition.Default};
             List<PriceItemViewModel> priceItems = new();
             while (startTime < endTime)
             {
-                var applicablePrice = priceList
-                    .Where(price => IsMapCondition(price.Condition, startTime))
+                var applicablePriceBook = priceBooks
                     .Where(price => MapConditionType(price, startTime))
                     .OrderBy(price => orderOfConditionType.IndexOf(price.Condition.PriceConditionType))
-                    .ThenBy(price => price.Condition.StartTime - price.Condition.EndTime)
-                    .ThenBy(price => price.Condition.StartTime)
-                    .ThenBy(price => price.Condition.EndTime)
-                    .Select(price => {
-                        var endTimeByCondition = startTime.Date + price.Condition.EndTime;
-                        if (price.Condition.Overnight || price.Condition.FullDay)
-                        {
-                            endTimeByCondition = endTimeByCondition.AddDays(1);
-                        }
-                        var priceItemEndTime = endTime < endTimeByCondition ? endTime : endTimeByCondition;
-                        return new PriceItemViewModel() {
-                            StartTime = startTime,
-                            EndTime = priceItemEndTime,
-                            HourBlock = price.Calculation.HourBlock,
-                            Name = price.Name,
-                            Price = price.Calculation.Price,
-                            Type = price.Calculation.Type
-                        };
-                    }).FirstOrDefault();
-                if (applicablePrice == null)
+                    .ThenBy(price => price.UpdateTime)
+                    .FirstOrDefault();
+                
+                if (applicablePriceBook == null)
                 {
-                    var nextApplicablePrice = priceList
-                    .Where(price => MapConditionType(price, startTime))
-                    .OrderBy(price => orderOfConditionType.IndexOf(price.Condition.PriceConditionType))
-                    .ThenBy(price => price.Condition.StartTime - startTime.TimeOfDay)
-                    .ThenBy(price => price.Condition.EndTime)
-                    .Select(price => {
-                        var endTimeByCondition = startTime.Date + price.Condition.EndTime;
-                        if (price.Condition.Overnight || price.Condition.FullDay)
-                        {
-                            endTimeByCondition.AddDays(1);
-                        }
-                        var priceItemEndTime = endTime < endTimeByCondition ? endTime : endTimeByCondition;
-                        return new PriceItemViewModel()
-                        {
-                            StartTime = startTime,
-                            EndTime = priceItemEndTime,
-                            HourBlock = price.Calculation.HourBlock,
-                            Name = price.Name,
-                            Price = price.Calculation.Price,
-                            Type = price.Calculation.Type
-                        };
-                    }).FirstOrDefault();
-                    applicablePrice = new PriceItemViewModel()
-                    {
-                        StartTime = startTime,
-                        EndTime = nextApplicablePrice?.StartTime ?? startTime.Date.AddDays(1),
-                        HourBlock = 24,
-                        Name = "DEFAULT",
-                        Price = nextApplicablePrice?.Price ?? 0,
-                        Type = PriceFormular.ByDate
-                    };
+                    PriceItemViewModel applicablePrice = GetDefaultPrice(startTime, endTime);
+                    priceItems.Add(applicablePrice);
+                    startTime = endTime > applicablePrice.EndTime ? applicablePrice.EndTime: endTime;
                 }
-                priceItems.Add(applicablePrice);
-                startTime = applicablePrice.EndTime;
+                else
+                {
+                    foreach (var priceList in applicablePriceBook.PriceLists.OrderBy(x=>x.StartTime))
+                    {
+                        if(IsMapTimeCondition(priceList, startTime))
+                        {
+                            var applicableEndTime = priceList.Overnight ? startTime.Date.AddDays(1) + priceList.EndTime : startTime.Date + priceList.EndTime;
+
+                            PriceItemViewModel applicablePrice = new()
+                            {
+                                StartTime = startTime,
+                                EndTime = endTime > applicableEndTime ? applicableEndTime : endTime,
+                                HourBlock = priceList.Calculation.HourBlock,
+                                Name = "DEFAULT",
+                                Price = priceList.Calculation.PayPrice,
+                                Type = priceList.Calculation.FormularType
+                            };
+                            priceItems.Add(applicablePrice);
+                            startTime = applicablePrice.EndTime;
+                            if(startTime >= endTime)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
             }
             return priceItems;
         }
 
-        private static bool MapConditionType(PriceList price, DateTime startTime)
+        private static PriceItemViewModel GetDefaultPrice(DateTime startTime, DateTime endTime) => new()
         {
-            if (price.Condition is PriceListWeekdayCondition weekdayCondition)
+            StartTime = startTime,
+            EndTime = endTime > startTime.Date.AddDays(1) ? startTime.Date.AddDays(1) : endTime,
+            HourBlock = 24,
+            Name = "DEFAULT",
+            Price = 0,
+            Type = PriceFormular.ByDate
+        };
+
+        private static bool MapConditionType(PriceBook priceBooks, DateTime startTime)
+        {
+            if (priceBooks.Condition is PriceListWeekdayCondition weekdayCondition)
             {
                 return weekdayCondition.Days.Any(z => z == startTime.DayOfWeek);
             }
-            else if (price.Condition is PriceListHollidayCondition)
+            else if (priceBooks.Condition is PriceListHollidayCondition)
             {
                 return true;
             }
-            else if (price.Condition is PriceListDurationCondition priceListDurationCondition)
+            else if (priceBooks.Condition is PriceListDurationCondition priceListDurationCondition)
             {
                 return priceListDurationCondition.StartDate.Date <= startTime.Date && startTime.Date <= priceListDurationCondition.EndDate.Date;
             }
             return true;
         }
 
-        private static bool IsMapCondition(PriceListCondition priceCondition, DateTime startTime)
+        private static bool IsMapTimeCondition(PriceList priceCondition, DateTime startTime)
         {
             if (priceCondition.FullDay)
             {
